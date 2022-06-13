@@ -1,0 +1,192 @@
+{
+    "appid": "69a23453-0649-4f5b-8abd-c2b64b53ab5b",
+    "name": "test",
+    "description": "Testing",
+    "type": "endpoint",
+    "product_vendor": "Microsoft",
+    "logo": "test.svg",
+    "logo_dark": "test_dark.svg",
+    "product_name": "test",
+    "python_version": "3",
+    "product_version_regex": ".*",
+    "publisher": "test",
+    "license": "Copyright (c) test, 2022",
+    "app_version": "1.0.0",
+    "utctime_updated": "2022-05-26T06:24:07.659521Z",
+    "package_name": "phantom_test",
+    "main_module": "test_connector.py",
+    "min_phantom_version": "5.2.0",
+    "app_wizard_version": "1.0.0",
+    "rest_handler": "test_connector._handle_rest_request",
+    "configuration": {
+        "tenant_id": {
+            "description": "Tenant ID",
+            "data_type": "string",
+            "required": true,
+            "order": 0
+        },
+        "ph": {
+            "data_type": "ph",
+            "order": 1
+        },
+        "client_id": {
+            "description": "Client ID",
+            "data_type": "string",
+            "required": true,
+            "order": 2
+        },
+        "client_secret": {
+            "description": "Client Secret",
+            "data_type": "password",
+            "required": true,
+            "order": 3
+        },
+        "non_interactive": {
+            "description": "Non Interactive Auth",
+            "data_type": "boolean",
+            "default": false,
+            "order": 4
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "run query",
+            "description": "An advanced search query",
+            "type": "generic",
+            "identifier": "run_query",
+            "read_only": true,
+            "parameters": {
+                "query": {
+                    "description": "Query to fetch results",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "json"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list incidents",
+            "description": "List all the incidents",
+            "type": "investigate",
+            "identifier": "list_incidents",
+            "read_only": true,
+            "parameters": {
+                "limit": {
+                    "description": "Maximum number of incidents to return. (Defaults to 50)",
+                    "data_type": "numeric",
+                    "default": 50,
+                    "order": 0
+                },
+                "offset":{
+                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "data_type": "numeric",
+                    "default": 0,
+                    "order": 1
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "defender_view.display_incidents",
+                "title": "List Incidents"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list alerts",
+            "description": "List all the alerts",
+            "type": "investigate",
+            "identifier": "list_alerts",
+            "read_only": true,
+            "parameters": {
+                "limit": {
+                    "description": "Maximum number of alerts to return. (Defaults to 2000)",
+                    "data_type": "numeric",
+                    "default": 2000,
+                    "order": 0
+                },
+                "offset":{
+                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "data_type": "numeric",
+                    "default": 0,
+                    "order": 1
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "defender_view.display_alerts",
+                "title": "List Alerts"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get incident",
+            "description": "Retrieve specific Incident by its ID",
+            "type": "investigate",
+            "identifier": "get_incident",
+            "read_only": true,
+            "parameters": {
+                "incident_id": {
+                    "description": "ID of the incident",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "defender incident id"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get alert",
+            "description": "Retrieve specific Alert by its ID",
+            "type": "investigate",
+            "identifier": "get_alert",
+            "read_only": true,
+            "parameters": {
+                "alert_id": {
+                    "description": "ID of the alert",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "defender alert id"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
+}
