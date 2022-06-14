@@ -1,0 +1,1218 @@
+{
+    "appid": "69a23453-0649-4f5b-8abd-c2b64b53ab5b",
+    "name": "Microsoft 365 Defender",
+    "description": "This app integrates with Microsoft 365 Defender to execute various generic and investigative actions",
+    "type": "endpoint",
+    "product_vendor": "Microsoft",
+    "logo": "logo_microsoft_defender.svg",
+    "logo_dark": "logo_microsoft_defender_dark.svg",
+    "product_name": "Microsoft 365 Defender",
+    "python_version": "3",
+    "product_version_regex": ".*",
+    "publisher": "Splunk",
+    "license": "Copyright (c) 2022 Splunk Inc.",
+    "app_version": "1.0.0",
+    "utctime_updated": "2022-05-26T06:24:07.659521Z",
+    "package_name": "phantom_microsoft_defender",
+    "main_module": "microsoft_defender_connector.py",
+    "min_phantom_version": "5.2.0",
+    "app_wizard_version": "1.0.0",
+    "fips_compliant": true,
+    "rest_handler": "microsoft_defender_connector._handle_rest_request",
+    "configuration": {
+        "tenant_id": {
+            "description": "Tenant ID",
+            "data_type": "string",
+            "required": true,
+            "order": 0
+        },
+        "ph": {
+            "data_type": "ph",
+            "order": 1
+        },
+        "client_id": {
+            "description": "Client ID",
+            "data_type": "string",
+            "required": true,
+            "order": 2
+        },
+        "client_secret": {
+            "description": "Client Secret",
+            "data_type": "password",
+            "required": true,
+            "order": 3
+        },
+        "non_interactive": {
+            "description": "Non Interactive Auth",
+            "data_type": "boolean",
+            "default": false,
+            "order": 4
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "run query",
+            "description": "An advanced search query",
+            "type": "generic",
+            "identifier": "run_query",
+            "read_only": true,
+            "parameters": {
+                "query": {
+                    "description": "Query to fetch results",
+                    "data_type": "string",
+                    "required": true,
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.query",
+                    "data_type": "string",
+                    "example_values": [
+                        "DeviceProcessEvents | limit 5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.DeviceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxx9d48ec4859bd94a25039dcba09f4fd9ac78"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.FileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.Timestamp",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-12T04:24:25.0406516Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.InitiatingProcessFileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "powershell.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                }
+            ],
+            "render": {
+                "type": "json"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list incidents",
+            "description": "List all the incidents",
+            "type": "investigate",
+            "identifier": "list_incidents",
+            "read_only": true,
+            "parameters": {
+                "limit": {
+                    "description": "Maximum number of incidents to return. (Defaults to 50)",
+                    "data_type": "numeric",
+                    "default": 50,
+                    "order": 0
+                },
+                "offset":{
+                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "data_type": "numeric",
+                    "default": 0,
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "string",
+                    "example_values": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        50
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "145"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "active"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.severity",
+                    "data_type": "string",
+                    "example_values": [
+                        "high"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tenantId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignedTo",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@abc.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Malware incident on one endpoint"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.determination",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.classification",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incidentWebUrl",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-13T10:36:05.7Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastUpdateDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-13T12:57:22.3633333Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.redirectIncidentId",
+                    "data_type": "string",
+                    "example_values": [
+                        "48"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.comment",
+                    "data_type": "string",
+                    "example_values": [
+                        "Testing comment"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-08T08:34:40.68416Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdByDisplayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@abc.com"
+                    ]
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "microsoft_defender_view.display_incidents",
+                "title": "List Incidents"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list alerts",
+            "description": "List all the alerts",
+            "type": "investigate",
+            "identifier": "list_alerts",
+            "read_only": true,
+            "parameters": {
+                "limit": {
+                    "description": "Maximum number of alerts to return. (Defaults to 2000)",
+                    "data_type": "numeric",
+                    "default": 2000,
+                    "order": 0
+                },
+                "offset":{
+                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "data_type": "numeric",
+                    "default": 0,
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.offset",
+                    "data_type": "string",
+                    "example_values": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.limit",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "xx637812122456454120_-11082172xx"
+                    ],
+                    "contains":[
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.title",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test alert"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "new"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.category",
+                    "data_type": "string",
+                    "example_values": [
+                        "SuspiciousActivity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.osBuild",
+                    "data_type": "numeric",
+                    "example_values": [
+                        19044
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.verdict",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.version",
+                    "data_type": "string",
+                    "example_values": [
+                        "X1HX"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.riskScore",
+                    "data_type": "string",
+                    "example_values": [
+                        "high"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.osPlatform",
+                    "data_type": "string",
+                    "example_values": [
+                        "Windows10"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#test.graph.security.deviceEvidence"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.mdeDeviceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxx84aa7ef0294f733b7b6e9499439e433axxxx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rbacGroupId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        73
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.healthStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "inactive"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.deviceDnsName",
+                    "data_type": "string",
+                    "example_values": [
+                        "testmachine"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.loggedOnUsers.*.domainName",
+                    "data_type": "string",
+                    "example_values": [
+                        "TESTMACHINE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.loggedOnUsers.*.accountName",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantom"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.rbacGroupName",
+                    "data_type": "string",
+                    "example_values": [
+                        "UnassignedGroup"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.azureAdDeviceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxxx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-23T11:24:05.9366667Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.defenderAvStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.onboardingStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "onboarded"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.firstSeenDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2021-08-30T16:25:37.180194Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.remediationStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "none"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.remediationStatusDetails",
+                    "data_type": "string",
+                    "example_values": [
+                        "status details"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.url",
+                    "data_type": "string",
+                    "example_values": [
+                        "test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.sha1",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxx8825f6b54238a452e3050d49e8aa50569a6c9"
+                    ],
+                    "contains": [
+                        "sha1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.issuer",
+                    "data_type": "string",
+                    "example_values": [
+                        "file issuer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.sha256",
+                    "data_type": "string",
+                    "example_values": [
+                        "7db34eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13f5bc6"
+                    ],
+                    "contains": [
+                        "sha256"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.signer",
+                    "data_type": "string",
+                    "example_values": [
+                        "signer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.fileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "C:\\Program Files\\Test\\Test\\Application\\Test.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.filePath",
+                    "data_type": "string",
+                    "example_values": [
+                        "C:\\Program Files\\Test\\Test\\Application"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.fileSize",
+                    "data_type": "string",
+                    "example_values": [
+                        "1MB"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.fileDetails.filePublisher",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.detectionStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.severity",
+                    "data_type": "string",
+                    "example_values": [
+                        "medium"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tenantId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxc578-c7ee-480d-a225-d48057e74df5"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignedTo",
+                    "data_type": "string",
+                    "example_values": [
+                        "test@abc.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.detectorId",
+                    "data_type": "string",
+                    "example_values": [
+                        "360fdb3b-18a9-471b-9ad0-ad80a4cbcb02"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incidentId",
+                    "data_type": "string",
+                    "example_values": [
+                        "42"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alertWebUrl",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test alert"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.determination",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.serviceSource",
+                    "data_type": "string",
+                    "example_values": [
+                        "TestEndpoint"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.classification",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incidentWebUrl",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-23T11:24:05.6454411Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.detectionSource",
+                    "data_type": "string",
+                    "example_values": [
+                        "customTi"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.providerAlertId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxx7812122456454120_-1108217xxx"
+                    ],
+                    "contains": [
+                        "defender alert id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.actorDisplayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test@abc.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.resolvedDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-23T11:24:05.6454411Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.threatFamilyName",
+                    "data_type": "string",
+                    "example_values": [
+                        "threat"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.threatDisplayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "threat"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastUpdateDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-24T03:52:41.7933333Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recommendedActions",
+                    "data_type": "string",
+                    "example_values": [
+                        "A. Validate the alert and scope the suspected breach.\n1. Find related machines, network addresses, and files in the incident graph.\n2. Check for other suspicious activities in the machine timeline.\n3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.\n4. Submit relevant files for deep analysis and review file behaviors. \n5. Identify unusual system activity with system owners. \n\nB. If you have validated the alert, contain and mitigate the breach.\n1. Record relevant artifacts, including those you need in mitigation rules.\n2. Stop suspicious processes. Block prevalent malware files across the network.\n3. Isolate affected machines.\n4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.\n5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.\n6. Update antimalware signatures and run full scans. \n7. Deploy the latest security updates for Windows, web browsers, and other applications.\n\nC. Contact your incident response team, or contact test support for forensic analysis and remediation services.\n\nDisclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastActivityDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-23T11:22:20.1835364Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.firstActivityDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-02-23T11:22:20.1835364Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.sha1",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx"
+                    ],
+                    "contains": [
+                        "sha1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.issuer",
+                    "data_type": "string",
+                    "example_values": [
+                        "test issuer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.sha256",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx"
+                    ],
+                    "contains": [
+                        "sha256"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.signer",
+                    "data_type": "string",
+                    "example_values": [
+                        "test signer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.fileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "powershell.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.filePath",
+                    "data_type": "string",
+                    "example_values": [
+                        "c:\\windows\\system32\\windowspowershell\\v1.0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.fileSize",
+                    "data_type": "string",
+                    "example_values": [
+                        "1MB"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.imageFile.filePublisher",
+                    "data_type": "string",
+                    "example_values": [
+                        "test publisher"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.processId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        6240
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.userSid",
+                    "data_type": "string",
+                    "example_values": [
+                        "S-1-5-19"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.domainName",
+                    "data_type": "string",
+                    "example_values": [
+                        "nt authority"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.accountName",
+                    "data_type": "string",
+                    "example_values": [
+                        "local service"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.azureAdUserId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxxxx"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.userPrincipalName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        7968
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.processCommandLine",
+                    "data_type": "string",
+                    "example_values": [
+                        "powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive"
+                        ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.sha1",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx"
+                    ],
+                    "contains": [
+                        "sha1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.issuer",
+                    "data_type": "string",
+                    "example_values": [
+                        "test issuer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.sha256",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx"
+                    ],
+                    "contains": [
+                        "sha256"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.signer",
+                    "data_type": "string",
+                    "example_values": [
+                        "test signer"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.fileName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.filePath",
+                    "data_type": "string",
+                    "example_values": [
+                        "C:\\Program Files\\Test\\Test\\Application\\Test.exe"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.fileSize",
+                    "data_type": "string",
+                    "example_values": [
+                        "1MB"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.filePublisher",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test publisher"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.processCreationDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-09T19:53:01Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessCreationDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-03-09T19:52:51Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.comment",
+                    "data_type": "string",
+                    "example_values": [
+                        "initialaccess_type_of_alert_last_option from the dropdown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-04-08T18:03:49.3223829Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdByDisplayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Automation"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ipAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "8.8.8.8"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.parentProcessImageFile",
+                    "data_type": "string",
+                    "example_values": [
+                        "TestFile"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.registryKey",
+                    "data_type": "string",
+                    "example_values": [
+                        "SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.registryHive",
+                    "data_type": "string",
+                    "example_values": [
+                        "HKEY_LOCAL_MACHINE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.registryValue",
+                    "data_type": "string",
+                    "example_values": [
+                        "43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.registryValueName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Debugger"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.registryValueType",
+                    "data_type": "string",
+                    "example_values": [
+                        "Unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount",
+                    "data_type": "string"
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "microsoft_defender_view.display_alerts",
+                "title": "List Alerts"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get incident",
+            "description": "Retrieve specific Incident by its ID",
+            "type": "investigate",
+            "identifier": "get_incident",
+            "read_only": true,
+            "parameters": {
+                "incident_id": {
+                    "description": "ID of the incident",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "defender incident id"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.incident_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "48"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ],
+                    "column_name": "Incident ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "example_values": [
+                        "145"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "active"
+                    ],
+                    "column_name": "Status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.severity",
+                    "data_type": "string",
+                    "example_values": [
+                        "high"
+                    ],
+                    "column_name": "Severity",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.tenantId",
+                    "data_type": "string",
+                    "example_values": [
+                        "xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assignedTo",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@abc.com"
+                    ],
+                    "column_name": "Assigned To",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.data.*.determination",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test alert on one endpoint"
+                    ],
+                    "column_name": "Display Name",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.classification",
+                    "data_type": "string",
+                    "example_values": [
+                        "unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.incidentWebUrl",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-13T10:36:05.7Z"
+                    ],
+                    "column_name": "Created Date Time",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.lastUpdateDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-13T12:57:22.3633333Z"
+                    ],
+                    "column_name": "Last Updated Date Time",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.redirectIncidentId",
+                    "data_type": "string",
+                    "example_values": [
+                        "48"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.tags.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.comment",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdDateTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2022-06-08T08:34:40.68416Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.comments.*.createdByDisplayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@abc.com"
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get alert",
+            "description": "Retrieve specific Alert by its ID",
+            "type": "investigate",
+            "identifier": "get_alert",
+            "read_only": true,
+            "parameters": {
+                "alert_id": {
+                    "description": "ID of the alert",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "defender alert id"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
+}

@@ -15,7 +15,7 @@ except Exception:
     from urllib import urlencode, quote
 
 # Usage of the consts file is recommended
-from test_consts import *
+from microsoft_defender_consts import *
 import grp
 import pwd
 import encryption_helper
@@ -47,6 +47,7 @@ def _handle_login_redirect(request, key):
     response = HttpResponse(status=302)
     response['Location'] = url
     return response
+
 
 def _load_app_state(asset_id, app_connector=None):
     """ This function is used to load the current state file.
@@ -84,6 +85,7 @@ def _load_app_state(asset_id, app_connector=None):
 
     return state
 
+
 def _save_app_state(state, asset_id, app_connector):
     """ This function is used to save current state in file.
 
@@ -119,6 +121,7 @@ def _save_app_state(state, asset_id, app_connector):
 
     return phantom.APP_SUCCESS
 
+
 def _handle_login_response(request):
     """ This function is used to get the login response of authorization request from Microsoft login page.
 
@@ -151,7 +154,7 @@ def _handle_login_response(request):
 
     # If value of admin_consent is not available, value of code is available
     try:
-        state['code'] = TestConnector().encrypt_state(code, "code")
+        state['code'] = Microsoft_Defender_Connector().encrypt_state(code, "code")
         state[DEFENDER_STATE_IS_ENCRYPTED] = True
     except Exception as e:
         return HttpResponse("{}: {}".format(DEFENDER_DECRYPTION_ERR, str(e)), content_type="text/plain", status=400)
@@ -159,6 +162,7 @@ def _handle_login_response(request):
     _save_app_state(state, asset_id, None)
 
     return HttpResponse('Code received. Please close this window, the action will continue to get new token.', content_type="text/plain")
+
 
 def _handle_rest_request(request, path_parts):
     """ Handle requests for authorization.
@@ -199,6 +203,7 @@ def _handle_rest_request(request, path_parts):
         return return_val
     return HttpResponse('error: Invalid endpoint', content_type="text/plain", status=404)
 
+
 def _get_dir_name_from_app_name(app_name):
     """ Get name of the directory for the app.
 
@@ -219,12 +224,12 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class TestConnector(BaseConnector):
+class Microsoft_Defender_Connector(BaseConnector):
 
     def __init__(self):
 
         # Call the BaseConnectors init first
-        super(TestConnector, self).__init__()
+        super(Microsoft_Defender_Connector, self).__init__()
 
         self._state = None
         self._tenant = None
@@ -951,7 +956,7 @@ class TestConnector(BaseConnector):
             action_result.add_data(incident)
 
         summary = action_result.update_summary({})
-        summary['total_incidents'] = len(alert_list)
+        summary['total_alerts'] = len(alert_list)
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -1204,7 +1209,7 @@ def main():
         in_json = json.loads(in_json)
         print(json.dumps(in_json, indent=4))
 
-        connector = TestConnector()
+        connector = Microsoft_Defender_Connector()
         connector.print_progress_message = True
 
         if session_id is not None:

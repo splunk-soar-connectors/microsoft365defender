@@ -9,8 +9,8 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: defenderatp_list_alerts.html
-  Copyright (c) 2019-2022 Splunk Inc.
+<!-- File: microsoft_defender_list_incidents.html
+  Copyright (c) 2022 Splunk Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -86,6 +86,10 @@
         white-space:nowrap;
     }
 
+    .defenderatpnowrap {
+        white-space:nowrap;
+    }
+
 </style>
 <div class="defenderatp" style="overflow: auto; width: 100%; height: 100%; padding-left:10px; padding-right:10px"> <!-- Main Div -->
     {% for result in results %} <!-- loop for each result -->
@@ -120,25 +124,22 @@
                         <table class="wf-table-horizontal datatable">
                             <thead>
                                 <tr>
-                                    <th>Computer DNS Name</th>
-                                    <th>Alert ID</th>
-                                    <th>Title</th>
-                                    <th>Threat Family</th>
+                                    <th>Incident ID</th>
                                     <th>Status</th>
+                                    <th>Display Name</th>
+                                    <th>Created Date Time</th>
+                                    <th>Last Updated Date Time</th>
                                     <th>Severity</th>
-                                    <th>Category</th>
-                                    <th>Creation Time</th>
                                     <th>Assigned To</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for alert in result.data %}
                                     <tr>
-                                        <td>{{ alert.computerDnsName | default:"None" }}</td>
                                         {% if alert.id %}
-                                            <td>
+                                            <td class="defenderatpnowrap">
                                                 <a href="javascript:;"
-                                                onclick="context_menu(this, [{'contains': ['defender atp alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
+                                                onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
                                                     {{ alert.id }}
                                                     &nbsp;
                                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -147,14 +148,13 @@
                                         {% else %}
                                             <td>None</td>
                                         {% endif %}
-                                        <td>{{ alert.title | default:"None" }}</td>
-                                        <td>{{ alert.threatFamilyName | default:"None" }}</td>
                                         <td>{{ alert.status | default:"None" }}</td>
+                                        <td>{{ alert.displayName | default:"None" }}</td>
+                                        <td>{{ alert.createdDateTime | default:"None" }}</td>
+                                        <td>{{ alert.lastUpdateDateTime | default:"None" }}</td>
                                         <td>{{ alert.severity | default:"None" }}</td>
-                                        <td>{{ alert.category | default:"None" }}</td>
-                                        <td>{{ alert.alertCreationTime | default:"None" }}</td>
                                         {% if alert.assignedTo %}
-                                            <td>
+                                            <td class="defenderatpnowrap">
                                                 <a href="javascript:;"
                                                 onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ alert.assignedTo }}' }], 0, {{ container.id }}, null, false);">
                                                     {{ alert.assignedTo }}

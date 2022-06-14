@@ -15,6 +15,7 @@ def get_ctx_result(result):
 
     return ctx_result
 
+
 def display_incidents(provides, all_app_runs, context):
 
     context['results'] = results = []
@@ -26,7 +27,8 @@ def display_incidents(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return 'defender_list_incidents.html'
+    return 'microsoft_defender_list_incidents.html'
+
 
 def display_alerts(provides, all_app_runs, context):
 
@@ -39,4 +41,4 @@ def display_alerts(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return 'defender_list_alerts.html'
+    return 'microsoft_defender_list_alerts.html'
