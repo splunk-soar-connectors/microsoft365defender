@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: microsoft_defender_list_incidents.html
+<!-- File: microsoft_defender_get_alert.html
   Copyright (c) 2022 Splunk Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@
                 </tr>
             {%endif%}
         </table>
-        <h3 class="wf-h3-style">Incident Info</h3>
+        <h3 class="wf-h3-style">Alert Info</h3>
         <div class="metadata_div">
             <!--Default View-->
             <div class="panel-group" id="server-information">
@@ -124,23 +124,24 @@
                         <table class="wf-table-horizontal datatable">
                             <thead>
                                 <tr>
+                                    <th>Alert ID</th>
                                     <th>Incident ID</th>
+                                    <th>Title</th>
+                                    <th>Threat Family</th>
                                     <th>Status</th>
-                                    <th>Display Name</th>
-                                    <th>Created Date Time</th>
-                                    <th>Last Updated Date Time</th>
                                     <th>Severity</th>
+                                    <th>Category</th>
                                     <th>Assigned To</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for incident in result.data %}
+                                {% for alert in result.data %}
                                     <tr>
-                                        {% if incident.id %}
+                                        {% if alert.id %}
                                             <td class="microsoftdefendernowrap">
                                                 <a href="javascript:;"
-                                                onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ incident.id }}' }], 0, {{ container.id }}, null, false);">
-                                                    {{ incident.id }}
+                                                onclick="context_menu(this, [{'contains': ['defender alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
+                                                    {{ alert.id }}
                                                     &nbsp;
                                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                                                 </a>
@@ -148,16 +149,28 @@
                                         {% else %}
                                             <td>None</td>
                                         {% endif %}
-                                        <td>{{ incident.status | default:"None" }}</td>
-                                        <td>{{ incident.displayName | default:"None" }}</td>
-                                        <td>{{ incident.createdDateTime | default:"None" }}</td>
-                                        <td>{{ incident.lastUpdateDateTime | default:"None" }}</td>
-                                        <td>{{ incident.severity | default:"None" }}</td>
-                                        {% if incident.assignedTo %}
+                                        {% if alert.incidentId %}
                                             <td class="microsoftdefendernowrap">
                                                 <a href="javascript:;"
-                                                onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ incident.assignedTo }}' }], 0, {{ container.id }}, null, false);">
-                                                    {{ incident.assignedTo }}
+                                                onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ alert.incidentId }}' }], 0, {{ container.id }}, null, false);">
+                                                    {{ alert.incidentId }}
+                                                    &nbsp;
+                                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                                </a>
+                                            </td>
+                                        {% else %}
+                                            <td>None</td>
+                                        {% endif %}
+                                        <td>{{ alert.title | default:"None" }}</td>
+                                        <td>{{ alert.threatFamilyName | default:"None" }}</td>
+                                        <td>{{ alert.status | default:"None" }}</td>
+                                        <td>{{ alert.severity | default:"None" }}</td>
+                                        <td>{{ alert.category | default:"None" }}</td>
+                                        {% if alert.assignedTo %}
+                                            <td class="microsoftdefendernowrap">
+                                                <a href="javascript:;"
+                                                onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ alert.assignedTo }}' }], 0, {{ container.id }}, null, false);">
+                                                    {{ alert.assignedTo }}
                                                     &nbsp;
                                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                                                 </a>

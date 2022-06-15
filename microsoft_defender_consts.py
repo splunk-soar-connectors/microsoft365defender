@@ -77,6 +77,42 @@ DEFENDER_ALERTS_ID_ENDPOINT = '/security/alerts_v2/{input}'
 DEFENDER_INCIDENT_ID = 'incident_id'
 DEFENDER_ALERT_ID = 'alert_id'
 DEFENDER_JSON_QUERY = 'query'
+DEFENDER_JSON_STATUS = 'status'
+DEFENDER_JSON_ASSIGNED_TO = 'assigned_to'
+DEFENDER_JSON_CLASSIFICATION = 'classification'
+DEFENDER_JSON_DETERMINATION = 'determination'
+DEFENDER_JSON_COMMENT = 'comment'
 
 LIMIT_KEY = "'limit' action parameter"
 OFFSET_KEY = "'offset' action parameter"
+
+DEFENDER_INVALID_CLASSIFICATION = "Please provide valid classification"
+DEFENDER_INVALID_DETERMINATION = "Please provide valid determination"
+DEFENDER_INVALID_STATUS = "Please provide valid status"
+
+DEFENDER_UPDATE_ALERT_STATUS_DICT = {
+    "New": "new",
+    "In progress": "inProgress",
+    "Resolved": "resolved"
+}
+
+DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT = {
+    "Unknown": "unknown",
+    "False positive": "falsePositive",
+    "True positive": "truePositive"
+}
+
+DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
+    "Other": "other",
+    "Multi staged attack": "multiStagedAttack",
+    "Malware": "malware",
+    "Malicious user activity": "maliciousUserActivity",
+    "Unwanted software": "unwantedSoftware",
+    "Phishing": "phishing",
+    "Compromised account": "compromisedAccount",
+    "Security testing": "securityTesting",
+    "Confirmed activity": "confirmedActivity",
+    "Line of business application": "lineOfBusinessApplication",
+    "Not malicious": "notMalicious",
+    "Not enough data to validate": "notEnoughDataToValidate"
+}
