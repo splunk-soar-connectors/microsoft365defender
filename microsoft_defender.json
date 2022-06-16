@@ -1075,18 +1075,14 @@
                     ],
                     "contains": [
                         "defender incident id"
-                    ],
-                    "column_name": "Incident ID",
-                    "column_order": 0
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.assignedTo",
                     "data_type": "string",
                     "example_values": [
                         "testuser@abc.com"
-                    ],
-                    "column_name": "Assigned To",
-                    "column_order": 6
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.classification",
@@ -1118,9 +1114,7 @@
                     "data_type": "string",
                     "example_values": [
                         "2022-06-13T10:36:05.7Z"
-                    ],
-                    "column_name": "Created Date Time",
-                    "column_order": 3
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.determination",
@@ -1134,9 +1128,7 @@
                     "data_type": "string",
                     "example_values": [
                         "Test alert on one endpoint"
-                    ],
-                    "column_name": "Display Name",
-                    "column_order": 2
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -1160,9 +1152,7 @@
                     "data_type": "string",
                     "example_values": [
                         "2022-06-13T12:57:22.3633333Z"
-                    ],
-                    "column_name": "Last Updated Date Time",
-                    "column_order": 4
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.redirectIncidentId",
@@ -1179,18 +1169,14 @@
                     "data_type": "string",
                     "example_values": [
                         "high"
-                    ],
-                    "column_name": "Severity",
-                    "column_order": 5
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.status",
                     "data_type": "string",
                     "example_values": [
                         "active"
-                    ],
-                    "column_name": "Status",
-                    "column_order": 1
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.tags",
@@ -1217,7 +1203,11 @@
                 }
             ],
             "render": {
-                "type": "table"
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "microsoft_defender_view.display_incidents",
+                "title": "Get Incident"
             },
             "versions": "EQ(*)"
         },
@@ -1946,7 +1936,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.get_alert",
+                "view": "microsoft_defender_view.display_alerts",
                 "title": "Get Alert"
             },
             "versions": "EQ(*)"
