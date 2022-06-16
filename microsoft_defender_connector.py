@@ -6,25 +6,27 @@
 
 # Phantom App imports
 import phantom.app as phantom
-from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 
 try:
     from urllib.parse import quote, urlencode
 except Exception:
-    from urllib import urlencode, quote
+    from urllib import quote, urlencode
 
 # Usage of the consts file is recommended
-from microsoft_defender_consts import *
 import grp
+import json
+import os
 import pwd
+import time
+
 import encryption_helper
 import requests
-import time
-import os
-import json
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
+
+from microsoft_defender_consts import *
 
 
 def _handle_login_redirect(request, key):
