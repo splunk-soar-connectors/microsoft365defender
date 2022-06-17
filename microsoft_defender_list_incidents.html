@@ -102,6 +102,12 @@
     {% else %}
         <h3 class="wf-h3-style">Action Parameters</h3>
         <table class="wf-table-vertical">
+            {% if result.param.incident_id %}
+                <tr>
+                    <td>Incident ID</td>
+                    <td>{{ result.param.incident_id }}</td>
+                </tr>
+            {%endif%}
             {% if result.param.limit %}
                 <tr>
                     <td>Limit</td>
