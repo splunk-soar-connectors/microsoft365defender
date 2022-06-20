@@ -8,4 +8,4 @@ repos:
     rev: v1.2.0
     hooks:
     -   id: detect-secrets
-        args: ['--no-verify', '--exclude-files', '^microsoft_defender.json$']
+        args: ['--no-verify', '--exclude-files', '^microsoft365defender.json$']
