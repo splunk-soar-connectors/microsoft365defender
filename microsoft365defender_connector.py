@@ -1,4 +1,4 @@
-# File: microsoft_defender_connector.py
+# File: microsoft365defender_connector.py
 #
 # Copyright (c) 2022 Splunk Inc.
 #
@@ -36,7 +36,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
 
-from microsoft_defender_consts import *
+from microsoft365_defender_consts import *
 
 
 def _handle_login_redirect(request, key):
@@ -166,7 +166,7 @@ def _handle_login_response(request):
 
     # If value of admin_consent is not available, value of code is available
     try:
-        state['code'] = Microsoft_Defender_Connector().encrypt_state(code, "code")
+        state['code'] = Microsoft365Defender_Connector().encrypt_state(code, "code")
         state[DEFENDER_STATE_IS_ENCRYPTED] = True
     except Exception as e:
         return HttpResponse("{}: {}".format(DEFENDER_DECRYPTION_ERR, str(e)), content_type="text/plain", status=400)
@@ -236,12 +236,12 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class Microsoft_Defender_Connector(BaseConnector):
+class Microsoft365Defender_Connector(BaseConnector):
 
     def __init__(self):
 
         # Call the BaseConnectors init first
-        super(Microsoft_Defender_Connector, self).__init__()
+        super(Microsoft365Defender_Connector, self).__init__()
 
         self._state = None
         self._tenant = None
@@ -1283,7 +1283,7 @@ def main():
         in_json = json.loads(in_json)
         print(json.dumps(in_json, indent=4))
 
-        connector = Microsoft_Defender_Connector()
+        connector = Microsoft365Defender_Connector()
         connector.print_progress_message = True
 
         if session_id is not None:

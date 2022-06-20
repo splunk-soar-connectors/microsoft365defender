@@ -1,4 +1,4 @@
-# File: microsoft_defender_consts.py
+# File: microsoft365defender_consts.py
 #
 # Copyright (c) 2022 Splunk Inc.
 #

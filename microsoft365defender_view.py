@@ -1,4 +1,4 @@
-# File: microsoft_defender_view.py
+# File: microsoft365defender_view.py
 #
 # Copyright (c) 2022 Splunk Inc.
 #

@@ -4,8 +4,8 @@
     "description": "This app integrates with Microsoft 365 Defender to execute various generic and investigative actions",
     "type": "endpoint",
     "product_vendor": "Microsoft",
-    "logo": "logo_microsoft_defender.svg",
-    "logo_dark": "logo_microsoft_defender_dark.svg",
+    "logo": "logo_microsoft365defender.svg",
+    "logo_dark": "logo_microsoft365defender_dark.svg",
     "product_name": "Microsoft 365 Defender",
     "python_version": "3",
     "product_version_regex": ".*",
@@ -13,12 +13,12 @@
     "license": "Copyright (c) 2022 Splunk Inc.",
     "app_version": "1.0.0",
     "utctime_updated": "2022-05-26T06:24:07.659521Z",
-    "package_name": "phantom_microsoft_defender",
-    "main_module": "microsoft_defender_connector.py",
+    "package_name": "phantom_microsoft365defender",
+    "main_module": "microsoft365defender_connector.py",
     "min_phantom_version": "5.2.0",
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
-    "rest_handler": "microsoft_defender_connector._handle_rest_request",
+    "rest_handler": "microsoft365defender_connector._handle_rest_request",
     "configuration": {
         "tenant_id": {
             "description": "Tenant ID",
@@ -299,7 +299,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.display_incidents",
+                "view": "microsoft365defender_view.display_incidents",
                 "title": "List Incidents"
             },
             "versions": "EQ(*)"
@@ -1035,7 +1035,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.display_alerts",
+                "view": "microsoft365defender_view.display_alerts",
                 "title": "List Alerts"
             },
             "versions": "EQ(*)"
@@ -1206,7 +1206,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.display_incidents",
+                "view": "microsoft365defender_view.display_incidents",
                 "title": "Get Incident"
             },
             "versions": "EQ(*)"
@@ -1936,7 +1936,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.display_alerts",
+                "view": "microsoft365defender_view.display_alerts",
                 "title": "Get Alert"
             },
             "versions": "EQ(*)"
@@ -2757,7 +2757,7 @@
                 "type": "custom",
                 "width": 10,
                 "height": 5,
-                "view": "microsoft_defender_view.update_alert",
+                "view": "microsoft365defender_view.update_alert",
                 "title": "Update Alert"
             },
             "versions": "EQ(*)"

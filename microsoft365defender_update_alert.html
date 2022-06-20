@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: microsoft_defender_list_alerts.html
+<!-- File: microsoft365defender_update_alert.html
   Copyright (c) 2022 Splunk Inc.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -105,19 +105,43 @@
             {% if result.param.alert_id %}
                 <tr>
                     <td>Alert ID</td>
-                    <td>{{ result.param.alert_id }}</td>
+                    <td class="microsoftdefendernowrap"><a href="javascript:;"
+                        onclick="context_menu(this, [{'contains': ['defender alert id'], 'value': '{{ result.param.alert_id }}' }], 0, {{ container.id }}, null, false);">
+                        {{ result.param.alert_id }}
+                        &nbsp;
+                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if result.param.status %}
+                <tr>
+                    <td>Status</td>
+                    <td>{{ result.param.status }}</td>
                 </tr>
             {%endif%}
-            {% if result.param.limit %}
+            {% if result.param.assigned_to %}
                 <tr>
-                    <td>Limit</td>
-                    <td>{{ result.param.limit }}</td>
+                    <td>Assigned To</td>
+                    <td>{{ result.param.assigned_to }}</td>
                 </tr>
             {%endif%}
-            {% if result.param.offset %}
+            {% if result.param.classification %}
                 <tr>
-                    <td>Offset</td>
-                    <td>{{ result.param.offset }}</td>
+                    <td>Classification</td>
+                    <td>{{ result.param.classification }}</td>
+                </tr>
+            {%endif%}
+            {% if result.param.determination %}
+                <tr>
+                    <td>Determination</td>
+                    <td>{{ result.param.determination }}</td>
+                </tr>
+            {%endif%}
+            {% if result.param.comment %}
+                <tr>
+                    <td>Comment</td>
+                    <td>{{ result.param.comment }}</td>
                 </tr>
             {%endif%}
         </table>
@@ -131,59 +155,37 @@
                             <thead>
                                 <tr>
                                     <th>Alert ID</th>
-                                    <th>Incident ID</th>
                                     <th>Title</th>
-                                    <th>Threat Family</th>
                                     <th>Status</th>
-                                    <th>Severity</th>
-                                    <th>Category</th>
                                     <th>Assigned To</th>
+                                    <th>Classification</th>
+                                    <th>Determination</th>
+                                    <th>Category</th>
+                                    <th>Severity</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for alert in result.data %}
                                     <tr>
-                                        {% if alert.id %}
-                                            <td class="microsoftdefendernowrap">
+                                        <td class="microsoftdefendernowrap">
+                                            {% if alert.id %}
                                                 <a href="javascript:;"
                                                 onclick="context_menu(this, [{'contains': ['defender alert id'], 'value': '{{ alert.id }}' }], 0, {{ container.id }}, null, false);">
                                                     {{ alert.id }}
                                                     &nbsp;
                                                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                                                 </a>
-                                            </td>
-                                        {% else %}
-                                            <td>None</td>
-                                        {% endif %}
-                                        {% if alert.incidentId %}
-                                            <td class="microsoftdefendernowrap">
-                                                <a href="javascript:;"
-                                                onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ alert.incidentId }}' }], 0, {{ container.id }}, null, false);">
-                                                    {{ alert.incidentId }}
-                                                    &nbsp;
-                                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a>
-                                            </td>
-                                        {% else %}
-                                            <td>None</td>
-                                        {% endif %}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </td>
                                         <td>{{ alert.title | default:"None" }}</td>
-                                        <td>{{ alert.threatFamilyName | default:"None" }}</td>
                                         <td>{{ alert.status | default:"None" }}</td>
-                                        <td>{{ alert.severity | default:"None" }}</td>
+                                        <td>{{ alert.assignedTo | default:"None" }}</td>
+                                        <td>{{ alert.classification | default:"None" }}</td>
+                                        <td>{{ alert.determination | default:"None" }}</td>
                                         <td>{{ alert.category | default:"None" }}</td>
-                                        {% if alert.assignedTo %}
-                                            <td class="microsoftdefendernowrap">
-                                                <a href="javascript:;"
-                                                onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ alert.assignedTo }}' }], 0, {{ container.id }}, null, false);">
-                                                    {{ alert.assignedTo }}
-                                                    &nbsp;
-                                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                                </a>
-                                            </td>
-                                        {% else %}
-                                            <td>None</td>
-                                        {% endif %}
+                                        <td>{{ alert.severity | default:"None" }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
