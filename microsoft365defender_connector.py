@@ -36,7 +36,7 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
 
-from microsoft365_defender_consts import *
+from microsoft365defender_consts import *
 
 
 def _handle_login_redirect(request, key):
