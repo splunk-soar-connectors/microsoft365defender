@@ -15,6 +15,7 @@
 #
 #
 # Phantom App imports
+
 import phantom.app as phantom
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
@@ -257,7 +258,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param encrypt_var: Variable needs to be encrypted
         :return: encrypted variable
         """
-        self.debug_print(DEFENDER_ENCRYPT_TOKEN.format(token_name))  # nosemgrep
+        self.debug_print(DEFENDER_ENCRYPT_TOKEN.format(token_name))  # pragma: allowlist secret
         return encryption_helper.encrypt(encrypt_var, self.asset_id)
 
     def decrypt_state(self, decrypt_var, token_name):
@@ -265,7 +266,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param decrypt_var: Variable needs to be decrypted
         :return: decrypted variable
         """
-        self.debug_print(DEFENDER_DECRYPT_TOKEN.format(token_name))  # nosemgrep
+        self.debug_print(DEFENDER_DECRYPT_TOKEN.format(token_name))  # pragma: allowlist secret
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
             return encryption_helper.decrypt(decrypt_var, self.asset_id)
         return decrypt_var
@@ -423,38 +424,29 @@ class Microsoft365Defender_Connector(BaseConnector):
         return phantom.APP_SUCCESS, parameter
 
     def _get_error_message_from_exception(self, e):
-        """ This method is used to get appropriate error messages from the exception.
+        """
+        Get appropriate error message from the exception.
         :param e: Exception object
         :return: error message
         """
 
-        # Defining default values
-        error_code = ERR_CODE_MSG
+        error_code = None
         error_msg = ERR_MSG_UNAVAILABLE
 
         try:
-            if e.args:
+            if hasattr(e, "args"):
                 if len(e.args) > 1:
                     error_code = e.args[0]
                     error_msg = e.args[1]
                 elif len(e.args) == 1:
-                    error_code = ERR_CODE_MSG
                     error_msg = e.args[0]
-            else:
-                error_code = ERR_CODE_MSG
-                error_msg = ERR_MSG_UNAVAILABLE
         except Exception:
-            error_code = ERR_CODE_MSG
-            error_msg = ERR_MSG_UNAVAILABLE
+            self.debug_print("Error occurred while fetching exception information")
 
-        try:
-            if error_code in ERR_CODE_MSG:
-                error_text = "Error Message: {0}".format(error_msg)
-            else:
-                error_text = "Error Code: {0}. Error Message: {1}".format(error_code, error_msg)
-        except Exception:
-            self.debug_print("Error occurred while parsing error message")
-            error_text = PARSE_ERR_MSG
+        if not error_code:
+            error_text = "Error Message: {}".format(error_msg)
+        else:
+            error_text = "Error Code: {}. Error Message: {}".format(error_code, error_msg)
 
         return error_text
 
@@ -555,7 +547,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
 
         try:
-            response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params)
+            response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=DEFAULT_TIMEOUT)
         except Exception as e:
             try:
                 self.debug_print("make_rest_call exception...")
@@ -603,7 +595,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        phantom_base_url = resp_json.get('base_url')
+        phantom_base_url = resp_json.get('base_url').rstrip('/')
         if not phantom_base_url:
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_BASE_URL_NOT_FOUND_MSG), None
         return phantom.APP_SUCCESS, phantom_base_url
@@ -680,7 +672,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         try:
             self.save_state(self._state)
-            _save_app_state(self._state, self.get_asset_id(), self)
         except Exception:
             return action_result.set_status(
                 phantom.APP_ERROR,
@@ -780,7 +771,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             _save_app_state(self._state, self.get_asset_id(), self)
 
             self.save_progress(DEFENDER_AUTHORIZE_USER_MSG)
-            self.save_progress(url_for_authorize_request)  # nosemgrep
+            self.save_progress(url_for_authorize_request)  # pragma: allowlist secret
 
             # Wait time for authorization
             time.sleep(DEFENDER_AUTHORIZE_WAIT_TIME)
@@ -802,14 +793,6 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, status_message=DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
 
             current_code = self.decrypt_state(self._state.get('code'), "code")
-            try:
-                self.save_state(self._state)
-                _save_app_state(self._state, self.get_asset_id(), self)
-            except Exception:
-                return action_result.set_status(
-                    phantom.APP_ERROR,
-                    status_message="Error occurred while saving token in state file. Please delete the state file and run again."
-                )
 
         self.save_progress(DEFENDER_GENERATING_ACCESS_TOKEN_MSG)
 
@@ -1259,7 +1242,7 @@ def main():
             login_url = "{}login".format(BaseConnector._get_phantom_base_url())
 
             print("Accessing the Login page")
-            r = requests.get(login_url, verify=verify, timeout=30)
+            r = requests.get(login_url, verify=verify, timeout=DEFAULT_TIMEOUT)
             csrftoken = r.cookies['csrftoken']
 
             data = dict()
@@ -1272,7 +1255,7 @@ def main():
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=30)
+            r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=DEFAULT_TIMEOUT)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: {0}".format(str(e)))

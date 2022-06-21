@@ -43,7 +43,7 @@ def display_incidents(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return 'microsoft_defender_list_incidents.html'
+    return 'microsoft365defender_list_incidents.html'
 
 
 def display_alerts(provides, all_app_runs, context):
@@ -57,7 +57,7 @@ def display_alerts(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return 'microsoft_defender_list_alerts.html'
+    return 'microsoft365defender_list_alerts.html'
 
 
 def update_alert(provides, all_app_runs, context):
@@ -71,4 +71,4 @@ def update_alert(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return 'microsoft_defender_update_alert.html'
+    return 'microsoft365defender_update_alert.html'

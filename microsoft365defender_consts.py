@@ -64,9 +64,7 @@ NON_NEGATIVE_INTEGER_MSG = "Please provide a valid non-zero positive integer val
 POSITIVE_INTEGER_MSG = "Please provide non-zero positive integer in {}"
 
 # Constants relating to '_get_error_message_from_exception'
-ERR_CODE_MSG = "Error code unavailable"
 ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
-PARSE_ERR_MSG = "Unable to parse the error message. Please check the asset configuration and|or action parameters"
 TYPE_ERR_MSG = "Error occurred while connecting to the Microsoft Defender Server." \
                " Please check the asset configuration and|or the action parameters"
 
@@ -82,6 +80,7 @@ DEFENDER_STATE_IS_ENCRYPTED = 'is_encrypted'
 DEFENDER_INCIDENT_LIMIT = 'limit'
 DEFENDER_INCIDENT_OFFSET = 'offset'
 DEFENDER_INCIDENT_DEFAULT_LIMIT = 50
+DEFAULT_TIMEOUT = 30
 DEFENDER_ALERT_DEFAULT_LIMIT = 2000
 DEFENDER_INCIDENT_DEFAULT_OFFSET = 0
 DEFENDER_NEXT_PAGE_TOKEN = '@odata.nextLink'
