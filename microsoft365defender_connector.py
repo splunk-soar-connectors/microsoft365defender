@@ -258,7 +258,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param encrypt_var: Variable needs to be encrypted
         :return: encrypted variable
         """
-        self.debug_print(DEFENDER_ENCRYPT_TOKEN.format(token_name))  # pragma: allowlist secret
+        self.debug_print(DEFENDER_ENCRYPT_TOKEN.format(token_name))  # nosemgrep
         return encryption_helper.encrypt(encrypt_var, self.asset_id)
 
     def decrypt_state(self, decrypt_var, token_name):
@@ -266,7 +266,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param decrypt_var: Variable needs to be decrypted
         :return: decrypted variable
         """
-        self.debug_print(DEFENDER_DECRYPT_TOKEN.format(token_name))  # pragma: allowlist secret
+        self.debug_print(DEFENDER_DECRYPT_TOKEN.format(token_name))  # nosemgrep
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
             return encryption_helper.decrypt(decrypt_var, self.asset_id)
         return decrypt_var
@@ -771,7 +771,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             _save_app_state(self._state, self.get_asset_id(), self)
 
             self.save_progress(DEFENDER_AUTHORIZE_USER_MSG)
-            self.save_progress(url_for_authorize_request)  # pragma: allowlist secret
+            self.save_progress(url_for_authorize_request)  # nosemgrep
 
             # Wait time for authorization
             time.sleep(DEFENDER_AUTHORIZE_WAIT_TIME)
