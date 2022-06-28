@@ -100,51 +100,6 @@
         <h4 class="wf-h4-style">No data found</h4>
 
     {% else %}
-        <h3 class="wf-h3-style">Action Parameters</h3>
-        <table class="wf-table-vertical">
-            {% if result.param.alert_id %}
-                <tr>
-                    <td>Alert ID</td>
-                    <td class="microsoftdefendernowrap"><a href="javascript:;"
-                        onclick="context_menu(this, [{'contains': ['defender alert id'], 'value': '{{ result.param.alert_id }}' }], 0, {{ container.id }}, null, false);">
-                        {{ result.param.alert_id }}
-                        &nbsp;
-                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                        </a>
-                    </td>
-                </tr>
-            {% endif %}
-            {% if result.param.status %}
-                <tr>
-                    <td>Status</td>
-                    <td>{{ result.param.status }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.assigned_to %}
-                <tr>
-                    <td>Assigned To</td>
-                    <td>{{ result.param.assigned_to }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.classification %}
-                <tr>
-                    <td>Classification</td>
-                    <td>{{ result.param.classification }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.determination %}
-                <tr>
-                    <td>Determination</td>
-                    <td>{{ result.param.determination }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.comment %}
-                <tr>
-                    <td>Comment</td>
-                    <td>{{ result.param.comment }}</td>
-                </tr>
-            {%endif%}
-        </table>
         <h3 class="wf-h3-style">Alert Info</h3>
         <div class="metadata_div">
             <!--Default View-->

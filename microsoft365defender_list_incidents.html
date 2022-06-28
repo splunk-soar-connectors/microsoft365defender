@@ -100,27 +100,6 @@
         <h4 class="wf-h4-style">No data found</h4>
 
     {% else %}
-        <h3 class="wf-h3-style">Action Parameters</h3>
-        <table class="wf-table-vertical">
-            {% if result.param.incident_id %}
-                <tr>
-                    <td>Incident ID</td>
-                    <td>{{ result.param.incident_id }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.limit %}
-                <tr>
-                    <td>Limit</td>
-                    <td>{{ result.param.limit }}</td>
-                </tr>
-            {%endif%}
-            {% if result.param.offset %}
-                <tr>
-                    <td>Offset</td>
-                    <td>{{ result.param.offset }}</td>
-                </tr>
-            {%endif%}
-        </table>
         <h3 class="wf-h3-style">Incident Info</h3>
         <div class="metadata_div">
             <!--Default View-->

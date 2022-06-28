@@ -836,7 +836,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         self.save_progress(DEFENDER_TEST_CONNECTIVITY_PASSED_MSG)
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _paginator(self, action_result, limit, offset, endpoint):
+    def _paginator(self, action_result, limit, offset, endpoint, filter, orderby):
         """
         This method is used to create an iterator that will paginate through responses from called methods.
 
@@ -849,15 +849,17 @@ class Microsoft365Defender_Connector(BaseConnector):
         next_page_token = ''
 
         while True:
-            params = None
+            params = {}
+            if filter:
+                params['$filter'] = filter
+            if orderby:
+                params['$orderby'] = orderby
             if next_page_token:
                 endpoint = next_page_token
 
             # First run
             if not next_page_token and offset:
-                params = {
-                    'skip': offset
-                }
+                params['skip'] = offset
 
             # make rest call
             ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, params=params)
@@ -896,6 +898,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         limit = param.get(DEFENDER_INCIDENT_LIMIT, DEFENDER_INCIDENT_DEFAULT_LIMIT)
         offset = param.get(DEFENDER_INCIDENT_OFFSET, DEFENDER_INCIDENT_DEFAULT_OFFSET)
+        filter = param.get(DEFENDER_INCIDENT_FILTER)
+        orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
         ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
         if phantom.is_fail(ret_val):
@@ -907,7 +911,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
 
-        incident_list = self._paginator(action_result, limit, offset, endpoint)
+        incident_list = self._paginator(action_result, limit, offset, endpoint, filter, orderby)
 
         if not incident_list and not isinstance(incident_list, list):
             return action_result.get_status()
@@ -932,6 +936,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         limit = param.get(DEFENDER_INCIDENT_LIMIT, DEFENDER_ALERT_DEFAULT_LIMIT)
         offset = param.get(DEFENDER_INCIDENT_OFFSET, DEFENDER_INCIDENT_DEFAULT_OFFSET)
+        filter = param.get(DEFENDER_INCIDENT_FILTER)
+        orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
         ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
         if phantom.is_fail(ret_val):
@@ -942,7 +948,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ENDPOINT)
-        alert_list = self._paginator(action_result, limit, offset, endpoint)
+        alert_list = self._paginator(action_result, limit, offset, endpoint, filter, orderby)
 
         if not alert_list and not isinstance(alert_list, list):
             return action_result.get_status()
@@ -982,7 +988,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result.add_data(response)
 
         summary = action_result.update_summary({})
-        summary['action_taken'] = "Retrieved Incident"
+        summary[DEFENDER_ACTION_TAKEN] = "Retrieved Incident"
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -1013,7 +1019,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result.add_data(response)
 
         summary = action_result.update_summary({})
-        summary['action_taken'] = "Retrieved Alert"
+        summary[DEFENDER_ACTION_TAKEN] = "Retrieved Alert"
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -1094,7 +1100,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             request_body["determination"] = DEFENDER_UPDATE_ALERT_DETERMINATION_DICT[determination]
 
         if comment:
-            request_body["comment"] = comment
+            request_body["comments"] = comment
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
                                    .format(input=alert_id))
@@ -1112,7 +1118,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result.add_data(response)
 
         summary = action_result.update_summary({})
-        summary['action_taken'] = "Updated Alert"
+        summary[DEFENDER_ACTION_TAKEN] = "Updated Alert"
 
         return action_result.set_status(phantom.APP_SUCCESS)
 

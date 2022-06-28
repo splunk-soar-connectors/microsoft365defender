@@ -150,6 +150,16 @@
                     "data_type": "numeric",
                     "default": 0,
                     "order": 1
+                },
+                "filter": {
+                    "description": "Filter alerts based on property",
+                    "data_type": "string",
+                    "order": 2
+                },
+                "orderby": {
+                    "description": "Sort the alerts based on property",
+                    "data_type": "string",
+                    "order": 3
                 }
             },
             "output": [
@@ -173,6 +183,20 @@
                     "data_type": "string",
                     "example_values": [
                         0
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.filter",
+                    "data_type": "string",
+                    "example_values": [
+                        "status eq 'active'"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.orderby",
+                    "data_type": "string",
+                    "example_values": [
+                        "lastUpdateDateTime desc"
                     ]
                 },
                 {
@@ -322,6 +346,16 @@
                     "data_type": "numeric",
                     "default": 0,
                     "order": 1
+                },
+                "filter": {
+                    "description": "Filter alerts based on property",
+                    "data_type": "string",
+                    "order": 2
+                },
+                "orderby": {
+                    "description": "Sort the alerts based on property",
+                    "data_type": "string",
+                    "order": 3
                 }
             },
             "output": [
@@ -338,6 +372,20 @@
                     "data_type": "numeric",
                     "example_values": [
                         2000
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.filter",
+                    "data_type": "string",
+                    "example_values": [
+                        "status eq 'inProgress'"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.orderby",
+                    "data_type": "string",
+                    "example_values": [
+                        "lastUpdateDateTime desc"
                     ]
                 },
                 {
