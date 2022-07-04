@@ -850,9 +850,9 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         while True:
             params = {}
-            if filter:
+            if not next_page_token and filter:
                 params['$filter'] = filter
-            if orderby:
+            if not next_page_token and orderby:
                 params['$orderby'] = orderby
             if next_page_token:
                 endpoint = next_page_token
