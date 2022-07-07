@@ -2013,10 +2013,11 @@
                     "value_list": [
                         "New",
                         "In progress",
-                        "Resolved"
+                        "Resolved",
+                        "Unknown future value"
                     ]
                 },
-                "assigned_to": {
+                "assign_to": {
                     "description": "Owner of the alert",
                     "data_type": "string",
                     "primary": true,
@@ -2032,7 +2033,8 @@
                     "value_list": [
                         "Unknown",
                         "False positive",
-                        "True positive"
+                        "True positive",
+                        "Unknown future value"
                     ]
                 },
                 "determination": {
@@ -2041,7 +2043,14 @@
                     "order": 4,
                     "value_list": [
                         "Other",
+                        "Unknown",
+                        "Apt",
+                        "Security personnel",
                         "Multi staged attack",
+                        "Insufficient data",
+                        "Compromised user",
+                        "Confirmed user activity",
+                        "Clean",
                         "Malware",
                         "Malicious user activity",
                         "Unwanted software",
@@ -2051,7 +2060,8 @@
                         "Confirmed activity",
                         "Line of business application",
                         "Not malicious",
-                        "Not enough data to validate"
+                        "Not enough data to validate",
+                        "Unknown future value"
                     ]
                 },
                 "comment": {
@@ -2080,7 +2090,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.parameter.assigned_to",
+                    "data_path": "action_result.parameter.assign_to",
                     "data_type": "string",
                     "example_values": [
                         "test@abc.com"

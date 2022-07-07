@@ -76,6 +76,7 @@ DEFENDER_DECRYPTION_ERR = "Error occurred while decrypting the state file"
 DEFENDER_UNEXPECTED_RESPONSE_ERR = "Unexpected response retrieved"
 DEFENDER_NO_DATA_FOUND = "No data found"
 DEFENDER_STATE_IS_ENCRYPTED = 'is_encrypted'
+DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one parameter to update the alert"
 
 DEFENDER_INCIDENT_LIMIT = 'limit'
 DEFENDER_INCIDENT_OFFSET = 'offset'
@@ -95,7 +96,7 @@ DEFENDER_INCIDENT_ID = 'incident_id'
 DEFENDER_ALERT_ID = 'alert_id'
 DEFENDER_JSON_QUERY = 'query'
 DEFENDER_JSON_STATUS = 'status'
-DEFENDER_JSON_ASSIGNED_TO = 'assigned_to'
+DEFENDER_JSON_ASSIGNED_TO = 'assign_to'
 DEFENDER_JSON_CLASSIFICATION = 'classification'
 DEFENDER_JSON_DETERMINATION = 'determination'
 DEFENDER_JSON_COMMENT = 'comment'
@@ -106,30 +107,45 @@ OFFSET_KEY = "'offset' action parameter"
 DEFENDER_INVALID_CLASSIFICATION = "Please provide valid classification"
 DEFENDER_INVALID_DETERMINATION = "Please provide valid determination"
 DEFENDER_INVALID_STATUS = "Please provide valid status"
+DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT = "Successfully retrieved the incident"
+DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT = "Successfully retrieved the alert"
+DEFENDER_NO_ALERT_FOUND = "No alert found"
+DEFENDER_NO_INCIDENT_FOUND = "No incident found"
+DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Alert updated successfully"
 
 DEFENDER_UPDATE_ALERT_STATUS_DICT = {
-    "New": "new",
-    "In progress": "inProgress",
-    "Resolved": "resolved"
+    "new": "new",
+    "inprogress": "inProgress",
+    "resolved": "resolved",
+    "unknownfuturevalue": "unknownFutureValue"
 }
 
 DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT = {
-    "Unknown": "unknown",
-    "False positive": "falsePositive",
-    "True positive": "truePositive"
+    "unknown": "unknown",
+    "falsepositive": "falsePositive",
+    "truepositive": "truePositive",
+    "unknownfuturevalue": "unknownFutureValue"
 }
 
 DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
-    "Other": "other",
-    "Multi staged attack": "multiStagedAttack",
-    "Malware": "malware",
-    "Malicious user activity": "maliciousUserActivity",
-    "Unwanted software": "unwantedSoftware",
-    "Phishing": "phishing",
-    "Compromised account": "compromisedAccount",
-    "Security testing": "securityTesting",
-    "Confirmed activity": "confirmedActivity",
-    "Line of business application": "lineOfBusinessApplication",
-    "Not malicious": "notMalicious",
-    "Not enough data to validate": "notEnoughDataToValidate"
+    "other": "other",
+    "unknown": "unknown",
+    "multistagedattack": "multiStagedAttack",
+    "malware": "malware",
+    "apt": "apt",
+    "clean": "clean",
+    "confirmeduseractivity": "confirmedUserActivity",
+    "compromiseduser": "compromisedUser",
+    "insufficientdata": "insufficientData",
+    "securitypersonnel": "securityPersonnel",
+    "malicioususeractivity": "maliciousUserActivity",
+    "unwantedsoftware": "unwantedSoftware",
+    "phishing": "phishing",
+    "compromisedaccount": "compromisedAccount",
+    "securitytesting": "securityTesting",
+    "confirmedactivity": "confirmedActivity",
+    "lineofbusinessapplication": "lineOfBusinessApplication",
+    "notmalicious": "notMalicious",
+    "notenoughdatatovalidate": "notEnoughDataToValidate",
+    "unknownfuturevalue": "unknownFutureValue"
 }

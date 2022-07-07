@@ -901,7 +901,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         filter = param.get(DEFENDER_INCIDENT_FILTER)
         orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
-        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
+        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY, allow_zero=False)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
@@ -939,7 +939,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         filter = param.get(DEFENDER_INCIDENT_FILTER)
         orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
-        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY)
+        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY, allow_zero=False)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
@@ -983,14 +983,11 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, "No incident found")
+            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_INCIDENT_FOUND)
 
         action_result.add_data(response)
 
-        summary = action_result.update_summary({})
-        summary[DEFENDER_ACTION_TAKEN] = "Retrieved Incident"
-
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
 
     def _handle_get_alert(self, param):
         """ This function is used to handle the get alert action.
@@ -1014,14 +1011,11 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, "No alert found")
+            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_ALERT_FOUND)
 
         action_result.add_data(response)
 
-        summary = action_result.update_summary({})
-        summary[DEFENDER_ACTION_TAKEN] = "Retrieved Alert"
-
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT)
 
     def _handle_run_query(self, param):
         """ This function is used to handle the run query action.
@@ -1062,6 +1056,17 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def remove_spaces(self, param):
+        """ This function is used to remove the spaces from the param name.
+
+        :param param: String of param to remove spaces from
+        :return: param(String) of removed spaces
+        """
+        fields_list = [x.strip() for x in param.split(" ")]
+        fields_list = list(filter(None, fields_list))
+        param = ''.join(fields_list)
+        return param
+
     def _handle_update_alert(self, param):
         """ This function is used to handle the update alert action.
 
@@ -1082,7 +1087,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         request_body = {}
 
         if status:
-            if status not in DEFENDER_UPDATE_ALERT_STATUS_DICT.keys():
+            status = self.remove_spaces(status)
+            if status.lower() not in DEFENDER_UPDATE_ALERT_STATUS_DICT.keys():
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_STATUS)
             request_body["status"] = DEFENDER_UPDATE_ALERT_STATUS_DICT[status]
 
@@ -1090,20 +1096,25 @@ class Microsoft365Defender_Connector(BaseConnector):
             request_body["assignedTo"] = assigned_to
 
         if classification:
-            if classification not in DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT.keys():
+            classification = self.remove_spaces(classification)
+            if classification.lower() not in DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT.keys():
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_CLASSIFICATION)
             request_body["classification"] = DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT[classification]
 
         if determination:
-            if determination not in DEFENDER_UPDATE_ALERT_DETERMINATION_DICT.keys():
+            determination = self.remove_spaces(determination)
+            if determination.lower() not in DEFENDER_UPDATE_ALERT_DETERMINATION_DICT.keys():
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_DETERMINATION)
             request_body["determination"] = DEFENDER_UPDATE_ALERT_DETERMINATION_DICT[determination]
 
         if comment:
-            request_body["comments"] = comment
+            request_body["comment"] = comment
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
                                    .format(input=alert_id))
+
+        if not request_body:
+            return action_result.set_status(phantom.APP_ERROR, DEFENDER_NO_PARAMETER_PROVIDED)
 
         # make rest call
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
@@ -1117,10 +1128,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         action_result.add_data(response)
 
-        summary = action_result.update_summary({})
-        summary[DEFENDER_ACTION_TAKEN] = "Updated Alert"
-
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
