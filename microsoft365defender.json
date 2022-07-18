@@ -2013,8 +2013,7 @@
                     "value_list": [
                         "New",
                         "In progress",
-                        "Resolved",
-                        "Unknown future value"
+                        "Resolved"
                     ]
                 },
                 "assign_to": {
@@ -2031,10 +2030,9 @@
                     "data_type": "string",
                     "order": 3,
                     "value_list": [
-                        "Unknown",
+                        "Informational, expected activity",
                         "False positive",
-                        "True positive",
-                        "Unknown future value"
+                        "True positive"
                     ]
                 },
                 "determination": {
@@ -2042,32 +2040,19 @@
                     "data_type": "string",
                     "order": 4,
                     "value_list": [
-                        "Other",
-                        "Unknown",
-                        "Apt",
-                        "Security personnel",
-                        "Multi staged attack",
-                        "Insufficient data",
-                        "Compromised user",
-                        "Confirmed user activity",
-                        "Clean",
                         "Malware",
-                        "Malicious user activity",
-                        "Unwanted software",
-                        "Phishing",
-                        "Compromised account",
                         "Security testing",
-                        "Confirmed activity",
-                        "Line of business application",
+                        "Unwanted software",
+                        "Multi staged attack",
+                        "Compromised account",
+                        "Phishing",
+                        "Malicious user activity",
                         "Not malicious",
                         "Not enough data to validate",
-                        "Unknown future value"
+                        "Confirmed activity",
+                        "Line of business application",
+                        "Other"
                     ]
-                },
-                "comment": {
-                    "description": "Comment to be added to the alert",
-                    "data_type": "string",
-                    "order": 5
                 }
             },
             "output": [
@@ -2104,13 +2089,6 @@
                     "data_type": "string",
                     "example_values": [
                         "Unknown"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.comment",
-                    "data_type": "string",
-                    "example_values": [
-                        "This is a test comment"
                     ]
                 },
                 {

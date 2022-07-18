@@ -27,6 +27,7 @@ DEFENDER_CONFIG_CLIENT_SECRET = 'client_secret'  # pragma: allowlist secret
 
 DEFENDER_TOKEN_STRING = 'token'
 DEFENDER_ACCESS_TOKEN_STRING = 'access_token'
+DEFENDER_CODE_STRING = 'code'
 DEFENDER_REFRESH_TOKEN_STRING = 'refresh_token'
 DEFENDER_ID_TOKEN_STRING = 'id_token'
 DEFENDER_CLIENT_CREDENTIALS_STRING = 'client_credentials'
@@ -97,9 +98,9 @@ DEFENDER_ALERT_ID = 'alert_id'
 DEFENDER_JSON_QUERY = 'query'
 DEFENDER_JSON_STATUS = 'status'
 DEFENDER_JSON_ASSIGNED_TO = 'assign_to'
+DEFENDER_RESPONSE_ASSIGNED_TO = 'assignedTo'
 DEFENDER_JSON_CLASSIFICATION = 'classification'
 DEFENDER_JSON_DETERMINATION = 'determination'
-DEFENDER_JSON_COMMENT = 'comment'
 
 LIMIT_KEY = "'limit' action parameter"
 OFFSET_KEY = "'offset' action parameter"
@@ -113,39 +114,32 @@ DEFENDER_NO_ALERT_FOUND = "No alert found"
 DEFENDER_NO_INCIDENT_FOUND = "No incident found"
 DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Alert updated successfully"
 
+DEFENDER_UPDATE_ALERT_USER_PARAM_LIST = [DEFENDER_JSON_STATUS, DEFENDER_JSON_ASSIGNED_TO,
+             DEFENDER_JSON_CLASSIFICATION, DEFENDER_JSON_DETERMINATION]
+
 DEFENDER_UPDATE_ALERT_STATUS_DICT = {
-    "new": "new",
-    "inprogress": "inProgress",
-    "resolved": "resolved",
-    "unknownfuturevalue": "unknownFutureValue"
+    "New": "new",
+    "In progress": "inProgress",
+    "Resolved": "resolved"
 }
 
 DEFENDER_UPDATE_ALERT_CLASSIFICATION_DICT = {
-    "unknown": "unknown",
-    "falsepositive": "falsePositive",
-    "truepositive": "truePositive",
-    "unknownfuturevalue": "unknownFutureValue"
+    "Informational, expected activity": "informationalExpectedActivity",
+    "False positive": "falsePositive",
+    "True positive": "truePositive"
 }
 
 DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
-    "other": "other",
-    "unknown": "unknown",
-    "multistagedattack": "multiStagedAttack",
-    "malware": "malware",
-    "apt": "apt",
-    "clean": "clean",
-    "confirmeduseractivity": "confirmedUserActivity",
-    "compromiseduser": "compromisedUser",
-    "insufficientdata": "insufficientData",
-    "securitypersonnel": "securityPersonnel",
-    "malicioususeractivity": "maliciousUserActivity",
-    "unwantedsoftware": "unwantedSoftware",
-    "phishing": "phishing",
-    "compromisedaccount": "compromisedAccount",
-    "securitytesting": "securityTesting",
-    "confirmedactivity": "confirmedActivity",
-    "lineofbusinessapplication": "lineOfBusinessApplication",
-    "notmalicious": "notMalicious",
-    "notenoughdatatovalidate": "notEnoughDataToValidate",
-    "unknownfuturevalue": "unknownFutureValue"
+        "Malware": "malware",
+        "Security testing": "securityTesting",
+        "Unwanted software": "unwantedSoftware",
+        "Multi staged attack": "multiStagedAttack",
+        "Compromised account": "compromisedAccount",
+        "Phishing": "phishing",
+        "Malicious user activity": "maliciousUserActivity",
+        "Not malicious": "notMalicious",
+        "Not enough data to validate": "notEnoughDataToValidate",
+        "Confirmed activity": "confirmedActivity",
+        "Line of business application": "lineOfBusinessApplication",
+        "Other": "other"
 }
