@@ -729,6 +729,13 @@ class Microsoft365Defender_Connector(BaseConnector):
         self.send_progress('Authenticated')
         return phantom.APP_SUCCESS
 
+    def _remove_tokens(self, action_result):
+        if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+
     def _handle_test_connectivity(self, param):
         """ Testing of given credentials and obtaining authorization for all other actions.
 
@@ -746,11 +753,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Get initial REST URL
             ret_val, app_rest_url = self._get_app_rest_url(action_result)
             if phantom.is_fail(ret_val):
-                if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+                self._remove_tokens(action_result)
                 self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
                 return action_result.get_status()
 
@@ -785,11 +788,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Empty message to override last message of waiting
             self.send_progress('')
             if phantom.is_fail(status):
-                if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+                self._remove_tokens(action_result)
                 self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
                 return action_result.get_status()
 
@@ -798,11 +797,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             # if code is not available in the state file
             if not self._state or not self._state.get(DEFENDER_CODE_STRING):
-                if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
-                    if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
-                        self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+                self._remove_tokens(action_result)
                 return action_result.set_status(phantom.APP_ERROR, status_message=DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
 
             current_code = self.decrypt_state(self._state.get(DEFENDER_CODE_STRING))
@@ -830,11 +825,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             self.send_progress('')
-            if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
-                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
-                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
-                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
-                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+            self._remove_tokens(action_result)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
 
@@ -847,11 +838,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         ret_val, _ = self._update_request(action_result=action_result, endpoint=url, params=params)
         if phantom.is_fail(ret_val):
             self.send_progress('')
-            if len(list(filter(lambda x: x in action_result.get_message(), DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS))) > 0:
-                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
-                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
-                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
-                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+            self._remove_tokens(action_result)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
 

@@ -126,8 +126,18 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.summary.total_results",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Total results: 1"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -221,6 +231,9 @@
                     "data_type": "string",
                     "example_values": [
                         "testuser@abc.com"
+                    ],
+                    "contains": [
+                        "email"
                     ]
                 },
                 {
@@ -287,6 +300,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -311,6 +327,9 @@
                     "data_type": "string",
                     "example_values": [
                         "high"
+                    ],
+                    "contains": [
+                        "defender severity"
                     ]
                 },
                 {
@@ -332,8 +351,18 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.summary.total_incidents",
+                    "data_type": "numeric",
+                    "example_values": [
+                        50
+                    ]
+                },
+                {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Total incidents: 50"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -438,6 +467,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -445,6 +477,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test@abc.com"
+                    ],
+                    "contains": [
+                        "email"
                     ]
                 },
                 {
@@ -582,9 +617,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.fileDetails.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        77312
                     ]
                 },
                 {
@@ -658,9 +693,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.imageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        99912
                     ]
                 },
                 {
@@ -702,6 +737,9 @@
                     "data_type": "string",
                     "example_values": [
                         "8.8.8.8"
+                    ],
+                    "contains": [
+                        "ip"
                     ]
                 },
                 {
@@ -790,9 +828,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        36557800
                     ]
                 },
                 {
@@ -925,6 +963,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test.com"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -1012,6 +1053,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -1064,6 +1108,9 @@
                     "data_type": "string",
                     "example_values": [
                         "medium"
+                    ],
+                    "contains": [
+                        "defender severity"
                     ]
                 },
                 {
@@ -1106,8 +1153,18 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.summary.total_alerts",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Total alerts: 2"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -1175,6 +1232,9 @@
                     "data_type": "string",
                     "example_values": [
                         "testuser@abc.com"
+                    ],
+                    "contains": [
+                        "email"
                     ]
                 },
                 {
@@ -1238,6 +1298,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -1262,6 +1325,9 @@
                     "data_type": "string",
                     "example_values": [
                         "high"
+                    ],
+                    "contains": [
+                        "defender severity"
                     ]
                 },
                 {
@@ -1272,10 +1338,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.tags",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.data.*.tags.*",
                     "data_type": "string"
                 },
@@ -1284,6 +1346,9 @@
                     "data_type": "string",
                     "example_values": [
                         "xxxxx670-d7ef-580d-a225-d48057e74df6"
+                    ],
+                    "contains": [
+                        "microsoft tenantid"
                     ]
                 },
                 {
@@ -1292,7 +1357,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved the incident"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -1374,6 +1442,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test@abc.com"
+                    ],
+                    "contains": [
+                        "email"
                     ]
                 },
                 {
@@ -1511,9 +1582,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.fileDetails.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        77312
                     ]
                 },
                 {
@@ -1587,9 +1658,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.imageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        99912
                     ]
                 },
                 {
@@ -1631,6 +1702,9 @@
                     "data_type": "string",
                     "example_values": [
                         "8.8.8.8"
+                    ],
+                    "contains": [
+                        "ip"
                     ]
                 },
                 {
@@ -1719,9 +1793,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        36557800
                     ]
                 },
                 {
@@ -1854,6 +1928,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test.com"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -1941,6 +2018,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -1993,6 +2073,9 @@
                     "data_type": "string",
                     "example_values": [
                         "medium"
+                    ],
+                    "contains": [
+                        "defender severity"
                     ]
                 },
                 {
@@ -2036,7 +2119,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved the alert"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -2179,6 +2265,46 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.microsoft.com/beta/$metadata#security/alerts_v2/$entity"
+                    ],
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.mitreTechniques.*",
+                    "data_type": "string",
+                    "example_values": [
+                        "T1546.008"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.tags.*",
+                    "data_type": "string",
+                    "example_values": [
+                        "testtag"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.vmId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.resourceId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.cloudProvider",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.subscriptionId",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.data.*.actorDisplayName",
                     "data_type": "string",
                     "example_values": [
@@ -2190,6 +2316,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -2197,6 +2326,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test@abc.com"
+                    ],
+                    "contains": [
+                        "email"
                     ]
                 },
                 {
@@ -2334,9 +2466,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.fileDetails.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        77312
                     ]
                 },
                 {
@@ -2410,9 +2542,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.imageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        99912
                     ]
                 },
                 {
@@ -2454,6 +2586,9 @@
                     "data_type": "string",
                     "example_values": [
                         "8.8.8.8"
+                    ],
+                    "contains": [
+                        "ip"
                     ]
                 },
                 {
@@ -2542,9 +2677,9 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.parentProcessImageFile.fileSize",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
-                        "1MB"
+                        36557800
                     ]
                 },
                 {
@@ -2677,6 +2812,9 @@
                     "data_type": "string",
                     "example_values": [
                         "test.com"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -2764,6 +2902,9 @@
                     "data_type": "string",
                     "example_values": [
                         "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                    ],
+                    "contains": [
+                        "url"
                     ]
                 },
                 {
@@ -2816,6 +2957,9 @@
                     "data_type": "string",
                     "example_values": [
                         "medium"
+                    ],
+                    "contains": [
+                        "defender severity"
                     ]
                 },
                 {
@@ -2859,7 +3003,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully updated the alert"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
