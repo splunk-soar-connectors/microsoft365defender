@@ -735,6 +735,8 @@ class Microsoft365Defender_Connector(BaseConnector):
                 self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
             if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
                 self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
+            if self._state.get(DEFENDER_CODE_STRING):
+                self._state.pop(DEFENDER_CODE_STRING)
 
     def _handle_test_connectivity(self, param):
         """ Testing of given credentials and obtaining authorization for all other actions.
