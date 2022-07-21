@@ -258,14 +258,16 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param encrypt_var: Variable needs to be encrypted
         :return: encrypted variable
         """
-        return encryption_helper.encrypt(encrypt_var, self.asset_id)
+        if encrypt_var:
+            return encryption_helper.encrypt(encrypt_var, self.asset_id)
+        return encrypt_var
 
     def decrypt_state(self, decrypt_var):
         """ Handle decryption of token.
         :param decrypt_var: Variable needs to be decrypted
         :return: decrypted variable
         """
-        if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
+        if self._state.get(DEFENDER_STATE_IS_ENCRYPTED) and decrypt_var:
             return encryption_helper.decrypt(decrypt_var, self.asset_id)
         return decrypt_var
 
@@ -405,19 +407,19 @@ class Microsoft365Defender_Connector(BaseConnector):
         if parameter is not None:
             try:
                 if not float(parameter).is_integer():
-                    return action_result.set_status(phantom.APP_ERROR, VALID_INTEGER_MSG.format(key)), None
+                    return action_result.set_status(phantom.APP_ERROR, DEFENDER_VALID_INTEGER_MSG.format(key)), None
 
                 parameter = int(parameter)
             except Exception:
-                return action_result.set_status(phantom.APP_ERROR, VALID_INTEGER_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_VALID_INTEGER_MSG.format(key)), None
 
             # Negative value validation
             if parameter < 0:
-                return action_result.set_status(phantom.APP_ERROR, NON_NEGATIVE_INTEGER_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_NON_NEG_INT_MSG.format(key)), None
 
             # Zero value validation
             if not allow_zero and parameter == 0:
-                return action_result.set_status(phantom.APP_ERROR, POSITIVE_INTEGER_MSG.format(key)), None
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_NON_NEG_NON_ZERO_INT_MSG.format(key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -429,7 +431,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
 
         error_code = None
-        error_msg = ERR_MSG_UNAVAILABLE
+        error_msg = DEFENDER_ERR_MSG_UNAVAILABLE
 
         try:
             if hasattr(e, "args"):
@@ -482,16 +484,21 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if not self._access_token:
             if self._non_interactive:
-                return action_result.set_status(phantom.APP_ERROR, status_message=DEFENDER_TOKEN_NOT_AVAILABLE_MSG), None
+                status = self._generate_new_access_token(action_result=action_result, data=token_data)
+
+                if phantom.is_fail(status):
+                    return action_result.get_status(), None
+
             if not self._non_interactive and not self._refresh_token:
                 # If none of the access_token and refresh_token is available
                 return action_result.set_status(phantom.APP_ERROR, status_message=DEFENDER_TOKEN_NOT_AVAILABLE_MSG), None
 
-            # If refresh_token is available and access_token is not available, generate new access_token
-            status = self._generate_new_access_token(action_result=action_result, data=token_data)
+            if not self._non_interactive:
+                # If refresh_token is available and access_token is not available, generate new access_token
+                status = self._generate_new_access_token(action_result=action_result, data=token_data)
 
-            if phantom.is_fail(status):
-                return action_result.get_status(), None
+                if phantom.is_fail(status):
+                    return action_result.get_status(), None
 
         headers.update({'Authorization': 'Bearer {0}'.format(self._access_token),
                         'Accept': 'application/json',
@@ -686,7 +693,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                       "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
             return action_result.set_status(phantom.APP_ERROR, message)
 
-        if self._refresh_token and self._refresh_token != self.decrypt_state(self._state.get
+        if not self._non_interactive and self._refresh_token and self._refresh_token != self.decrypt_state(self._state.get
                     (DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING)):
             message = "Error occurred while saving the newly generated refresh token in the state file."\
                 " Please check the owner, owner group, and the permissions of the state file. The Phantom user should have "\
@@ -739,6 +746,10 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Get initial REST URL
             ret_val, app_rest_url = self._get_app_rest_url(action_result)
             if phantom.is_fail(ret_val):
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
                 self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
                 return action_result.get_status()
 
@@ -773,6 +784,10 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Empty message to override last message of waiting
             self.send_progress('')
             if phantom.is_fail(status):
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
                 self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
                 return action_result.get_status()
 
@@ -781,6 +796,10 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             # if code is not available in the state file
             if not self._state or not self._state.get(DEFENDER_CODE_STRING):
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+                if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                    self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
                 return action_result.set_status(phantom.APP_ERROR, status_message=DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
 
             current_code = self.decrypt_state(self._state.get(DEFENDER_CODE_STRING))
@@ -808,6 +827,10 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             self.send_progress('')
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
 
@@ -820,6 +843,10 @@ class Microsoft365Defender_Connector(BaseConnector):
         ret_val, _ = self._update_request(action_result=action_result, endpoint=url, params=params)
         if phantom.is_fail(ret_val):
             self.send_progress('')
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ACCESS_TOKEN_STRING)
+            if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
+                self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_REFRESH_TOKEN_STRING)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
 
@@ -892,11 +919,11 @@ class Microsoft365Defender_Connector(BaseConnector):
         filter = param.get(DEFENDER_INCIDENT_FILTER)
         orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
-        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY, allow_zero=False)
+        ret_val, limit = self._validate_integer(action_result, limit, DEFENDER_LIMIT_KEY, allow_zero=False)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        ret_val, offset = self._validate_integer(action_result, offset, OFFSET_KEY)
+        ret_val, offset = self._validate_integer(action_result, offset, DEFENDER_OFFSET_KEY)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
@@ -930,11 +957,11 @@ class Microsoft365Defender_Connector(BaseConnector):
         filter = param.get(DEFENDER_INCIDENT_FILTER)
         orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
 
-        ret_val, limit = self._validate_integer(action_result, limit, LIMIT_KEY, allow_zero=False)
+        ret_val, limit = self._validate_integer(action_result, limit, DEFENDER_LIMIT_KEY, allow_zero=False)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        ret_val, offset = self._validate_integer(action_result, offset, OFFSET_KEY)
+        ret_val, offset = self._validate_integer(action_result, offset, DEFENDER_OFFSET_KEY)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
@@ -1161,17 +1188,20 @@ class Microsoft365Defender_Connector(BaseConnector):
         # get the asset config
         config = self.get_config()
 
+        action_id = self.get_action_identifier()
+        action_result = ActionResult()
+        self._non_interactive = config.get('non_interactive', False)
+        self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
+        self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
+        self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
+
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
             self._state = {
                 "app_version": self.get_app_json().get('app_version')
             }
-            return self.set_status(phantom.APP_ERROR, DEFENDER_STATE_FILE_CORRUPT_ERROR)
-
-        self._non_interactive = config.get('non_interactive', False)
-        self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
-        self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
-        self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
+            if not self._non_interactive:
+                return self.set_status(phantom.APP_ERROR, DEFENDER_STATE_FILE_CORRUPT_ERROR)
 
         self._access_token = self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING, None)
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
@@ -1190,6 +1220,19 @@ class Microsoft365Defender_Connector(BaseConnector):
             except Exception as e:
                 self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERR, self._get_error_message_from_exception(e)))
                 return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERR)
+
+        if not self._non_interactive and action_id != 'test_connectivity' and (not self._access_token or not self._refresh_token):
+            token_data = {
+                'client_id': self._client_id,
+                'grant_type': DEFENDER_REFRESH_TOKEN_STRING,
+                'refresh_token': self._refresh_token,
+                'client_secret': self._client_secret,
+                'resource': DEFENDER_RESOURCE_URL
+            }
+            ret_val = self._generate_new_access_token(action_result=action_result, data=token_data)
+
+            if phantom.is_fail(ret_val):
+                return self.set_status(phantom.APP_ERROR, "{0}. {1}".format(DEFENDER_RUN_CONNECTIVITY_MSG, action_result.get_message()))
 
         return phantom.APP_SUCCESS
 

@@ -54,20 +54,21 @@ DEFENDER_CLIENT_CREDENTIALS_STRING = 'client_credentials'
 DEFENDER_TOKEN_NOT_AVAILABLE_MSG = 'Token not available. Please run test connectivity first'
 DEFENDER_TOKEN_EXPIRED = 'Status Code: 401'
 DEFENDER_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to its unexpected format. Resetting the state file with the default format. \
-Please try again."
+Please run the 'test connectivity' action again."
 
 DEFENDER_AUTHORIZE_WAIT_TIME = 15
 DEFENDER_TC_STATUS_SLEEP = 3
 
 # Constants relating to '_validate_integer'
-VALID_INTEGER_MSG = "Please provide a valid integer value in the {}"
-NON_NEGATIVE_INTEGER_MSG = "Please provide a valid non-zero positive integer value in the {}"
-POSITIVE_INTEGER_MSG = "Please provide non-zero positive integer in {}"
+DEFENDER_VALID_INTEGER_MSG = "Please provide a valid integer value in the {} parameter"
+
+DEFENDER_NON_NEG_NON_ZERO_INT_MSG = (
+    "Please provide a valid non-zero positive integer value in the {} parameter"
+)
+DEFENDER_NON_NEG_INT_MSG = "Please provide a valid non-negative integer value in the {} parameter"
 
 # Constants relating to '_get_error_message_from_exception'
-ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
-TYPE_ERR_MSG = "Error occurred while connecting to the Microsoft Defender Server." \
-               " Please check the asset configuration and|or the action parameters"
+DEFENDER_ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
 
 # For encryption and decryption
 DEFENDER_ENCRYPT_TOKEN = "Encrypting the {} token"
@@ -77,7 +78,7 @@ DEFENDER_DECRYPTION_ERR = "Error occurred while decrypting the state file"
 DEFENDER_UNEXPECTED_RESPONSE_ERR = "Unexpected response retrieved"
 DEFENDER_NO_DATA_FOUND = "No data found"
 DEFENDER_STATE_IS_ENCRYPTED = 'is_encrypted'
-DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one parameter to update the alert"
+DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one of the property to update the alert"
 
 DEFENDER_INCIDENT_LIMIT = 'limit'
 DEFENDER_INCIDENT_OFFSET = 'offset'
@@ -102,17 +103,19 @@ DEFENDER_RESPONSE_ASSIGNED_TO = 'assignedTo'
 DEFENDER_JSON_CLASSIFICATION = 'classification'
 DEFENDER_JSON_DETERMINATION = 'determination'
 
-LIMIT_KEY = "'limit' action parameter"
-OFFSET_KEY = "'offset' action parameter"
+DEFENDER_RUN_CONNECTIVITY_MSG = "Please run test connectivity first to complete authorization flow and " \
+    "generate a token that the app can use to make calls to the server "
+DEFENDER_LIMIT_KEY = "'limit' action parameter"
+DEFENDER_OFFSET_KEY = "'offset' action parameter"
 
-DEFENDER_INVALID_CLASSIFICATION = "Please provide valid classification"
-DEFENDER_INVALID_DETERMINATION = "Please provide valid determination"
-DEFENDER_INVALID_STATUS = "Please provide valid status"
+DEFENDER_INVALID_CLASSIFICATION = "Please provide a valid value in the 'classification' parameter"
+DEFENDER_INVALID_DETERMINATION = "Please provide a valid value in the 'determination' parameter"
+DEFENDER_INVALID_STATUS = "Please provide a valid value in the 'status' parameter"
 DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT = "Successfully retrieved the incident"
 DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT = "Successfully retrieved the alert"
 DEFENDER_NO_ALERT_FOUND = "No alert found"
 DEFENDER_NO_INCIDENT_FOUND = "No incident found"
-DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Alert updated successfully"
+DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Successfully updated the alert"
 
 DEFENDER_UPDATE_ALERT_USER_PARAM_LIST = [DEFENDER_JSON_STATUS, DEFENDER_JSON_ASSIGNED_TO,
              DEFENDER_JSON_CLASSIFICATION, DEFENDER_JSON_DETERMINATION]

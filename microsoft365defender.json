@@ -16,6 +16,9 @@
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
     "min_phantom_version": "5.2.0",
+    "latest_tested_versions": [
+        "graph.microsoft.com/beta, Jul 20 2022"
+    ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
     "rest_handler": "microsoft365defender_connector._handle_rest_request",
@@ -63,7 +66,7 @@
         {
             "action": "run query",
             "description": "An advanced search query",
-            "type": "generic",
+            "type": "investigate",
             "identifier": "run_query",
             "read_only": true,
             "parameters": {
@@ -130,14 +133,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],
@@ -154,13 +157,13 @@
             "read_only": true,
             "parameters": {
                 "limit": {
-                    "description": "Maximum number of incidents to return. (Defaults to 50)",
+                    "description": "Maximum number of incidents to return (Defaults to 50)",
                     "data_type": "numeric",
                     "default": 50,
                     "order": 0
                 },
                 "offset": {
-                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "description": "Number of incidents to skip (Defaults to 0)",
                     "data_type": "numeric",
                     "default": 0,
                     "order": 1
@@ -194,7 +197,7 @@
                 },
                 {
                     "data_path": "action_result.parameter.offset",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         0
                     ]
@@ -336,14 +339,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],
@@ -364,13 +367,13 @@
             "read_only": true,
             "parameters": {
                 "limit": {
-                    "description": "Maximum number of alerts to return. (Defaults to 2000)",
+                    "description": "Maximum number of alerts to return (Defaults to 2000)",
                     "data_type": "numeric",
                     "default": 2000,
                     "order": 0
                 },
                 "offset": {
-                    "description": "Number of incidents to skip. (Defaults to 0)",
+                    "description": "Number of incidents to skip (Defaults to 0)",
                     "data_type": "numeric",
                     "default": 0,
                     "order": 1
@@ -418,7 +421,7 @@
                 },
                 {
                     "data_path": "action_result.parameter.offset",
-                    "data_type": "string",
+                    "data_type": "numeric",
                     "example_values": [
                         0
                     ]
@@ -1110,14 +1113,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],
@@ -1295,14 +1298,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],
@@ -2039,14 +2042,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],
@@ -2077,7 +2080,7 @@
                     "order": 0
                 },
                 "status": {
-                    "description": "Specifies the current status of the alert",
+                    "description": "Specifies the status of the alert",
                     "data_type": "string",
                     "order": 1,
                     "value_list": [
@@ -2862,14 +2865,14 @@
                     "data_path": "summary.total_objects",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric",
                     "example_values": [
-                        3
+                        1
                     ]
                 }
             ],

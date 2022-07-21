@@ -112,7 +112,8 @@
                                     <th>Alert ID</th>
                                     <th>Incident ID</th>
                                     <th>Title</th>
-                                    <th>Threat Family</th>
+                                    <th>Determination</th>
+                                    <th>Classification</th>
                                     <th>Status</th>
                                     <th>Severity</th>
                                     <th>Category</th>
@@ -147,7 +148,8 @@
                                             <td>None</td>
                                         {% endif %}
                                         <td>{{ alert.title | default:"None" }}</td>
-                                        <td>{{ alert.threatFamilyName | default:"None" }}</td>
+                                        <td>{{ alert.determination | default:"None" }}</td>
+                                        <td>{{ alert.classification | default:"None" }}</td>
                                         <td>{{ alert.status | default:"None" }}</td>
                                         <td>{{ alert.severity | default:"None" }}</td>
                                         <td>{{ alert.category | default:"None" }}</td>

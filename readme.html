@@ -75,7 +75,6 @@ and limitations under the License. -->
                   <li>SecurityAlert.ReadWrite.All</li>
                   <li>ThreatHunting.Read.All</li>
                   <li>SecurityIncident.Read.All</li>
-                  <li>SecurityIncident.ReadWrite.All</li>
                 </ul>
               <li><b>Delegated Permissions</b></li>
                 <ul>
@@ -83,7 +82,6 @@ and limitations under the License. -->
                   <li>SecurityAlert.ReadWrite.All</li>
                   <li>ThreatHunting.Read.All</li>
                   <li>SecurityIncident.Read.All</li>
-                  <li>SecurityIncident.ReadWrite.All</li>
                 </ul>
             </ul>
           </li>
@@ -125,9 +123,11 @@ and limitations under the License. -->
           <li>Provide the tenant ID of the app created during the previous step of Azure app creation in the 'Tenant ID' field. For getting the value of tenant ID, navigate to the 'Azure Active Directory' on the Microsoft Azure portal; click on the 'App registrations' menu from the left-side panel; click on the earlier created app. The value displayed in the 'Directory (tenant) ID' is the required tenant ID.</li>
           <li>Save the asset with the above values.</li>
           <li>After saving the asset, a new uneditable field will appear in the 'Asset Settings' tab of the configured asset for the Microsoft 365 Defender app on SOAR. Copy the URL mentioned in the 'POST incoming for Microsoft 365 Defender to this location' field. Add a suffix '/result' to the URL copied in the previous step. The resulting URL looks like the one mentioned below.</li>
-          <pre>
+          <br/>
+          <b>
             https://&lt;soar_host&gt;/rest/handler/microsoft365defender_&lt;appid&gt;/&lt;asset_name&gt;/result
-          </pre>
+          </b>
+          <br/>
           <li>Add the URL created in the earlier step into the 'Redirect URIs' section of the 'Authentication' menu for the registered app that was created in the previous steps on the Microsoft Azure portal. For the 'Redirect URIs' section, follow the below steps.</li>
             <ol>
               <li>Below steps are required only in case of Interactive auth (i.e. If checkbox is unchecked)</li>
