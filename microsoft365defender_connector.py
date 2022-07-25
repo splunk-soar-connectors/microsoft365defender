@@ -515,7 +515,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             if phantom.is_fail(status):
                 return action_result.get_status(), None
 
-            action_result.set_message(phantom.APP_SUCCESS, "Token generated successfully")
+            action_result.set_status(phantom.APP_SUCCESS, "Token generated successfully")
             headers.update({'Authorization': 'Bearer {0}'.format(self._access_token)})
 
             ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=endpoint, headers=headers,
@@ -1190,7 +1190,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                     self._access_token = self.decrypt_state(self._access_token)
             except Exception as e:
                 self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERROR, self._get_error_message_from_exception(e)))
-                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERROR)
+                self._access_token = None
 
         self._refresh_token = self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING, None)
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
@@ -1199,7 +1199,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                     self._refresh_token = self.decrypt_state(self._refresh_token)
             except Exception as e:
                 self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERROR, self._get_error_message_from_exception(e)))
-                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERROR)
+                self._refresh_token = None
 
         if not self._non_interactive and action_id != 'test_connectivity' and (not self._access_token or not self._refresh_token):
             token_data = {
