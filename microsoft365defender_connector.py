@@ -14,7 +14,6 @@
 # and limitations under the License.
 #
 #
-# Phantom App imports
 
 import phantom.app as phantom
 from phantom.action_result import ActionResult
@@ -25,7 +24,6 @@ try:
 except Exception:
     from urllib import quote, urlencode
 
-# Usage of the consts file is recommended
 import grp
 import json
 import os
@@ -167,10 +165,10 @@ def _handle_login_response(request):
 
     # If value of admin_consent is not available, value of code is available
     try:
-        state[DEFENDER_CODE_STRING] = Microsoft365Defender_Connector().encrypt_state(code)
+        state[DEFENDER_CODE_STRING] = Microsoft365Defender_Connector().encrypt_state(code, asset_id=asset_id)
         state[DEFENDER_STATE_IS_ENCRYPTED] = True
     except Exception as e:
-        return HttpResponse("{}: {}".format(DEFENDER_DECRYPTION_ERR, str(e)), content_type="text/plain", status=400)
+        return HttpResponse("{}: {}".format(DEFENDER_DECRYPTION_ERROR, str(e)), content_type="text/plain", status=400)
 
     _save_app_state(state, asset_id, None)
 
@@ -251,15 +249,17 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._refresh_token = None
         self._client_secret = None
         self._non_interactive = None
-        self.asset_id = self.get_asset_id()
+        self.asset_id = None
 
-    def encrypt_state(self, encrypt_var):
+    def encrypt_state(self, encrypt_var, asset_id=None):
         """ Handle encryption of token.
         :param encrypt_var: Variable needs to be encrypted
         :return: encrypted variable
         """
         if encrypt_var:
-            return encryption_helper.encrypt(encrypt_var, self.asset_id)
+            if not asset_id:
+                return encryption_helper.encrypt(encrypt_var, self.asset_id)
+            return encryption_helper.encrypt(encrypt_var, asset_id)
         return encrypt_var
 
     def decrypt_state(self, decrypt_var):
@@ -431,7 +431,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
 
         error_code = None
-        error_msg = DEFENDER_ERR_MSG_UNAVAILABLE
+        error_msg = DEFENDER_ERROR_MSG_UNAVAILABLE
 
         try:
             if hasattr(e, "args"):
@@ -515,6 +515,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             if phantom.is_fail(status):
                 return action_result.get_status(), None
 
+            action_result.set_message(phantom.APP_SUCCESS, "Token generated successfully")
             headers.update({'Authorization': 'Bearer {0}'.format(self._access_token)})
 
             ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=endpoint, headers=headers,
@@ -655,16 +656,16 @@ class Microsoft365Defender_Connector(BaseConnector):
             encrypted_access_token = self.encrypt_state(resp_json[DEFENDER_ACCESS_TOKEN_STRING])
             resp_json[DEFENDER_ACCESS_TOKEN_STRING] = encrypted_access_token
         except Exception as e:
-            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERR, self._get_error_message_from_exception(e)))
-            return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERR)
+            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+            return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
 
         if DEFENDER_REFRESH_TOKEN_STRING in resp_json:
             try:
                 encrypted_refresh_token = self.encrypt_state(resp_json[DEFENDER_REFRESH_TOKEN_STRING])
                 resp_json[DEFENDER_REFRESH_TOKEN_STRING] = encrypted_refresh_token
             except Exception as e:
-                self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERR, self._get_error_message_from_exception(e)))
-                return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERR)
+                self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
 
         self._state[DEFENDER_TOKEN_STRING] = resp_json
         self._state[DEFENDER_STATE_IS_ENCRYPTED] = True
@@ -880,13 +881,13 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.get_status()
 
             if not response:
-                return action_result.set_status(phantom.APP_ERROR, DEFENDER_UNEXPECTED_RESPONSE_ERR)
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_UNEXPECTED_RESPONSE_ERROR)
             try:
                 for ele in response['value']:
                     resource_list.append(ele)
             except Exception as e:
                 err_msg = self._get_error_message_from_exception(e)
-                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERR, err_msg))
+                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, err_msg))
                 return action_result.set_status(phantom.APP_ERROR, "Error occurred while fetching data. Details: {0}"
                                                    .format(err_msg))
             if not response.get(DEFENDER_NEXT_PAGE_TOKEN):
@@ -994,9 +995,6 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_INCIDENT_FOUND)
-
         action_result.add_data(response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
@@ -1021,9 +1019,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
-
-        if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_ALERT_FOUND)
 
         action_result.add_data(response)
 
@@ -1054,9 +1049,6 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        if not response:
-            return action_result.set_status(phantom.APP_ERROR, DEFENDER_NO_DATA_FOUND)
-
         results = response.get('results', [])
         len_results = len(results)
 
@@ -1080,6 +1072,9 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         alert_id = param[DEFENDER_ALERT_ID]
 
+        if not any(param.get(x) for x in DEFENDER_UPDATE_ALERT_USER_PARAM_LIST):
+            return action_result.set_status(phantom.APP_ERROR, DEFENDER_NO_PARAMETER_PROVIDED)
+
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
                                    .format(input=alert_id))
 
@@ -1088,9 +1083,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
-
-        if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_ALERT_FOUND)
 
         request_body = {}
 
@@ -1131,19 +1123,12 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
                                    .format(input=alert_id))
-
-        if not any(param.get(x) for x in DEFENDER_UPDATE_ALERT_USER_PARAM_LIST):
-            return action_result.set_status(phantom.APP_ERROR, DEFENDER_NO_PARAMETER_PROVIDED)
-
         # make rest call
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
                                                  data=json.dumps(request_body))
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
-
-        if not response:
-            return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_NO_DATA_FOUND)
 
         action_result.add_data(response)
 
@@ -1184,6 +1169,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         action_id = self.get_action_identifier()
         action_result = ActionResult()
+        self.asset_id = self.get_asset_id()
         self._non_interactive = config.get('non_interactive', False)
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
@@ -1203,8 +1189,8 @@ class Microsoft365Defender_Connector(BaseConnector):
                 if self._access_token:
                     self._access_token = self.decrypt_state(self._access_token)
             except Exception as e:
-                self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERR, self._get_error_message_from_exception(e)))
-                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERR)
+                self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERROR, self._get_error_message_from_exception(e)))
+                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERROR)
 
         self._refresh_token = self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING, None)
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
@@ -1212,8 +1198,8 @@ class Microsoft365Defender_Connector(BaseConnector):
                 if self._refresh_token:
                     self._refresh_token = self.decrypt_state(self._refresh_token)
             except Exception as e:
-                self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERR, self._get_error_message_from_exception(e)))
-                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERR)
+                self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERROR, self._get_error_message_from_exception(e)))
+                return self.set_status(phantom.APP_ERROR, DEFENDER_DECRYPTION_ERROR)
 
         if not self._non_interactive and action_id != 'test_connectivity' and (not self._access_token or not self._refresh_token):
             token_data = {
@@ -1235,30 +1221,29 @@ class Microsoft365Defender_Connector(BaseConnector):
             if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING):
                 self._state[DEFENDER_TOKEN_STRING][DEFENDER_ACCESS_TOKEN_STRING] = self.encrypt_state(self._access_token)
         except Exception as e:
-            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERR, self._get_error_message_from_exception(e)))
-            return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERR)
+            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+            return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
 
         try:
             if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING):
                 self._state[DEFENDER_TOKEN_STRING][DEFENDER_REFRESH_TOKEN_STRING] = self.encrypt_state(self._refresh_token)
         except Exception as e:
-            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERR, self._get_error_message_from_exception(e)))
-            return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERR)
+            self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+            return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
 
         if not self._state.get(DEFENDER_STATE_IS_ENCRYPTED):
             try:
                 if self._state.get(DEFENDER_CODE_STRING):
                     self._state[DEFENDER_CODE_STRING] = self.encrypt_state(self._state[DEFENDER_CODE_STRING])
             except Exception as e:
-                self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERR, self._get_error_message_from_exception(e)))
-                return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERR)
+                self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+                return self.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
             if self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ID_TOKEN_STRING):
                 self._state[DEFENDER_TOKEN_STRING].pop(DEFENDER_ID_TOKEN_STRING)
 
         # Save the state, this data is saved across actions and app upgrades
         self._state[DEFENDER_STATE_IS_ENCRYPTED] = True
         self.save_state(self._state)
-        _save_app_state(self._state, self.get_asset_id(), self)
         return phantom.APP_SUCCESS
 
 

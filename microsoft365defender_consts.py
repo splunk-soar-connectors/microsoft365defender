@@ -37,7 +37,7 @@ DEFENDER_AUTHORIZE_URL = '/{tenant_id}/oauth2/authorize?client_id={client_id}&re
                             '&response_type={response_type}&state={state}&resource={resource}'
 DEFENDER_RECEIVED_ALERT_INFO_MSG = 'Received alert info'
 DEFENDER_HTTP_401_STATUS_CODE = '401'
-DEFENDER_UNAUTHORIZED_CLIENT_ERROR_MESSAGE = 'unauthorized_client'
+DEFENDER_UNAUTHORIZED_CLIENT_ERROR_MSG = 'unauthorized_client'
 DEFENDER_INVALID_TENANT_ID_FORMAT_ERROR_CODE = 'AADSTS900023'
 DEFENDER_INVALID_TENANT_ID_NOT_FOUND_ERROR_CODE = 'AADSTS90002'
 DEFENDER_ALERTS_ENDPOINT = '/security/alerts_v2'
@@ -72,14 +72,14 @@ DEFENDER_NON_NEG_NON_ZERO_INT_MSG = (
 DEFENDER_NON_NEG_INT_MSG = "Please provide a valid non-negative integer value in the {} parameter"
 
 # Constants relating to '_get_error_message_from_exception'
-DEFENDER_ERR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
+DEFENDER_ERROR_MSG_UNAVAILABLE = "Error message unavailable. Please check the asset configuration and|or action parameters"
 
 # For encryption and decryption
 DEFENDER_ENCRYPT_TOKEN = "Encrypting the {} token"
 DEFENDER_DECRYPT_TOKEN = "Decrypting the {} token"
-DEFENDER_ENCRYPTION_ERR = "Error occurred while encrypting the state file"
-DEFENDER_DECRYPTION_ERR = "Error occurred while decrypting the state file"
-DEFENDER_UNEXPECTED_RESPONSE_ERR = "Unexpected response retrieved"
+DEFENDER_ENCRYPTION_ERROR = "Error occurred while encrypting the state file"
+DEFENDER_DECRYPTION_ERROR = "Error occurred while decrypting the state file"
+DEFENDER_UNEXPECTED_RESPONSE_ERROR = "Unexpected response retrieved"
 DEFENDER_NO_DATA_FOUND = "No data found"
 DEFENDER_STATE_IS_ENCRYPTED = 'is_encrypted'
 DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one of the property to update the alert"
@@ -124,7 +124,7 @@ DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Successfully updated the alert"
 DEFENDER_UPDATE_ALERT_USER_PARAM_LIST = [DEFENDER_JSON_STATUS, DEFENDER_JSON_ASSIGNED_TO,
              DEFENDER_JSON_CLASSIFICATION, DEFENDER_JSON_DETERMINATION]
 
-DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS = [DEFENDER_HTTP_401_STATUS_CODE, DEFENDER_UNAUTHORIZED_CLIENT_ERROR_MESSAGE,
+DEFENDER_ASSET_PARAM_CHECK_LIST_ERRORS = [DEFENDER_HTTP_401_STATUS_CODE, DEFENDER_UNAUTHORIZED_CLIENT_ERROR_MSG,
     DEFENDER_INVALID_TENANT_ID_FORMAT_ERROR_CODE, DEFENDER_INVALID_TENANT_ID_NOT_FOUND_ERROR_CODE]
 
 DEFENDER_UPDATE_ALERT_STATUS_DICT = {

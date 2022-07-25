@@ -46,7 +46,7 @@
             "order": 3
         },
         "non_interactive": {
-            "description": "Non Interactive Auth",
+            "description": "Non-Interactive Auth",
             "data_type": "boolean",
             "default": false,
             "order": 4
@@ -122,10 +122,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.summary.total_results",
                     "data_type": "numeric",
                     "example_values": [
@@ -179,12 +175,12 @@
                     "order": 1
                 },
                 "filter": {
-                    "description": "Filter alerts based on property",
+                    "description": "Filter incidents based on property",
                     "data_type": "string",
                     "order": 2
                 },
                 "orderby": {
-                    "description": "Sort the alerts based on property",
+                    "description": "Sort the incidents based on property",
                     "data_type": "string",
                     "order": 3
                 }
@@ -347,10 +343,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.summary.total_incidents",
                     "data_type": "numeric",
                     "example_values": [
@@ -402,7 +394,7 @@
                     "order": 0
                 },
                 "offset": {
-                    "description": "Number of incidents to skip (Defaults to 0)",
+                    "description": "Number of alerts to skip (Defaults to 0)",
                     "data_type": "numeric",
                     "default": 0,
                     "order": 1
@@ -466,7 +458,7 @@
                     "data_path": "action_result.data.*.alertWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
                     ],
                     "contains": [
                         "url"
@@ -561,10 +553,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.azureAdDeviceId",
-                    "data_type": "string",
-                    "example_values": [
-                        "xxxxxx"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.createdDateTime",
@@ -941,7 +930,7 @@
                     "data_path": "action_result.data.*.evidence.*.remediationStatus",
                     "data_type": "string",
                     "example_values": [
-                        "none"
+                        "prevented"
                     ]
                 },
                 {
@@ -1052,7 +1041,7 @@
                     "data_path": "action_result.data.*.incidentWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                        "https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
                     ],
                     "contains": [
                         "url"
@@ -1149,10 +1138,6 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary",
-                    "data_type": "string"
-                },
-                {
                     "data_path": "action_result.summary.total_alerts",
                     "data_type": "numeric",
                     "example_values": [
@@ -1192,7 +1177,7 @@
         },
         {
             "action": "get incident",
-            "description": "Retrieve specific Incident by its ID",
+            "description": "Retrieve specific incident by its ID",
             "type": "investigate",
             "identifier": "get_incident",
             "read_only": true,
@@ -1388,7 +1373,7 @@
         },
         {
             "action": "get alert",
-            "description": "Retrieve specific Alert by its ID",
+            "description": "Retrieve specific alert by its ID",
             "type": "investigate",
             "identifier": "get_alert",
             "read_only": true,
@@ -1434,7 +1419,7 @@
                     "data_path": "action_result.data.*.alertWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
                     ]
                 },
                 {
@@ -1526,10 +1511,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.azureAdDeviceId",
-                    "data_type": "string",
-                    "example_values": [
-                        "xxxxxx"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.createdDateTime",
@@ -1906,7 +1888,7 @@
                     "data_path": "action_result.data.*.evidence.*.remediationStatus",
                     "data_type": "string",
                     "example_values": [
-                        "none"
+                        "prevented"
                     ]
                 },
                 {
@@ -2017,7 +1999,7 @@
                     "data_path": "action_result.data.*.incidentWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                        "https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
                     ],
                     "contains": [
                         "url"
@@ -2150,7 +2132,7 @@
         },
         {
             "action": "update alert",
-            "description": "Update properties of existing Alert",
+            "description": "Update properties of existing alert",
             "type": "generic",
             "identifier": "update_alert",
             "read_only": false,
@@ -2315,7 +2297,7 @@
                     "data_path": "action_result.data.*.alertWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
                     ],
                     "contains": [
                         "url"
@@ -2410,10 +2392,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.azureAdDeviceId",
-                    "data_type": "string",
-                    "example_values": [
-                        "xxxxxx"
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.createdDateTime",
@@ -2790,7 +2769,7 @@
                     "data_path": "action_result.data.*.evidence.*.remediationStatus",
                     "data_type": "string",
                     "example_values": [
-                        "none"
+                        "prevented"
                     ]
                 },
                 {
@@ -2901,7 +2880,7 @@
                     "data_path": "action_result.data.*.incidentWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.xxx.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
+                        "https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx"
                     ],
                     "contains": [
                         "url"
@@ -3078,54 +3057,6 @@
             {
                 "module": "typing_extensions",
                 "input_file": "wheels/py3/typing_extensions-4.1.1-py3-none-any.whl"
-            },
-            {
-                "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.9-py2.py3-none-any.whl"
-            }
-        ]
-    },
-    "pip39_dependencies": {
-        "wheel": [
-            {
-                "module": "Django",
-                "input_file": "wheels/py3/Django-3.2.13-py3-none-any.whl"
-            },
-            {
-                "module": "asgiref",
-                "input_file": "wheels/py3/asgiref-3.5.2-py3-none-any.whl"
-            },
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
-            },
-            {
-                "module": "chardet",
-                "input_file": "wheels/shared/chardet-3.0.4-py2.py3-none-any.whl"
-            },
-            {
-                "module": "idna",
-                "input_file": "wheels/shared/idna-2.10-py2.py3-none-any.whl"
-            },
-            {
-                "module": "pytz",
-                "input_file": "wheels/shared/pytz-2022.1-py2.py3-none-any.whl"
-            },
-            {
-                "module": "requests",
-                "input_file": "wheels/shared/requests-2.25.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
-            },
-            {
-                "module": "sqlparse",
-                "input_file": "wheels/py3/sqlparse-0.4.2-py3-none-any.whl"
             },
             {
                 "module": "urllib3",
