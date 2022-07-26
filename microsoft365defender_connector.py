@@ -633,6 +633,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS
         """
 
+        self.debug_print("Generating new token")
         req_url = '{}{}'.format(DEFENDER_LOGIN_BASE_URL, DEFENDER_SERVER_TOKEN_URL.format(tenant_id=quote(self._tenant)))
 
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=req_url,
