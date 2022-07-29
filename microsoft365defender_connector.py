@@ -570,7 +570,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         asset_id = self.get_asset_id()
         rest_endpoint = DEFENDER_PHANTOM_ASSET_INFO_URL.format(asset_id=asset_id)
-        url = '{}{}'.format(DEFENDER_PHANTOM_BASE_URL.format(phantom_base_url=self.get_phantom_base_url()), rest_endpoint)
+        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), rest_endpoint)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
 
         if phantom.is_fail(ret_val):
@@ -590,15 +590,15 @@ class Microsoft365Defender_Connector(BaseConnector):
         base url of phantom
         """
 
-        url = '{}{}'.format(DEFENDER_PHANTOM_BASE_URL.format(phantom_base_url=self.get_phantom_base_url()), DEFENDER_PHANTOM_SYS_INFO_URL)
+        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), DEFENDER_PHANTOM_SYS_INFO_URL)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        phantom_base_url = resp_json.get('base_url').rstrip('/')
-        if not phantom_base_url:
+        soar_base_url = resp_json.get('base_url').rstrip('/')
+        if not soar_base_url:
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_BASE_URL_NOT_FOUND_MSG), None
-        return phantom.APP_SUCCESS, phantom_base_url
+        return phantom.APP_SUCCESS, soar_base_url
 
     def _get_app_rest_url(self, action_result):
         """ Get URL for making rest calls.
@@ -608,7 +608,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         URL to make rest calls
         """
 
-        ret_val, phantom_base_url = self._get_phantom_base_url_defender(action_result)
+        ret_val, soar_base_url = self._get_phantom_base_url_defender(action_result)
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
@@ -616,12 +616,12 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
-        self.save_progress('Using Phantom base URL as: {0}'.format(phantom_base_url))
+        self.save_progress('Using Phantom base URL as: {0}'.format(soar_base_url))
         app_json = self.get_app_json()
         app_name = app_json['name']
 
         app_dir_name = _get_dir_name_from_app_name(app_name)
-        url_to_app_rest = '{0}/rest/handler/{1}_{2}/{3}'.format(phantom_base_url, app_dir_name, app_json['appid'],
+        url_to_app_rest = '{0}/rest/handler/{1}_{2}/{3}'.format(soar_base_url, app_dir_name, app_json['appid'],
                                                                 asset_name)
         return phantom.APP_SUCCESS, url_to_app_rest
 

@@ -17,7 +17,7 @@
 DEFENDER_USER_AGENT = "M365dPartner-Splunk-SOAR/{product_version}"
 DEFENDER_AUTHORIZATION_HEADER = "Bearer {token}"
 
-DEFENDER_PHANTOM_BASE_URL = '{phantom_base_url}rest'
+DEFENDER_SOAR_BASE_URL = '{soar_base_url}rest'
 DEFENDER_PHANTOM_SYS_INFO_URL = '/system_info'
 DEFENDER_PHANTOM_ASSET_INFO_URL = '/asset/{asset_id}'
 DEFENDER_TC_FILE = 'oauth_task.out'
