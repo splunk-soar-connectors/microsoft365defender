@@ -387,7 +387,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return self._process_json_response(response, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
-        # There is a high chance of a PROXY in between phantom and the rest of
+        # There is a high chance of a PROXY in between SOAR and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
         if 'html' in response.headers.get('Content-Type', ''):
@@ -562,14 +562,14 @@ class Microsoft365Defender_Connector(BaseConnector):
         return self._process_response(response, action_result)
 
     def _get_asset_name(self, action_result):
-        """ Get name of the asset using Phantom URL.
+        """ Get name of the asset using SOAR URL.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message), asset name
         """
 
         asset_id = self.get_asset_id()
-        rest_endpoint = DEFENDER_PHANTOM_ASSET_INFO_URL.format(asset_id=asset_id)
+        rest_endpoint = DEFENDER_SOAR_ASSET_INFO_URL.format(asset_id=asset_id)
         url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), rest_endpoint)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
 
@@ -590,7 +590,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         base url of phantom
         """
 
-        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), DEFENDER_PHANTOM_SYS_INFO_URL)
+        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), DEFENDER_SOAR_SYS_INFO_URL)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
         if phantom.is_fail(ret_val):
             return ret_val, None
@@ -616,7 +616,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
-        self.save_progress('Using Phantom base URL as: {0}'.format(soar_base_url))
+        self.save_progress('Using SOAR base URL as: {0}'.format(soar_base_url))
         app_json = self.get_app_json()
         app_name = app_json['name']
 
@@ -691,14 +691,14 @@ class Microsoft365Defender_Connector(BaseConnector):
         if self._access_token != self.decrypt_state(self._state.get(DEFENDER_TOKEN_STRING, {}).get
                     (DEFENDER_ACCESS_TOKEN_STRING)):
             message = "Error occurred while saving the newly generated access token (in place of the expired token) in the state file."\
-                      " Please check the owner, owner group, and the permissions of the state file. The Phantom user should have "\
+                      " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "\
                       "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
             return action_result.set_status(phantom.APP_ERROR, message)
 
         if not self._non_interactive and self._refresh_token and self._refresh_token != self.decrypt_state(self._state.get
                     (DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING)):
             message = "Error occurred while saving the newly generated refresh token in the state file."\
-                " Please check the owner, owner group, and the permissions of the state file. The Phantom user should have "\
+                " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "\
                 "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
             return action_result.set_status(phantom.APP_ERROR, message)
 
