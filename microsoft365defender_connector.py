@@ -717,7 +717,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         time_out = False
 
         # wait-time while request is being granted for 105 seconds
-        for _ in range(0, 35):
+        for _ in range(DEFENDER_TC_STATUS_WAIT_TIME // DEFENDER_TC_STATUS_SLEEP):
             self.send_progress('Waiting...')
             if os.path.isfile(auth_status_file_path):
                 time_out = True
@@ -837,7 +837,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         url = '{}{}'.format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ENDPOINT)
         params = {
-            '$top': 1
+            '$top': 1  # page size of the result set
         }
         ret_val, _ = self._update_request(action_result=action_result, endpoint=url, params=params)
         if phantom.is_fail(ret_val):

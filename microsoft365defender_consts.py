@@ -62,6 +62,7 @@ Please run the 'test connectivity' action again."
 
 DEFENDER_AUTHORIZE_WAIT_TIME = 15
 DEFENDER_TC_STATUS_SLEEP = 3
+DEFENDER_TC_STATUS_WAIT_TIME = 105
 
 # Constants relating to '_validate_integer'
 DEFENDER_VALID_INTEGER_MSG = "Please provide a valid integer value in the {} parameter"
