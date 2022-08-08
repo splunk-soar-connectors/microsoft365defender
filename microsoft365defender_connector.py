@@ -565,7 +565,8 @@ class Microsoft365Defender_Connector(BaseConnector):
                 retry_time = int(response.headers['Retry-After'])
                 if retry_time > 300:  # throw error if wait time greater than 300 seconds
                     flag = False
-                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Error occured : {}, {}".format(response.status_code, str(response.text))), resp_json)
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Error occured : {}, {}"
+                                        .format(response.status_code, str(response.text))), resp_json)
                 self.debug_print("Retrying after {} seconds".format(retry_time))
                 time.sleep(retry_time + 1)
             else:
