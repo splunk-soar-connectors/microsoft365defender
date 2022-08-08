@@ -552,12 +552,24 @@ class Microsoft365Defender_Connector(BaseConnector):
         except AttributeError:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), resp_json)
 
-        try:
-            response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=DEFAULT_TIMEOUT)
-        except Exception as e:
-            self.debug_print("Exception Message - {}".format(str(e)))
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}"
-                                                   .format(self._get_error_message_from_exception(e))), resp_json)
+        flag = True
+        while flag:
+            try:
+                response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=DEFAULT_TIMEOUT)
+            except Exception as e:
+                self.debug_print("Exception Message - {}".format(str(e)))
+                return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}"
+                                                    .format(self._get_error_message_from_exception(e))), resp_json)
+
+            if response.status_code == 429 and response.headers['Retry-After']:
+                retry_time = int(response.headers['Retry-After'])
+                if retry_time > 300:  # throw error if wait time greater than 300 seconds
+                    flag = False
+                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Error occured : {}, {}".format(response.status_code, str(response.text))), resp_json)
+                self.debug_print("Retrying after {} seconds".format(retry_time))
+                time.sleep(retry_time + 1)
+            else:
+                flag = False
 
         return self._process_response(response, action_result)
 
