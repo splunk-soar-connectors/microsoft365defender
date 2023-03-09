@@ -258,8 +258,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
         if encrypt_var:
             if not asset_id:
-                return encryption_helper.encrypt(encrypt_var, self.asset_id)
-            return encryption_helper.encrypt(encrypt_var, asset_id)
+                return encryption_helper.encrypt(encrypt_var, str(self.asset_id))
+            return encryption_helper.encrypt(encrypt_var, str(asset_id))
         return encrypt_var
 
     def decrypt_state(self, decrypt_var):
@@ -268,7 +268,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: decrypted variable
         """
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED) and decrypt_var:
-            return encryption_helper.decrypt(decrypt_var, self.asset_id)
+            return encryption_helper.decrypt(decrypt_var, str(self.asset_id))
         return decrypt_var
 
     def _process_empty_response(self, response, action_result):
