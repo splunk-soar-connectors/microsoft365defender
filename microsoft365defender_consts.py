@@ -1,6 +1,6 @@
 # File: microsoft365defender_consts.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ DEFENDER_RUN_QUERY_ENDPOINT = '/security/runHuntingQuery'
 DEFENDER_SERVER_TOKEN_URL = '/{tenant_id}/oauth2/token'
 DEFENDER_LOGIN_BASE_URL = 'https://login.microsoftonline.com'
 DEFENDER_RESOURCE_URL = 'https://graph.microsoft.com'
-DEFENDER_MSGRAPH_API_BASE_URL = 'https://graph.microsoft.com/1.0'
+DEFENDER_MSGRAPH_API_BASE_URL = 'https://graph.microsoft.com/v1.0'
 DEFENDER_AUTHORIZE_USER_MSG = 'Please authorize user in a separate tab using URL'
 DEFENDER_GENERATING_ACCESS_TOKEN_MSG = 'Generating access token'
 DEFENDER_ALERTS_INFO_MSG = 'Getting info about alerts'

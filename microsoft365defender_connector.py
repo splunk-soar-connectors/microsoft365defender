@@ -1,6 +1,6 @@
 # File: microsoft365defender_connector.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2-23 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -258,8 +258,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
         if encrypt_var:
             if not asset_id:
-                return encryption_helper.encrypt(encrypt_var, str(self.asset_id))
-            return encryption_helper.encrypt(encrypt_var, str(asset_id))
+                return encryption_helper.encrypt(encrypt_var, self.asset_id)
+            return encryption_helper.encrypt(encrypt_var, asset_id)
         return encrypt_var
 
     def decrypt_state(self, decrypt_var):
@@ -268,7 +268,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: decrypted variable
         """
         if self._state.get(DEFENDER_STATE_IS_ENCRYPTED) and decrypt_var:
-            return encryption_helper.decrypt(decrypt_var, str(self.asset_id))
+            return encryption_helper.decrypt(decrypt_var, self.asset_id)
         return decrypt_var
 
     def _process_empty_response(self, response, action_result):
@@ -900,10 +900,10 @@ class Microsoft365Defender_Connector(BaseConnector):
                 for ele in response['value']:
                     resource_list.append(ele)
             except Exception as e:
-                err_msg = self._get_error_message_from_exception(e)
-                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, err_msg))
+                error_message = self._get_error_message_from_exception(e)
+                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, error_message))
                 return action_result.set_status(phantom.APP_ERROR, "Error occurred while fetching data. Details: {0}"
-                                                   .format(err_msg))
+                                                   .format(error_message))
             if not response.get(DEFENDER_NEXT_PAGE_TOKEN):
                 break
 
