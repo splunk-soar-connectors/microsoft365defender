@@ -31,7 +31,7 @@ DEFENDER_CODE_STRING = 'code'
 DEFENDER_REFRESH_TOKEN_STRING = 'refresh_token'
 DEFENDER_ID_TOKEN_STRING = 'id_token'
 DEFENDER_CLIENT_CREDENTIALS_STRING = 'client_credentials'
-DEFENDER_BASE_URL_NOT_FOUND_MSG = 'Phantom Base URL not found in System Settings. ' \
+DEFENDER_BASE_URL_NOT_FOUND_MSG = 'Splunk SOAR Base URL not found in System Settings. ' \
                                      'Please specify this value in System Settings'
 DEFENDER_AUTHORIZE_URL = '/{tenant_id}/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}' \
                             '&response_type={response_type}&state={state}&resource={resource}'

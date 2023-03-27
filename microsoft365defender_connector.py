@@ -279,7 +279,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message)
         """
 
-        if response.status_code == 200 or response.status_code == 204:
+        if response.status_code in [200, 204]:
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(action_result.set_status(
@@ -432,6 +432,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         error_code = None
         error_msg = DEFENDER_ERROR_MSG_UNAVAILABLE
+
+        self.error_print("Error occurred.", e)
 
         try:
             if hasattr(e, "args"):
