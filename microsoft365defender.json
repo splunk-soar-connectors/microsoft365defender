@@ -3016,7 +3016,7 @@
         "wheel": [
             {
                 "module": "Django",
-                "input_file": "wheels/py3/Django-3.2.13-py3-none-any.whl"
+                "input_file": "wheels/py3/Django-3.2.16-py3-none-any.whl"
             },
             {
                 "module": "asgiref",
@@ -3040,7 +3040,7 @@
             },
             {
                 "module": "pytz",
-                "input_file": "wheels/shared/pytz-2023.2-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pytz-2023.3-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -3068,7 +3068,7 @@
         "wheel": [
             {
                 "module": "Django",
-                "input_file": "wheels/py3/Django-3.2.13-py3-none-any.whl"
+                "input_file": "wheels/py3/Django-3.2.16-py3-none-any.whl"
             },
             {
                 "module": "asgiref",
@@ -3092,7 +3092,7 @@
             },
             {
                 "module": "pytz",
-                "input_file": "wheels/shared/pytz-2023.2-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pytz-2023.3-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
