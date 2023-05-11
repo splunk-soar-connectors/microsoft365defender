@@ -1,6 +1,6 @@
 # File: microsoft365defender_connector.py
 #
-# Copyright (c) 2022 Splunk Inc.
+# Copyright (c) 2022-2023 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message)
         """
 
-        if response.status_code == 200 or response.status_code == 204:
+        if response.status_code in [200, 204]:
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(action_result.set_status(
@@ -432,6 +432,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         error_code = None
         error_msg = DEFENDER_ERROR_MSG_UNAVAILABLE
+
+        self.error_print("Error occurred.", e)
 
         try:
             if hasattr(e, "args"):
@@ -900,10 +902,10 @@ class Microsoft365Defender_Connector(BaseConnector):
                 for ele in response['value']:
                     resource_list.append(ele)
             except Exception as e:
-                err_msg = self._get_error_message_from_exception(e)
-                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, err_msg))
+                error_message = self._get_error_message_from_exception(e)
+                self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, error_message))
                 return action_result.set_status(phantom.APP_ERROR, "Error occurred while fetching data. Details: {0}"
-                                                   .format(err_msg))
+                                                   .format(error_message))
             if not response.get(DEFENDER_NEXT_PAGE_TOKEN):
                 break
 
