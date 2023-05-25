@@ -10,14 +10,14 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2022 Splunk Inc.",
-    "app_version": "1.0.1",
+    "license": "Copyright (c) 2022-2023 Splunk Inc.",
+    "app_version": "1.1.0",
     "utctime_updated": "2022-05-26T06:24:07.659521Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
-    "min_phantom_version": "5.3.0",
+    "min_phantom_version": "6.0.0",
     "latest_tested_versions": [
-        "graph.microsoft.com/beta, Jul 20 2022"
+        "graph.microsoft.com/v1.0, Mar 31 2023"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
@@ -3016,7 +3016,7 @@
         "wheel": [
             {
                 "module": "Django",
-                "input_file": "wheels/py3/Django-3.2.13-py3-none-any.whl"
+                "input_file": "wheels/py3/Django-3.2.16-py3-none-any.whl"
             },
             {
                 "module": "asgiref",
@@ -3028,7 +3028,7 @@
             },
             {
                 "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -3040,7 +3040,7 @@
             },
             {
                 "module": "pytz",
-                "input_file": "wheels/shared/pytz-2022.1-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pytz-2023.3-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -3052,7 +3052,7 @@
             },
             {
                 "module": "sqlparse",
-                "input_file": "wheels/py3/sqlparse-0.4.2-py3-none-any.whl"
+                "input_file": "wheels/py3/sqlparse-0.4.4-py3-none-any.whl"
             },
             {
                 "module": "typing_extensions",
@@ -3060,7 +3060,7 @@
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.11-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.15-py2.py3-none-any.whl"
             }
         ]
     },
@@ -3068,11 +3068,11 @@
         "wheel": [
             {
                 "module": "Django",
-                "input_file": "wheels/py3/Django-3.2.13-py3-none-any.whl"
+                "input_file": "wheels/py3/Django-3.2.16-py3-none-any.whl"
             },
             {
                 "module": "asgiref",
-                "input_file": "wheels/py3/asgiref-3.5.2-py3-none-any.whl"
+                "input_file": "wheels/py3/asgiref-3.6.0-py3-none-any.whl"
             },
             {
                 "module": "beautifulsoup4",
@@ -3080,7 +3080,7 @@
             },
             {
                 "module": "certifi",
-                "input_file": "wheels/py3/certifi-2022.6.15-py3-none-any.whl"
+                "input_file": "wheels/py3/certifi-2022.12.7-py3-none-any.whl"
             },
             {
                 "module": "chardet",
@@ -3092,7 +3092,7 @@
             },
             {
                 "module": "pytz",
-                "input_file": "wheels/shared/pytz-2022.1-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/pytz-2023.3-py2.py3-none-any.whl"
             },
             {
                 "module": "requests",
@@ -3100,15 +3100,15 @@
             },
             {
                 "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
+                "input_file": "wheels/py3/soupsieve-2.4.1-py3-none-any.whl"
             },
             {
                 "module": "sqlparse",
-                "input_file": "wheels/py3/sqlparse-0.4.2-py3-none-any.whl"
+                "input_file": "wheels/py3/sqlparse-0.4.4-py3-none-any.whl"
             },
             {
                 "module": "urllib3",
-                "input_file": "wheels/shared/urllib3-1.26.11-py2.py3-none-any.whl"
+                "input_file": "wheels/shared/urllib3-1.26.15-py2.py3-none-any.whl"
             }
         ]
     }

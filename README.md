@@ -2,17 +2,17 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1\.0\.1  
+Connector Version: 1.1.0  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
-Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.3\.0  
+Product Version Supported (regex): ".\*"  
+Minimum Product Version: 6.0.0  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "Copyright (c) 2022 Splunk Inc."
+[comment]: # "Copyright (c) 2022-2023 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -110,7 +110,7 @@ are the default ports used by Splunk SOAR.
 22. Copy the **Application (client) ID** and **Directory (tenant) ID** . You will need these to
     configure the SOAR asset.
 
-</div>
+
 
 ## Configure the Microsoft 365 Defender SOAR app's asset
 
@@ -274,9 +274,9 @@ Please check the permissions for the state file as mentioned below.
 -   \<appid> - The app ID will be available in the Redirect URI which gets populated in the field
     'POST incoming for Microsoft 365 Defender to this location' when the Microsoft 365 Defender app
     asset is configured e.g.
-    https://\<phantom_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
+    https://\<splunk_soar_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
 -   \<asset_id> - The asset ID will be available on the created asset's Splunk SOAR web URL e.g.
-    https://\<phantom_host>/apps/\<app_number>/asset/\<asset_id>/
+    https://\<splunk_soar_host>/apps/\<app_number>/asset/\<asset_id>/
 
 #### The app is configured and ready to be used now.
 
@@ -286,10 +286,10 @@ The below configuration variables are required for this Connector to operate.  T
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
-**tenant\_id** |  required  | string | Tenant ID
-**client\_id** |  required  | string | Client ID
-**client\_secret** |  required  | password | Client Secret
-**non\_interactive** |  optional  | boolean | Non\-Interactive Auth
+**tenant_id** |  required  | string | Tenant ID
+**client_id** |  required  | string | Client ID
+**client_secret** |  required  | password | Client Secret
+**non_interactive** |  optional  | boolean | Non-Interactive Auth
 
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration  
@@ -324,18 +324,18 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **query** |  required  | Query to fetch results | string | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.query | string | 
-action\_result\.data\.\*\.DeviceId | string | 
-action\_result\.data\.\*\.FileName | string | 
-action\_result\.data\.\*\.InitiatingProcessFileName | string | 
-action\_result\.data\.\*\.Timestamp | string | 
-action\_result\.summary\.total\_results | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.query | string |  |   DeviceProcessEvents | limit 5 
+action_result.data.\*.DeviceId | string |  |   xxxxx9d48ec4859bd94a25039dcba09f4fd9ac78 
+action_result.data.\*.FileName | string |  |   test.exe 
+action_result.data.\*.InitiatingProcessFileName | string |  |   powershell.exe 
+action_result.data.\*.Timestamp | string |  |   2022-06-12T04:24:25.0406516Z 
+action_result.summary.total_results | numeric |  |   1 
+action_result.message | string |  |   Total results: 1 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'list incidents'
 List all the incidents
@@ -346,38 +346,38 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**limit** |  optional  | Maximum number of incidents to return \(Defaults to 50\) | numeric | 
-**offset** |  optional  | Number of incidents to skip \(Defaults to 0\) | numeric | 
+**limit** |  optional  | Maximum number of incidents to return (Defaults to 50) | numeric | 
+**offset** |  optional  | Number of incidents to skip (Defaults to 0) | numeric | 
 **filter** |  optional  | Filter incidents based on property | string | 
 **orderby** |  optional  | Sort the incidents based on property | string | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.limit | numeric | 
-action\_result\.parameter\.offset | numeric | 
-action\_result\.parameter\.filter | string | 
-action\_result\.parameter\.orderby | string | 
-action\_result\.data\.\*\.assignedTo | string |  `email` 
-action\_result\.data\.\*\.classification | string | 
-action\_result\.data\.\*\.comments\.\*\.comment | string | 
-action\_result\.data\.\*\.comments\.\*\.createdByDisplayName | string | 
-action\_result\.data\.\*\.comments\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.determination | string | 
-action\_result\.data\.\*\.displayName | string | 
-action\_result\.data\.\*\.id | string |  `defender incident id` 
-action\_result\.data\.\*\.incidentWebUrl | string |  `url` 
-action\_result\.data\.\*\.lastUpdateDateTime | string | 
-action\_result\.data\.\*\.redirectIncidentId | string |  `defender incident id` 
-action\_result\.data\.\*\.severity | string |  `defender severity` 
-action\_result\.data\.\*\.status | string | 
-action\_result\.data\.\*\.tenantId | string | 
-action\_result\.summary\.total\_incidents | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.limit | numeric |  |   50 
+action_result.parameter.offset | numeric |  |   0 
+action_result.parameter.filter | string |  |   status eq 'active' 
+action_result.parameter.orderby | string |  |   lastUpdateDateTime desc 
+action_result.data.\*.assignedTo | string |  `email`  |   testuser@abc.com 
+action_result.data.\*.classification | string |  |   unknown 
+action_result.data.\*.comments.\*.comment | string |  |   Testing comment 
+action_result.data.\*.comments.\*.createdByDisplayName | string |  |   testuser@abc.com 
+action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-06-08T08:34:40.68416Z 
+action_result.data.\*.createdDateTime | string |  |   2022-06-13T10:36:05.7Z 
+action_result.data.\*.determination | string |  |   unknown 
+action_result.data.\*.displayName | string |  |   Malware incident on one endpoint 
+action_result.data.\*.id | string |  `defender incident id`  |   145 
+action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.data.\*.lastUpdateDateTime | string |  |   2022-06-13T12:57:22.3633333Z 
+action_result.data.\*.redirectIncidentId | string |  `defender incident id`  |   48 
+action_result.data.\*.severity | string |  `defender severity`  |   high 
+action_result.data.\*.status | string |  |   active 
+action_result.data.\*.tenantId | string |  |   xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.summary.total_incidents | numeric |  |   50 
+action_result.message | string |  |   Total incidents: 50 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'list alerts'
 List all the alerts
@@ -388,116 +388,134 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**limit** |  optional  | Maximum number of alerts to return \(Defaults to 2000\) | numeric | 
-**offset** |  optional  | Number of alerts to skip \(Defaults to 0\) | numeric | 
+**limit** |  optional  | Maximum number of alerts to return (Defaults to 2000) | numeric | 
+**offset** |  optional  | Number of alerts to skip (Defaults to 0) | numeric | 
 **filter** |  optional  | Filter alerts based on property | string | 
 **orderby** |  optional  | Sort the alerts based on property | string | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.limit | numeric | 
-action\_result\.parameter\.filter | string | 
-action\_result\.parameter\.orderby | string | 
-action\_result\.parameter\.offset | numeric | 
-action\_result\.data\.\*\.actorDisplayName | string | 
-action\_result\.data\.\*\.alertWebUrl | string |  `url` 
-action\_result\.data\.\*\.assignedTo | string |  `email` 
-action\_result\.data\.\*\.category | string | 
-action\_result\.data\.\*\.classification | string | 
-action\_result\.data\.\*\.comments\.\*\.comment | string | 
-action\_result\.data\.\*\.comments\.\*\.createdByDisplayName | string | 
-action\_result\.data\.\*\.comments\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.description | string | 
-action\_result\.data\.\*\.detectionSource | string | 
-action\_result\.data\.\*\.detectorId | string | 
-action\_result\.data\.\*\.determination | string | 
-action\_result\.data\.\*\.evidence\.\*\.\@odata\.type | string | 
-action\_result\.data\.\*\.evidence\.\*\.azureAdDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.defenderAvStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.detectionStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.deviceDnsName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.firstSeenDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.healthStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.ipAddress | string |  `ip` 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.mdeDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.onboardingStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.osBuild | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.osPlatform | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCommandLine | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.processId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryHive | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryKey | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValue | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueType | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatusDetails | string | 
-action\_result\.data\.\*\.evidence\.\*\.riskScore | string | 
-action\_result\.data\.\*\.evidence\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.evidence\.\*\.userAccount | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.azureAdUserId | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userPrincipalName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userSid | string | 
-action\_result\.data\.\*\.evidence\.\*\.verdict | string | 
-action\_result\.data\.\*\.evidence\.\*\.version | string | 
-action\_result\.data\.\*\.firstActivityDateTime | string | 
-action\_result\.data\.\*\.id | string |  `defender alert id` 
-action\_result\.data\.\*\.incidentId | string |  `defender incident id` 
-action\_result\.data\.\*\.incidentWebUrl | string |  `url` 
-action\_result\.data\.\*\.lastActivityDateTime | string | 
-action\_result\.data\.\*\.lastUpdateDateTime | string | 
-action\_result\.data\.\*\.providerAlertId | string |  `defender alert id` 
-action\_result\.data\.\*\.recommendedActions | string | 
-action\_result\.data\.\*\.resolvedDateTime | string | 
-action\_result\.data\.\*\.serviceSource | string | 
-action\_result\.data\.\*\.severity | string |  `defender severity` 
-action\_result\.data\.\*\.status | string | 
-action\_result\.data\.\*\.tenantId | string | 
-action\_result\.data\.\*\.threatDisplayName | string | 
-action\_result\.data\.\*\.threatFamilyName | string | 
-action\_result\.data\.\*\.title | string | 
-action\_result\.summary\.total\_alerts | numeric | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.limit | numeric |  |   2000 
+action_result.parameter.filter | string |  |   status eq 'inProgress' 
+action_result.parameter.orderby | string |  |   lastUpdateDateTime desc 
+action_result.parameter.offset | numeric |  |   0 
+action_result.data.\*.actorDisplayName | string |  |   test@abc.com 
+action_result.data.\*.alertWebUrl | string |  `url`  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx 
+action_result.data.\*.assignedTo | string |  `email`  |   test@abc.com 
+action_result.data.\*.category | string |  |   SuspiciousActivity 
+action_result.data.\*.classification | string |  |   Test 
+action_result.data.\*.comments.\*.comment | string |  |   initialaccess_type_of_alert_last_option from the dropdown 
+action_result.data.\*.comments.\*.createdByDisplayName | string |  |   Automation 
+action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-04-08T18:03:49.3223829Z 
+action_result.data.\*.createdDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.description | string |  |   Test alert 
+action_result.data.\*.detectionSource | string |  |   customTi 
+action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
+action_result.data.\*.determination | string |  |   Test 
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
+action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
+action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
+action_result.data.\*.evidence.\*.detectionStatus | string |  |   Test 
+action_result.data.\*.evidence.\*.deviceDnsName | string |  |   testmachine 
+action_result.data.\*.evidence.\*.fileDetails.fileName | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.fileDetails.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application 
+action_result.data.\*.evidence.\*.fileDetails.filePublisher | string |  |   Test 
+action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric |  |   77312 
+action_result.data.\*.evidence.\*.fileDetails.issuer | string |  |   file issuer 
+action_result.data.\*.evidence.\*.fileDetails.sha1 | string |  `sha1`  |   xxx8825f6b54238a452e3050d49e8aa50569a6c9 
+action_result.data.\*.evidence.\*.fileDetails.sha256 | string |  `sha256`  |   xxxx4eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13fxxxx 
+action_result.data.\*.evidence.\*.fileDetails.signer | string |  |   signer 
+action_result.data.\*.evidence.\*.firstSeenDateTime | string |  |   2021-08-30T16:25:37.180194Z 
+action_result.data.\*.evidence.\*.healthStatus | string |  |   inactive 
+action_result.data.\*.evidence.\*.imageFile.fileName | string |  |   powershell.exe 
+action_result.data.\*.evidence.\*.imageFile.filePath | string |  |   c:\\windows\\system32\\windowspowershell\\v1.0 
+action_result.data.\*.evidence.\*.imageFile.filePublisher | string |  |   test publisher 
+action_result.data.\*.evidence.\*.imageFile.fileSize | numeric |  |   99912 
+action_result.data.\*.evidence.\*.imageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.imageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.imageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.imageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.ipAddress | string |  `ip`  |   8.8.8.8 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string |  |   test 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string |  |   TESTMACHINE 
+action_result.data.\*.evidence.\*.mdeDeviceId | string |  |   xxxx84aa7ef0294f733b7b6e9499439e433axxxx 
+action_result.data.\*.evidence.\*.onboardingStatus | string |  |   onboarded 
+action_result.data.\*.evidence.\*.osBuild | numeric |  |   19044 
+action_result.data.\*.evidence.\*.osPlatform | string |  |   Windows10 
+action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string |  |   2022-03-09T19:52:51Z 
+action_result.data.\*.evidence.\*.parentProcessId | numeric |  |   7968 
+action_result.data.\*.evidence.\*.parentProcessImageFile | string |  |   TestFile 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string |  |   Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string |  |   Test publisher 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric |  |   36557800 
+action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.processCommandLine | string |  |   powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive 
+action_result.data.\*.evidence.\*.processCreationDateTime | string |  |   2022-03-09T19:53:01Z 
+action_result.data.\*.evidence.\*.processId | numeric |  |   6240 
+action_result.data.\*.evidence.\*.rbacGroupId | numeric |  |   73 
+action_result.data.\*.evidence.\*.rbacGroupName | string |  |   UnassignedGroup 
+action_result.data.\*.evidence.\*.registryHive | string |  |   HKEY_LOCAL_MACHINE 
+action_result.data.\*.evidence.\*.registryKey | string |  |   SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr 
+action_result.data.\*.evidence.\*.registryValue | string |  |   43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 
+action_result.data.\*.evidence.\*.registryValueName | string |  |   Debugger 
+action_result.data.\*.evidence.\*.registryValueType | string |  |   Unknown 
+action_result.data.\*.evidence.\*.remediationStatus | string |  |   prevented 
+action_result.data.\*.evidence.\*.remediationStatusDetails | string |  |   status details 
+action_result.data.\*.evidence.\*.riskScore | string |  |   high 
+action_result.data.\*.evidence.\*.url | string |  `url`  |   test.com 
+action_result.data.\*.evidence.\*.userAccount | string |  |  
+action_result.data.\*.evidence.\*.userAccount.accountName | string |  |   local service 
+action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string |  |   xxxxxxx 
+action_result.data.\*.evidence.\*.userAccount.domainName | string |  |   nt authority 
+action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string |  |   test 
+action_result.data.\*.evidence.\*.userAccount.userSid | string |  |   S-1-5-19 
+action_result.data.\*.evidence.\*.verdict | string |  |   unknown 
+action_result.data.\*.evidence.\*.version | string |  |   X1HX 
+action_result.data.\*.firstActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.id | string |  `defender alert id`  |   xx637812122456454120_-11082172xx 
+action_result.data.\*.incidentId | string |  `defender incident id`  |   42 
+action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx 
+action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
+action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
+1. Find related machines, network addresses, and files in the incident graph.
+2. Check for other suspicious activities in the machine timeline.
+3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
+4. Submit relevant files for deep analysis and review file behaviors. 
+5. Identify unusual system activity with system owners. 
+
+B. If you have validated the alert, contain and mitigate the breach.
+1. Record relevant artifacts, including those you need in mitigation rules.
+2. Stop suspicious processes. Block prevalent malware files across the network.
+3. Isolate affected machines.
+4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
+5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
+6. Update antimalware signatures and run full scans. 
+7. Deploy the latest security updates for Windows, web browsers, and other applications.
+
+C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
+
+Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.serviceSource | string |  |   TestEndpoint 
+action_result.data.\*.severity | string |  `defender severity`  |   medium 
+action_result.data.\*.status | string |  |   new 
+action_result.data.\*.tenantId | string |  |   xxxxc578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.threatDisplayName | string |  |   threat 
+action_result.data.\*.threatFamilyName | string |  |   threat 
+action_result.data.\*.title | string |  |   Test alert 
+action_result.summary.total_alerts | numeric |  |   2 
+action_result.message | string |  |   Total alerts: 2 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'get incident'
 Retrieve specific incident by its ID
@@ -508,33 +526,33 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**incident\_id** |  required  | ID of the incident | string |  `defender incident id` 
+**incident_id** |  required  | ID of the incident | string |  `defender incident id` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.incident\_id | string |  `defender incident id` 
-action\_result\.data\.\*\.assignedTo | string |  `email` 
-action\_result\.data\.\*\.classification | string | 
-action\_result\.data\.\*\.comments\.\*\.comment | string | 
-action\_result\.data\.\*\.comments\.\*\.createdByDisplayName | string | 
-action\_result\.data\.\*\.comments\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.determination | string | 
-action\_result\.data\.\*\.displayName | string | 
-action\_result\.data\.\*\.id | string |  `defender incident id` 
-action\_result\.data\.\*\.incidentWebUrl | string |  `url` 
-action\_result\.data\.\*\.lastUpdateDateTime | string | 
-action\_result\.data\.\*\.redirectIncidentId | string |  `defender incident id` 
-action\_result\.data\.\*\.severity | string |  `defender severity` 
-action\_result\.data\.\*\.status | string | 
-action\_result\.data\.\*\.tags\.\* | string | 
-action\_result\.data\.\*\.tenantId | string |  `microsoft tenantid` 
-action\_result\.summary | string | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.incident_id | string |  `defender incident id`  |   48 
+action_result.data.\*.assignedTo | string |  `email`  |   testuser@abc.com 
+action_result.data.\*.classification | string |  |   unknown 
+action_result.data.\*.comments.\*.comment | string |  |  
+action_result.data.\*.comments.\*.createdByDisplayName | string |  |   testuser@abc.com 
+action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-06-08T08:34:40.68416Z 
+action_result.data.\*.createdDateTime | string |  |   2022-06-13T10:36:05.7Z 
+action_result.data.\*.determination | string |  |   unknown 
+action_result.data.\*.displayName | string |  |   Test alert on one endpoint 
+action_result.data.\*.id | string |  `defender incident id`  |   145 
+action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.data.\*.lastUpdateDateTime | string |  |   2022-06-13T12:57:22.3633333Z 
+action_result.data.\*.redirectIncidentId | string |  `defender incident id`  |   48 
+action_result.data.\*.severity | string |  `defender severity`  |   high 
+action_result.data.\*.status | string |  |   active 
+action_result.data.\*.tags.\* | string |  |  
+action_result.data.\*.tenantId | string |  `microsoft tenantid`  |   xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.summary | string |  |  
+action_result.message | string |  |   Successfully retrieved the incident 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
@@ -545,110 +563,128 @@ Read only: **True**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**alert\_id** |  required  | ID of the alert | string |  `defender alert id` 
+**alert_id** |  required  | ID of the alert | string |  `defender alert id` 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.alert\_id | string |  `defender alert id` 
-action\_result\.data\.\*\.actorDisplayName | string | 
-action\_result\.data\.\*\.alertWebUrl | string | 
-action\_result\.data\.\*\.assignedTo | string |  `email` 
-action\_result\.data\.\*\.category | string | 
-action\_result\.data\.\*\.classification | string | 
-action\_result\.data\.\*\.comments\.\*\.comment | string | 
-action\_result\.data\.\*\.comments\.\*\.createdByDisplayName | string | 
-action\_result\.data\.\*\.comments\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.description | string | 
-action\_result\.data\.\*\.detectionSource | string | 
-action\_result\.data\.\*\.detectorId | string | 
-action\_result\.data\.\*\.determination | string | 
-action\_result\.data\.\*\.evidence\.\*\.\@odata\.type | string | 
-action\_result\.data\.\*\.evidence\.\*\.azureAdDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.defenderAvStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.detectionStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.deviceDnsName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.firstSeenDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.healthStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.ipAddress | string |  `ip` 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.mdeDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.onboardingStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.osBuild | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.osPlatform | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCommandLine | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.processId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryHive | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryKey | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValue | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueType | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatusDetails | string | 
-action\_result\.data\.\*\.evidence\.\*\.riskScore | string | 
-action\_result\.data\.\*\.evidence\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.evidence\.\*\.userAccount | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.azureAdUserId | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userPrincipalName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userSid | string | 
-action\_result\.data\.\*\.evidence\.\*\.verdict | string | 
-action\_result\.data\.\*\.evidence\.\*\.version | string | 
-action\_result\.data\.\*\.firstActivityDateTime | string | 
-action\_result\.data\.\*\.id | string |  `defender alert id` 
-action\_result\.data\.\*\.incidentId | string |  `defender incident id` 
-action\_result\.data\.\*\.incidentWebUrl | string |  `url` 
-action\_result\.data\.\*\.lastActivityDateTime | string | 
-action\_result\.data\.\*\.lastUpdateDateTime | string | 
-action\_result\.data\.\*\.providerAlertId | string |  `defender alert id` 
-action\_result\.data\.\*\.recommendedActions | string | 
-action\_result\.data\.\*\.resolvedDateTime | string | 
-action\_result\.data\.\*\.serviceSource | string | 
-action\_result\.data\.\*\.severity | string |  `defender severity` 
-action\_result\.data\.\*\.status | string | 
-action\_result\.data\.\*\.tenantId | string | 
-action\_result\.data\.\*\.threatDisplayName | string | 
-action\_result\.data\.\*\.threatFamilyName | string | 
-action\_result\.data\.\*\.title | string | 
-action\_result\.summary | string | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric |   
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.alert_id | string |  `defender alert id`  |   xxxxx812122456454120_-11082xxxxx 
+action_result.data.\*.actorDisplayName | string |  |   test@abc.com 
+action_result.data.\*.alertWebUrl | string |  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx 
+action_result.data.\*.assignedTo | string |  `email`  |   test@abc.com 
+action_result.data.\*.category | string |  |   SuspiciousActivity 
+action_result.data.\*.classification | string |  |   Test 
+action_result.data.\*.comments.\*.comment | string |  |   initialaccess_type_of_alert_last_option from the dropdown 
+action_result.data.\*.comments.\*.createdByDisplayName | string |  |   Automation 
+action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-04-08T18:03:49.3223829Z 
+action_result.data.\*.createdDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.description | string |  |   Test alert 
+action_result.data.\*.detectionSource | string |  |   customTi 
+action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
+action_result.data.\*.determination | string |  |   Test 
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
+action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
+action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
+action_result.data.\*.evidence.\*.detectionStatus | string |  |   Test 
+action_result.data.\*.evidence.\*.deviceDnsName | string |  |   testmachine 
+action_result.data.\*.evidence.\*.fileDetails.fileName | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.fileDetails.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application 
+action_result.data.\*.evidence.\*.fileDetails.filePublisher | string |  |   Test 
+action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric |  |   77312 
+action_result.data.\*.evidence.\*.fileDetails.issuer | string |  |   file issuer 
+action_result.data.\*.evidence.\*.fileDetails.sha1 | string |  `sha1`  |   xxx8825f6b54238a452e3050d49e8aa50569a6c9 
+action_result.data.\*.evidence.\*.fileDetails.sha256 | string |  `sha256`  |   7db34eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13f5bc6 
+action_result.data.\*.evidence.\*.fileDetails.signer | string |  |   signer 
+action_result.data.\*.evidence.\*.firstSeenDateTime | string |  |   2021-08-30T16:25:37.180194Z 
+action_result.data.\*.evidence.\*.healthStatus | string |  |   inactive 
+action_result.data.\*.evidence.\*.imageFile.fileName | string |  |   powershell.exe 
+action_result.data.\*.evidence.\*.imageFile.filePath | string |  |   c:\\windows\\system32\\windowspowershell\\v1.0 
+action_result.data.\*.evidence.\*.imageFile.filePublisher | string |  |   test publisher 
+action_result.data.\*.evidence.\*.imageFile.fileSize | numeric |  |   99912 
+action_result.data.\*.evidence.\*.imageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.imageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.imageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.imageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.ipAddress | string |  `ip`  |   8.8.8.8 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string |  |   test 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string |  |   TESTMACHINE 
+action_result.data.\*.evidence.\*.mdeDeviceId | string |  |   xxxx84aa7ef0294f733b7b6e9499439e433axxxx 
+action_result.data.\*.evidence.\*.onboardingStatus | string |  |   onboarded 
+action_result.data.\*.evidence.\*.osBuild | numeric |  |   19044 
+action_result.data.\*.evidence.\*.osPlatform | string |  |   Windows10 
+action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string |  |   2022-03-09T19:52:51Z 
+action_result.data.\*.evidence.\*.parentProcessId | numeric |  |   7968 
+action_result.data.\*.evidence.\*.parentProcessImageFile | string |  |   TestFile 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string |  |   Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string |  |   Test publisher 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric |  |   36557800 
+action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.processCommandLine | string |  |   powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive 
+action_result.data.\*.evidence.\*.processCreationDateTime | string |  |   2022-03-09T19:53:01Z 
+action_result.data.\*.evidence.\*.processId | numeric |  |   6240 
+action_result.data.\*.evidence.\*.rbacGroupId | numeric |  |   73 
+action_result.data.\*.evidence.\*.rbacGroupName | string |  |   UnassignedGroup 
+action_result.data.\*.evidence.\*.registryHive | string |  |   HKEY_LOCAL_MACHINE 
+action_result.data.\*.evidence.\*.registryKey | string |  |   SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr 
+action_result.data.\*.evidence.\*.registryValue | string |  |   43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 
+action_result.data.\*.evidence.\*.registryValueName | string |  |   Debugger 
+action_result.data.\*.evidence.\*.registryValueType | string |  |   Unknown 
+action_result.data.\*.evidence.\*.remediationStatus | string |  |   prevented 
+action_result.data.\*.evidence.\*.remediationStatusDetails | string |  |   status details 
+action_result.data.\*.evidence.\*.riskScore | string |  |   high 
+action_result.data.\*.evidence.\*.url | string |  `url`  |   test.com 
+action_result.data.\*.evidence.\*.userAccount | string |  |  
+action_result.data.\*.evidence.\*.userAccount.accountName | string |  |   local service 
+action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string |  |   xxxxxxx 
+action_result.data.\*.evidence.\*.userAccount.domainName | string |  |   nt authority 
+action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string |  |   test 
+action_result.data.\*.evidence.\*.userAccount.userSid | string |  |   S-1-5-19 
+action_result.data.\*.evidence.\*.verdict | string |  |   unknown 
+action_result.data.\*.evidence.\*.version | string |  |   X1HX 
+action_result.data.\*.firstActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.id | string |  `defender alert id`  |   xx637812122456454120_-11082172xx 
+action_result.data.\*.incidentId | string |  `defender incident id`  |   42 
+action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx 
+action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
+action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
+1. Find related machines, network addresses, and files in the incident graph.
+2. Check for other suspicious activities in the machine timeline.
+3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
+4. Submit relevant files for deep analysis and review file behaviors. 
+5. Identify unusual system activity with system owners. 
+
+B. If you have validated the alert, contain and mitigate the breach.
+1. Record relevant artifacts, including those you need in mitigation rules.
+2. Stop suspicious processes. Block prevalent malware files across the network.
+3. Isolate affected machines.
+4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
+5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
+6. Update antimalware signatures and run full scans. 
+7. Deploy the latest security updates for Windows, web browsers, and other applications.
+
+C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
+
+Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.serviceSource | string |  |   TestEndpoint 
+action_result.data.\*.severity | string |  `defender severity`  |   medium 
+action_result.data.\*.status | string |  |   new 
+action_result.data.\*.tenantId | string |  |   xxxxc578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.threatDisplayName | string |  |   threat 
+action_result.data.\*.threatFamilyName | string |  |   threat 
+action_result.data.\*.title | string |  |   Test alert 
+action_result.summary | string |  |  
+action_result.message | string |  |   Successfully retrieved the alert 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1   
 
 ## action: 'update alert'
 Update properties of existing alert
@@ -659,122 +695,140 @@ Read only: **False**
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**alert\_id** |  required  | ID of the alert | string |  `defender alert id` 
+**alert_id** |  required  | ID of the alert | string |  `defender alert id` 
 **status** |  optional  | Specifies the status of the alert | string | 
-**assign\_to** |  optional  | Owner of the alert | string |  `email` 
+**assign_to** |  optional  | Owner of the alert | string |  `email` 
 **classification** |  optional  | Specifies the specification of the alert | string | 
 **determination** |  optional  | Specifies the determination of the alert | string | 
 
 #### Action Output
-DATA PATH | TYPE | CONTAINS
---------- | ---- | --------
-action\_result\.status | string | 
-action\_result\.parameter\.alert\_id | string |  `defender alert id` 
-action\_result\.parameter\.assign\_to | string |  `email` 
-action\_result\.parameter\.classification | string | 
-action\_result\.parameter\.determination | string | 
-action\_result\.parameter\.status | string | 
-action\_result\.data\.\*\.\@odata\.context | string |  `url` 
-action\_result\.data\.\*\.mitreTechniques\.\* | string | 
-action\_result\.data\.\*\.evidence\.\*\.tags\.\* | string | 
-action\_result\.data\.\*\.evidence\.\*\.vmMetadata\.vmId | string | 
-action\_result\.data\.\*\.evidence\.\*\.vmMetadata\.resourceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.vmMetadata\.cloudProvider | string | 
-action\_result\.data\.\*\.evidence\.\*\.vmMetadata\.subscriptionId | string | 
-action\_result\.data\.\*\.actorDisplayName | string | 
-action\_result\.data\.\*\.alertWebUrl | string |  `url` 
-action\_result\.data\.\*\.assignedTo | string |  `email` 
-action\_result\.data\.\*\.category | string | 
-action\_result\.data\.\*\.classification | string | 
-action\_result\.data\.\*\.comments\.\*\.comment | string | 
-action\_result\.data\.\*\.comments\.\*\.createdByDisplayName | string | 
-action\_result\.data\.\*\.comments\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.description | string | 
-action\_result\.data\.\*\.detectionSource | string | 
-action\_result\.data\.\*\.detectorId | string | 
-action\_result\.data\.\*\.determination | string | 
-action\_result\.data\.\*\.evidence\.\*\.\@odata\.type | string | 
-action\_result\.data\.\*\.evidence\.\*\.azureAdDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.createdDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.defenderAvStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.detectionStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.deviceDnsName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.fileDetails\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.firstSeenDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.healthStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.imageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.ipAddress | string |  `ip` 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.loggedOnUsers\.\*\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.mdeDeviceId | string | 
-action\_result\.data\.\*\.evidence\.\*\.onboardingStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.osBuild | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.osPlatform | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileName | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePath | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.filePublisher | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.fileSize | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.issuer | string | 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha1 | string |  `sha1` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.sha256 | string |  `sha256` 
-action\_result\.data\.\*\.evidence\.\*\.parentProcessImageFile\.signer | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCommandLine | string | 
-action\_result\.data\.\*\.evidence\.\*\.processCreationDateTime | string | 
-action\_result\.data\.\*\.evidence\.\*\.processId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupId | numeric | 
-action\_result\.data\.\*\.evidence\.\*\.rbacGroupName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryHive | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryKey | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValue | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueName | string | 
-action\_result\.data\.\*\.evidence\.\*\.registryValueType | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatus | string | 
-action\_result\.data\.\*\.evidence\.\*\.remediationStatusDetails | string | 
-action\_result\.data\.\*\.evidence\.\*\.riskScore | string | 
-action\_result\.data\.\*\.evidence\.\*\.url | string |  `url` 
-action\_result\.data\.\*\.evidence\.\*\.userAccount | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.accountName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.azureAdUserId | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.domainName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userPrincipalName | string | 
-action\_result\.data\.\*\.evidence\.\*\.userAccount\.userSid | string | 
-action\_result\.data\.\*\.evidence\.\*\.verdict | string | 
-action\_result\.data\.\*\.evidence\.\*\.version | string | 
-action\_result\.data\.\*\.firstActivityDateTime | string | 
-action\_result\.data\.\*\.id | string |  `defender alert id` 
-action\_result\.data\.\*\.incidentId | string |  `defender incident id` 
-action\_result\.data\.\*\.incidentWebUrl | string |  `url` 
-action\_result\.data\.\*\.lastActivityDateTime | string | 
-action\_result\.data\.\*\.lastUpdateDateTime | string | 
-action\_result\.data\.\*\.providerAlertId | string |  `defender alert id` 
-action\_result\.data\.\*\.recommendedActions | string | 
-action\_result\.data\.\*\.resolvedDateTime | string | 
-action\_result\.data\.\*\.serviceSource | string | 
-action\_result\.data\.\*\.severity | string |  `defender severity` 
-action\_result\.data\.\*\.status | string | 
-action\_result\.data\.\*\.tenantId | string | 
-action\_result\.data\.\*\.threatDisplayName | string | 
-action\_result\.data\.\*\.threatFamilyName | string | 
-action\_result\.data\.\*\.title | string | 
-action\_result\.summary | string | 
-action\_result\.message | string | 
-summary\.total\_objects | numeric | 
-summary\.total\_objects\_successful | numeric | 
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.alert_id | string |  `defender alert id`  |   xx637812122456454120_-11082172xx 
+action_result.parameter.assign_to | string |  `email`  |   test@abc.com 
+action_result.parameter.classification | string |  |   Unknown 
+action_result.parameter.determination | string |  |   Other 
+action_result.parameter.status | string |  |   New 
+action_result.data.\*.@odata.context | string |  `url`  |   https://graph.microsoft.com/beta/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.mitreTechniques.\* | string |  |   T1546.008 
+action_result.data.\*.evidence.\*.tags.\* | string |  |   testtag 
+action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |  
+action_result.data.\*.evidence.\*.vmMetadata.resourceId | string |  |  
+action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string |  |  
+action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string |  |  
+action_result.data.\*.actorDisplayName | string |  |   test@abc.com 
+action_result.data.\*.alertWebUrl | string |  `url`  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx 
+action_result.data.\*.assignedTo | string |  `email`  |   test@abc.com 
+action_result.data.\*.category | string |  |   SuspiciousActivity 
+action_result.data.\*.classification | string |  |   Test 
+action_result.data.\*.comments.\*.comment | string |  |   initialaccess_type_of_alert_last_option from the dropdown 
+action_result.data.\*.comments.\*.createdByDisplayName | string |  |   Automation 
+action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-04-08T18:03:49.3223829Z 
+action_result.data.\*.createdDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.description | string |  |   Test alert 
+action_result.data.\*.detectionSource | string |  |   customTi 
+action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
+action_result.data.\*.determination | string |  |   Test 
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
+action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
+action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
+action_result.data.\*.evidence.\*.detectionStatus | string |  |   Test 
+action_result.data.\*.evidence.\*.deviceDnsName | string |  |   testmachine 
+action_result.data.\*.evidence.\*.fileDetails.fileName | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.fileDetails.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application 
+action_result.data.\*.evidence.\*.fileDetails.filePublisher | string |  |   Test 
+action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric |  |   77312 
+action_result.data.\*.evidence.\*.fileDetails.issuer | string |  |   file issuer 
+action_result.data.\*.evidence.\*.fileDetails.sha1 | string |  `sha1`  |   xxx8825f6b54238a452e3050d49e8aa50569a6c9 
+action_result.data.\*.evidence.\*.fileDetails.sha256 | string |  `sha256`  |   7db34eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13f5bc6 
+action_result.data.\*.evidence.\*.fileDetails.signer | string |  |   signer 
+action_result.data.\*.evidence.\*.firstSeenDateTime | string |  |   2021-08-30T16:25:37.180194Z 
+action_result.data.\*.evidence.\*.healthStatus | string |  |   inactive 
+action_result.data.\*.evidence.\*.imageFile.fileName | string |  |   powershell.exe 
+action_result.data.\*.evidence.\*.imageFile.filePath | string |  |   c:\\windows\\system32\\windowspowershell\\v1.0 
+action_result.data.\*.evidence.\*.imageFile.filePublisher | string |  |   test publisher 
+action_result.data.\*.evidence.\*.imageFile.fileSize | numeric |  |   99912 
+action_result.data.\*.evidence.\*.imageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.imageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.imageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.imageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.ipAddress | string |  `ip`  |   8.8.8.8 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string |  |   test 
+action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string |  |   TESTMACHINE 
+action_result.data.\*.evidence.\*.mdeDeviceId | string |  |   xxxx84aa7ef0294f733b7b6e9499439e433axxxx 
+action_result.data.\*.evidence.\*.onboardingStatus | string |  |   onboarded 
+action_result.data.\*.evidence.\*.osBuild | numeric |  |   19044 
+action_result.data.\*.evidence.\*.osPlatform | string |  |   Windows10 
+action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string |  |   2022-03-09T19:52:51Z 
+action_result.data.\*.evidence.\*.parentProcessId | numeric |  |   7968 
+action_result.data.\*.evidence.\*.parentProcessImageFile | string |  |   TestFile 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string |  |   Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string |  |   C:\\Program Files\\Test\\Test\\Application\\Test.exe 
+action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string |  |   Test publisher 
+action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric |  |   36557800 
+action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string |  |   test issuer 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string |  `sha1`  |   xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string |  `sha256`  |   xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx 
+action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string |  |   test signer 
+action_result.data.\*.evidence.\*.processCommandLine | string |  |   powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive 
+action_result.data.\*.evidence.\*.processCreationDateTime | string |  |   2022-03-09T19:53:01Z 
+action_result.data.\*.evidence.\*.processId | numeric |  |   6240 
+action_result.data.\*.evidence.\*.rbacGroupId | numeric |  |   73 
+action_result.data.\*.evidence.\*.rbacGroupName | string |  |   UnassignedGroup 
+action_result.data.\*.evidence.\*.registryHive | string |  |   HKEY_LOCAL_MACHINE 
+action_result.data.\*.evidence.\*.registryKey | string |  |   SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr 
+action_result.data.\*.evidence.\*.registryValue | string |  |   43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 
+action_result.data.\*.evidence.\*.registryValueName | string |  |   Debugger 
+action_result.data.\*.evidence.\*.registryValueType | string |  |   Unknown 
+action_result.data.\*.evidence.\*.remediationStatus | string |  |   prevented 
+action_result.data.\*.evidence.\*.remediationStatusDetails | string |  |   status details 
+action_result.data.\*.evidence.\*.riskScore | string |  |   high 
+action_result.data.\*.evidence.\*.url | string |  `url`  |   test.com 
+action_result.data.\*.evidence.\*.userAccount | string |  |  
+action_result.data.\*.evidence.\*.userAccount.accountName | string |  |   local service 
+action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string |  |   xxxxxxx 
+action_result.data.\*.evidence.\*.userAccount.domainName | string |  |   nt authority 
+action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string |  |   test 
+action_result.data.\*.evidence.\*.userAccount.userSid | string |  |   S-1-5-19 
+action_result.data.\*.evidence.\*.verdict | string |  |   unknown 
+action_result.data.\*.evidence.\*.version | string |  |   X1HX 
+action_result.data.\*.firstActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.id | string |  `defender alert id`  |   xx637812122456454120_-11082172xx 
+action_result.data.\*.incidentId | string |  `defender incident id`  |   42 
+action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx 
+action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
+action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
+action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
+1. Find related machines, network addresses, and files in the incident graph.
+2. Check for other suspicious activities in the machine timeline.
+3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
+4. Submit relevant files for deep analysis and review file behaviors. 
+5. Identify unusual system activity with system owners. 
+
+B. If you have validated the alert, contain and mitigate the breach.
+1. Record relevant artifacts, including those you need in mitigation rules.
+2. Stop suspicious processes. Block prevalent malware files across the network.
+3. Isolate affected machines.
+4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
+5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
+6. Update antimalware signatures and run full scans. 
+7. Deploy the latest security updates for Windows, web browsers, and other applications.
+
+C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
+
+Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
+action_result.data.\*.serviceSource | string |  |   TestEndpoint 
+action_result.data.\*.severity | string |  `defender severity`  |   medium 
+action_result.data.\*.status | string |  |   new 
+action_result.data.\*.tenantId | string |  |   xxxxc578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.threatDisplayName | string |  |   threat 
+action_result.data.\*.threatFamilyName | string |  |   threat 
+action_result.data.\*.title | string |  |   Test alert 
+action_result.summary | string |  |  
+action_result.message | string |  |   Successfully updated the alert 
+summary.total_objects | numeric |  |   1 
+summary.total_objects_successful | numeric |  |   1 
