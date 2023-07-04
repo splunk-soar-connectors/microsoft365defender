@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2023 Splunk Inc.",
-    "app_version": "1.1.0",
+    "app_version": "1.1.0-fdse",
     "utctime_updated": "2022-05-26T06:24:07.659521Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
@@ -60,6 +60,43 @@
             "type": "test",
             "read_only": true,
             "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "on poll",
+            "description": "Callback action for the on_poll ingest functionality",
+            "type": "ingest",
+            "identifier": "on_poll",
+            "read_only": true,
+            "parameters": {
+                "container_id": {
+                    "description": "Parameter Ignored in this app",
+                    "data_type": "string",
+                    "allow_list": true,
+                    "order": 0
+                },
+                "start_time": {
+                    "description": "Parameter Ignored in this app",
+                    "data_type": "numeric",
+                    "order": 1
+                },
+                "end_time": {
+                    "description": "Parameter Ignored in this app",
+                    "data_type": "numeric",
+                    "order": 2
+                },
+                "container_count": {
+                    "description": "Maximum number of container records to query for",
+                    "data_type": "numeric",
+                    "order": 3
+                },
+                "artifact_count": {
+                    "description": "Parameter Ignored in this app",
+                    "data_type": "numeric",
+                    "order": 4
+                }
+            },
             "output": [],
             "versions": "EQ(*)"
         },

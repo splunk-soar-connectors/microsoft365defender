@@ -1150,6 +1150,20 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
+
+    def _handle_on_poll(self, param):
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        config = self.get_config()
+        if self.is_poll_now():
+            container_count = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
+        else:
+            container_count = int(config.get('max_containers'))
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        end_time = int(time.time())
+        self._state['first_run'] = False
+        self._state['last_ingestion_time'] = end_time
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
 
@@ -1172,6 +1186,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             ret_val = self._handle_run_query(param)
         elif action_id == 'update_alert':
             ret_val = self._handle_update_alert(param)
+        elif action_id == 'on_poll':
+            ret_val = self._handle_on_poll(param)
 
         return ret_val
 
