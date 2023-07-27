@@ -154,3 +154,14 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
         "Line of business application": "lineOfBusinessApplication",
         "Other": "other"
 }
+
+
+# For on_poll action:
+DEFENDER_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT = 500
+DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time_scheduled_poll"
+DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "first_run_max_incidents"
+STATE_FIRST_RUN = "first_run"
+STATE_LAST_TIME = "last_time"
+DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
+# DEFENDER_ALERTS_ID_ENDPOINT = "/security/incidents/{id}/alerts"
