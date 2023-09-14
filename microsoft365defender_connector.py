@@ -30,6 +30,7 @@ import os
 import pwd
 import time
 
+
 import encryption_helper
 import requests
 from bs4 import BeautifulSoup
@@ -242,7 +243,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # Call the BaseConnectors init first
         super(Microsoft365Defender_Connector, self).__init__()
-
+        import datetime
+        self._execution_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self._state = None
         self._tenant = None
         self._client_id = None
@@ -1153,7 +1155,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
-
     def _handle_on_poll(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
@@ -1220,9 +1221,9 @@ class Microsoft365Defender_Connector(BaseConnector):
                         # Make alerts as empty list
                         alert_list = list()
             
-            # Save artifacts for incidents and alerts
+            # Ingest artifacts for incidents and alerts
             try:
-                self._save_artifacts(action_result, artifacts, name=incident["displayName"], key=incident["id"])
+                self._ingest_artifacts_new(action_result, artifacts, name=incident["displayName"], key=incident["id"])
             except Exception as e:
                 self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
 
@@ -1303,70 +1304,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             cid = None
             count = None
         return phantom.APP_SUCCESS, cid, count
-    
-    def _save_artifacts(self, action_result, results, name, key):
-        """Ingest all the given artifacts accordingly into the new or existing container.
-        Parameters:
-            :param action_result: object of ActionResult class
-            :param results: list of artifacts of IoCs or alerts results
-            :param name: name of the container in which data will be ingested
-            :param key: source ID of the container in which data will be ingested
-        Returns:
-            :return: None
-        """
-        # Initialize
-        cid = None
-        start = 0
-        count = None
 
-        # If not results return
-        if not results:
-            return
-
-        # Check for existing container only if it's a scheduled/interval poll and not first run
-        if not (self.is_poll_now() or self._state['first_run']):
-            ret_val, cid, count = self._check_for_existing_container(action_result, key)
-            if phantom.is_fail(ret_val):
-                self.debug_print("Failed to check for existing container")
-
-        if cid and count:
-            ret_val = self._ingest_artifacts(action_result, results[:count], name, key, cid=cid)
-            if phantom.is_fail(ret_val):
-                self.debug_print("Failed to save ingested artifacts in the existing container")
-                return
-            # One part is ingested
-            start = count
-
-        # Divide artifacts list into chunks which length equals to max_artifacts configured in the asset
-        artifacts = [results[i:i + self._max_artifacts] for i in range(start, len(results), self._max_artifacts)]
-
-        for artifacts_list in artifacts:
-            ret_val = self._ingest_artifacts(action_result, artifacts_list, name, key)
-            if phantom.is_fail(ret_val):
-                self.debug_print("Failed to save ingested artifacts in the new container")
-                return
-
-    def _ingest_artifacts(self, action_result, artifacts, name, key, cid=None):
-        """Ingest artifacts into the Phantom server.
-        Parameters:
-            :param action_result: object of ActionResult class
-            :param artifacts: list of artifacts
-            :param name: name of the container in which data will be ingested
-            :param key: source ID of the container in which data will be ingested
-            :param cid: value of container ID
-        Returns:
-            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
-        """
-        self.debug_print(f"Ingesting {len(artifacts)} artifacts for {key} results into the {'existing' if {cid} else 'new'} container")
-        ret_val, message, cid = self._save_ingested(action_result, artifacts, name, key, cid=cid)
-
-        if phantom.is_fail(ret_val):
-            self.debug_print("Failed to save ingested artifacts, error msg: {}".format(message))
-            return ret_val
-
-        return phantom.APP_SUCCESS
-
-    def _save_ingested(self, action_result, artifacts, name, key, cid=None):
+    def _ingest_artifacts_new(self, action_result, artifacts, name, key, cid=None):
         """Save the artifacts into the given container ID(cid) and if not given create new container with given key(name).
         Parameters:
             :param action_result: object of ActionResult class
@@ -1377,24 +1316,33 @@ class Microsoft365Defender_Connector(BaseConnector):
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
         """
-        artifacts[-1]["run_automation"] = True
-        if cid:
-            for artifact in artifacts:
-                artifact['container_id'] = cid
-            ret_val, message, _ = self.save_artifacts(artifacts)
-            self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
-        else:
+        
+        # Check for existing container only if it's a scheduled/interval poll and not first run
+        if not (self.is_poll_now() or self._state['first_run']):
+            ret_val, cid, count = self._check_for_existing_container(action_result, key)
+            if phantom.is_fail(ret_val):
+                self.debug_print("Failed to check for existing container")
+
+        if not cid:
             container = dict()
             container.update({
                 "name": name,
                 "description": 'incident ingested using MS Defender API',
-                "source_data_identifier": key,
-                "artifacts": artifacts
+                "source_data_identifier": key
             })
+
             ret_val, message, cid = self.save_container(container)
             self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
+
+        artifacts[-1]["run_automation"] = True
+        for artifact in artifacts:
+            artifact['container_id'] = cid
+        ret_val, message, _ = self.save_artifacts(artifacts)
+
+        self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
         return ret_val, message, cid
     
+    # TODO: Merge the 2 functions below, as they are too similar
     def _create_alert_artifacts(self, action_result, alert):
         artifacts = []
 
@@ -1404,9 +1352,6 @@ class Microsoft365Defender_Connector(BaseConnector):
         alert_artifact['source_data_identifier'] = alert.get('id')
         alert_artifact['data'] = alert
 
-        cef = alert
-        alert_artifact['cef'] = cef
-        # Append to the artifacts list
         artifacts.append(alert_artifact)
 
         return artifacts
@@ -1417,12 +1362,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         incident_artifact = {}
         incident_artifact['label'] = 'incident'
         incident_artifact['name'] = 'incident Artifact'
-        incident_artifact['source_data_identifier'] = incident.get('name')
+        incident_artifact['source_data_identifier'] = incident.get('id')
         incident_artifact['data'] = incident
 
-        cef = incident
-        incident_artifact['cef'] = cef
-        # Append to the artifacts list
         artifacts.append(incident_artifact)
 
         return artifacts
