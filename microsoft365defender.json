@@ -17,7 +17,7 @@
     "main_module": "microsoft365defender_connector.py",
     "min_phantom_version": "6.1.0",
     "latest_tested_versions": [
-        "graph.microsoft.com/v1.0, Oct 30 2023"
+        "graph.microsoft.com/v1.0, Oct 9 2023"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
