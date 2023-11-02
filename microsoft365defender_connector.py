@@ -29,12 +29,11 @@ import json
 import os
 import pwd
 import time
-
+from datetime import datetime, timedelta
 
 import encryption_helper
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
 from django.http import HttpResponse
 
 from microsoft365defender_consts import *
@@ -917,7 +916,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             if limit:  # If limit == None, skip this step. Could cause timeouts if no limit is defined. Used for on_poll currently
                 if len(resource_list) > limit:
                     break
-                
+
         return resource_list[:limit]
 
     def _handle_list_incidents(self, param):
@@ -1159,8 +1158,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         config = self.get_config()
-        
-        # TODO: These parameters are not currently being passed to on_poll. Will use defaults, at least for now
+
+        # These parameters are not being passed as inputs to on_poll. Using defaults
         limit = None
         offset = 0
         filter = param.get(DEFENDER_INCIDENT_FILTER)
@@ -1169,7 +1168,6 @@ class Microsoft365Defender_Connector(BaseConnector):
         last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_DT_STR_FORMAT)  # Let's fall back to the last 7 days
         self._max_artifacts = config.get("max_artifacts", DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT)
         max_incidents = DEFENDER_INCIDENT_DEFAULT_LIMIT
-
 
         if start_time_scheduled_poll:
             ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
@@ -1185,7 +1183,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             max_incidents = int(config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS, max_incidents))
         else:
             if self._state.get(STATE_LAST_TIME):
-                last_modified_time = self._state[STATE_LAST_TIME]
+                last_modified_time = self._state[STATE_LAST_TIME]  # noqa: F841
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
         endpoint += "?$expand=alerts"
@@ -1203,24 +1201,24 @@ class Microsoft365Defender_Connector(BaseConnector):
                 alerts = incident.pop('alerts')
             except KeyError:
                 alerts = []
-                
-            try:                
+
+            try:
                 # Create artifact from the incident
                 artifacts = self._create_incident_artifacts(action_result, incident)
             except Exception as e:
                 self.debug_print("Error occurred while creating artifacts for incidents. Error: {}".format(str(e)))
                 # Make incidents as empty list
                 incident_list = list()
-            
+
             if alerts:
                 for alert in alerts:
                     try:
-                        artifacts.append(self._create_alert_artifacts(action_result, alert)[0])  # TODO: What are the corner cases that can make this fail?
+                        artifacts.append(self._create_alert_artifacts(action_result, alert)[0])
                     except Exception as e:
                         self.debug_print("Error occurred while creating artifacts for alerts. Error: {}".format(str(e)))
                         # Make alerts as empty list
-                        alert_list = list()
-            
+                        alert_list = list()  # noqa: F841
+
             # Ingest artifacts for incidents and alerts
             try:
                 self._ingest_artifacts_new(action_result, artifacts, name=incident["displayName"], key=incident["id"])
@@ -1234,13 +1232,14 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if incident_list:
             if DEFENDER_JSON_LAST_MODIFIED not in incident_list[0]:
-                return action_result.set_status(phantom.APP_ERROR, f"Could not extract {DEFENDER_JSON_LAST_MODIFIED} from latest ingested incident.")
+                return action_result.set_status(phantom.APP_ERROR, f"Could not extract \
+                    {DEFENDER_JSON_LAST_MODIFIED} from latest ingested incident.")
 
             self._state[STATE_LAST_TIME] = incident_list[0][DEFENDER_JSON_LAST_MODIFIED]
             self.save_state(self._state)
 
         return action_result.set_status(phantom.APP_SUCCESS)
-    
+
     def _check_for_existing_container(self, action_result, key):
         """Check for existing container and return container ID and remaining margin count.
         Parameters:
@@ -1316,7 +1315,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
         """
-        
+
         # Check for existing container only if it's a scheduled/interval poll and not first run
         if not (self.is_poll_now() or self._state['first_run']):
             ret_val, cid, count = self._check_for_existing_container(action_result, key)
@@ -1341,8 +1340,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
         return ret_val, message, cid
-    
-    # TODO: Merge the 2 functions below, as they are too similar
+
     def _create_alert_artifacts(self, action_result, alert):
         artifacts = []
 
@@ -1352,11 +1350,11 @@ class Microsoft365Defender_Connector(BaseConnector):
         alert_artifact['source_data_identifier'] = alert.get('id')
         alert_artifact['data'] = alert
         alert_artifact['cef'] = alert
-        
+
         artifacts.append(alert_artifact)
 
         return artifacts
-    
+
     def _create_incident_artifacts(self, action_result, incident):
         artifacts = []
 

@@ -57,8 +57,9 @@ DEFENDER_CODE_RECEIVED_MSG = 'Code Received'
 DEFENDER_CLIENT_CREDENTIALS_STRING = 'client_credentials'
 DEFENDER_TOKEN_NOT_AVAILABLE_MSG = 'Token not available. Please run test connectivity first'
 DEFENDER_TOKEN_EXPIRED = 'Status Code: 401'
-DEFENDER_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to its unexpected format. Resetting the state file with the default format. \
-Please run the 'test connectivity' action again."
+DEFENDER_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to its unexpected format. \
+    Resetting the state file with the default format. \
+    Please run the 'test connectivity' action again."
 
 DEFENDER_AUTHORIZE_WAIT_TIME = 15
 DEFENDER_TC_STATUS_SLEEP = 3
