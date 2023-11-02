@@ -1351,7 +1351,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         alert_artifact['name'] = alert.get('title')
         alert_artifact['source_data_identifier'] = alert.get('id')
         alert_artifact['data'] = alert
-
+        alert_artifact['cef'] = alert
+        
         artifacts.append(alert_artifact)
 
         return artifacts
@@ -1364,6 +1365,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         incident_artifact['name'] = 'incident Artifact'
         incident_artifact['source_data_identifier'] = incident.get('id')
         incident_artifact['data'] = incident
+        incident_artifact['cef'] = incident
 
         artifacts.append(incident_artifact)
 
