@@ -890,7 +890,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             # First run
             if not next_page_token and offset:
-                params['skip'] = offset
+                params['$skip'] = offset
 
             # make rest call
             ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, params=params)
@@ -913,10 +913,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             next_page_token = response[DEFENDER_NEXT_PAGE_TOKEN]
 
-            if limit:  # If limit == None, skip this step. Could cause timeouts if no limit is defined. Used for on_poll currently
-                if len(resource_list) > limit:
-                    break
-
+            if len(resource_list) >= limit:
+                break
         return resource_list[:limit]
 
     def _handle_list_incidents(self, param):
