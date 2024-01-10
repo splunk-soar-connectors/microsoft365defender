@@ -1185,7 +1185,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
         endpoint += "?$expand=alerts"
-        incident_list = self._paginator(action_result, limit, offset, endpoint, filter, orderby)
+        incident_list = self._paginator(action_result, max_incidents, offset, endpoint, filter, orderby)
         if not incident_list:  # Failed to fetch incidents, regardless of the reason
             self.save_progress("Failed to retrieve incidents")
             return action_result.get_status()
