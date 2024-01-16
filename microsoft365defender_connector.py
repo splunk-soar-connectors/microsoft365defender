@@ -1,6 +1,6 @@
 # File: microsoft365defender_connector.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1152,27 +1152,65 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
+    def _check_invalid_since_utc_time(self, action_result, time):
+        """Determine that given time is not before 1970-01-01T00:00:00Z.
+        Parameters:
+            :param action_result: object of ActionResult class
+            :param time: object of time
+        Returns:
+            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
+        # Check that given time must not be before 1970-01-01T00:00:00Z.
+        if time < datetime.strptime("1970-01-01T00:00:00Z", DEFENDER_APP_DT_STR_FORMAT):
+            return phantom.APP_ERROR
+        return phantom.APP_SUCCESS
+
+    def _check_date_format(self, action_result, date):
+        time = None
+        try:
+            # Check for the time is in valid format or not
+            time = datetime.strptime(date, DEFENDER_APP_DT_STR_FORMAT)
+            # Taking current UTC time as end time
+            end_time = datetime.utcnow()
+            ret_val = self._check_invalid_since_utc_time(action_result, time)
+            if phantom.is_fail(ret_val):
+                return action_result.set_status(phantom.APP_ERROR, LOG_UTC_SINCE_TIME_ERROR)
+            # Checking future date
+            if time >= end_time:
+                message = LOG_GREATER_EQUAL_TIME_ERR.format(LOG_CONFIG_TIME_POLL_NOW)
+                return action_result.set_status(phantom.APP_ERROR, message)
+        except Exception as e:
+            message = "Invalid date string received. Error occurred while checking date format. Error: {}".format(str(e))
+            return action_result.set_status(phantom.APP_ERROR, message)
+        return phantom.APP_SUCCESS
+
     def _handle_on_poll(self, param):
         action_result = self.add_action_result(ActionResult(dict(param)))
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         config = self.get_config()
 
         # These parameters are not being passed as inputs to on_poll. Using defaults
-        limit = None
         offset = 0
-        filter = param.get(DEFENDER_INCIDENT_FILTER)
+        filter = param.get(DEFENDER_INCIDENT_FILTER, "")
         orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
         start_time_scheduled_poll = config.get(DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL)
-        last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_DT_STR_FORMAT)  # Let's fall back to the last 7 days
+        last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_APP_DT_STR_FORMAT)  # Let's fall back to the last 7 days
         self._max_artifacts = config.get("max_artifacts", DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT)
         max_incidents = DEFENDER_INCIDENT_DEFAULT_LIMIT
 
-        if start_time_scheduled_poll:
-            ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
-            if phantom.is_fail(ret_val):
-                self.save_progress(action_result.get_message())
-                return action_result.set_status(phantom.APP_ERROR)
-            last_modified_time = start_time_scheduled_poll
+        if not self.is_poll_now():
+            if start_time_scheduled_poll:
+                ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
+                # if date format is not valid
+                if phantom.is_fail(ret_val):
+                    self.save_progress(action_result.get_message())
+                    return action_result.set_status(phantom.APP_ERROR)
+
+                # set start time as the last modified time to, hence data is fetched from that point.
+                last_modified_time = start_time_scheduled_poll
+
+            start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
+            filter += start_time_filter if not filter else f" and {start_time_filter}"
 
         if self.is_poll_now():
             max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))

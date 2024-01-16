@@ -12,7 +12,7 @@ This app integrates with Microsoft 365 Defender to execute various generic and i
 
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "Copyright (c) 2022-2023 Splunk Inc."
+[comment]: # "Copyright (c) 2022-2024 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."

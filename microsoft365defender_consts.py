@@ -1,6 +1,6 @@
 # File: microsoft365defender_consts.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 # Define your constants here
 DEFENDER_USER_AGENT = "M365dPartner-Splunk-SOAR/{product_version}"
 DEFENDER_AUTHORIZATION_HEADER = "Bearer {token}"
+DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 DEFENDER_SOAR_BASE_URL = '{soar_base_url}rest'
 DEFENDER_SOAR_SYS_INFO_URL = '/system_info'
@@ -158,10 +159,14 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
 
 
 # For on_poll action:
-DEFENDER_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+
 DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT = 500
 DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time_scheduled_poll"
 DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "first_run_max_incidents"
 STATE_FIRST_RUN = "first_run"
 STATE_LAST_TIME = "last_time"
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
+LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
+LOG_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
