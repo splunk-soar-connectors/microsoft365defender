@@ -1177,7 +1177,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, LOG_UTC_SINCE_TIME_ERROR)
             # Checking future date
             if time >= end_time:
-                message = LOG_GREATER_EQUAL_TIME_ERR.format(LOG_CONFIG_TIME_POLL_NOW)
+                message = LOG_GREATER_EQUAL_TIME_ERROR.format(LOG_CONFIG_TIME_POLL_NOW)
                 return action_result.set_status(phantom.APP_ERROR, message)
         except Exception as e:
             message = "Invalid date string received. Error occurred while checking date format. Error: {}".format(str(e))

@@ -168,5 +168,5 @@ STATE_FIRST_RUN = "first_run"
 STATE_LAST_TIME = "last_time"
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
 LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
-LOG_GREATER_EQUAL_TIME_ERR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+LOG_GREATER_EQUAL_TIME_ERROR = 'Invalid {0}, can not be greater than or equal to current UTC time'
 LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"
