@@ -2,11 +2,11 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1.2.0  
+Connector Version: 1.3.0  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.0  
+Minimum Product Version: 6.1.1  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
@@ -290,9 +290,13 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **client_id** |  required  | string | Client ID
 **client_secret** |  required  | password | Client Secret
 **non_interactive** |  optional  | boolean | Non-Interactive Auth
+**first_run_max_incidents** |  optional  | numeric | Maximum Incidents for scheduled polling first time
+**start_time_scheduled_poll** |  optional  | string | Start Time for Schedule/Manual POLL (Use this format: 1970-01-01T00:00:00Z)
+**filter** |  optional  | string | Filter incidents based on property
 
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration  
+[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality  
 [run query](#action-run-query) - An advanced search query  
 [list incidents](#action-list-incidents) - List all the incidents  
 [list alerts](#action-list-alerts) - List all the alerts  
@@ -304,6 +308,18 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 Validate the asset configuration for connectivity using supplied configuration
 
 Type: **test**  
+Read only: **True**
+
+#### Action Parameters
+No parameters are required for this action
+
+#### Action Output
+No Output  
+
+## action: 'on poll'
+Callback action for the on_poll ingest functionality
+
+Type: **ingest**  
 Read only: **True**
 
 #### Action Parameters
