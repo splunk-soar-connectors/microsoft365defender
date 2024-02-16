@@ -45,11 +45,17 @@
             "required": true,
             "order": 3
         },
+        "timeout": {
+            "description": "HTTP API timeout in seconds",
+            "data_type": "numeric",
+            "required": false,
+            "order": 4
+        },        
         "non_interactive": {
             "description": "Non-Interactive Auth",
             "data_type": "boolean",
             "default": false,
-            "order": 4
+            "order": 5
         }
     },
     "actions": [

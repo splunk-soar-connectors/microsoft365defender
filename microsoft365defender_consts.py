@@ -112,6 +112,7 @@ DEFENDER_RUN_CONNECTIVITY_MSG = "Please run test connectivity first to complete 
     "generate a token that the app can use to make calls to the server "
 DEFENDER_LIMIT_KEY = "'limit' action parameter"
 DEFENDER_OFFSET_KEY = "'offset' action parameter"
+DEFENDER_TIMEOUT_KEY = "'timeout' asset parameter"
 
 DEFENDER_INVALID_CLASSIFICATION = "Please provide a valid value in the 'classification' parameter"
 DEFENDER_INVALID_DETERMINATION = "Please provide a valid value in the 'determination' parameter"
