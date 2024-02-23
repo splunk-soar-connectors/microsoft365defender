@@ -1198,19 +1198,18 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._max_artifacts = config.get("max_artifacts", DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT)
         max_incidents = DEFENDER_INCIDENT_DEFAULT_LIMIT
 
-        if not self.is_poll_now():
-            if start_time_scheduled_poll:
-                ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
-                # if date format is not valid
-                if phantom.is_fail(ret_val):
-                    self.save_progress(action_result.get_message())
-                    return action_result.set_status(phantom.APP_ERROR)
+        if start_time_scheduled_poll:
+            ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
+            # if date format is not valid
+            if phantom.is_fail(ret_val):
+                self.save_progress(action_result.get_message())
+                return action_result.set_status(phantom.APP_ERROR)
 
-                # set start time as the last modified time to, hence data is fetched from that point.
-                last_modified_time = start_time_scheduled_poll
+            # set start time as the last modified time to, hence data is fetched from that point.
+            last_modified_time = start_time_scheduled_poll
 
-            start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
-            filter += start_time_filter if not filter else f" and {start_time_filter}"
+        start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
+        filter += start_time_filter if not filter else f" and {start_time_filter}"
 
         if self.is_poll_now():
             max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))

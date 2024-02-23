@@ -85,7 +85,33 @@
             "type": "ingest",
             "identifier": "on_poll",
             "read_only": true,
-            "parameters": {},
+            "parameters": {
+                "start_time": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 0
+                },
+                "end_time": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 1
+                },
+                "container_count": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored for schedule/ interval polling only",
+                    "order": 2
+                },
+                "artifact_count": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 3
+                },
+                "container_id": {
+                     "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 4
+                }
+            },
             "output": [],
             "versions": "EQ(*)"
         },
