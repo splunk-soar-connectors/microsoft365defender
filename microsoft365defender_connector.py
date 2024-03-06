@@ -559,7 +559,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         flag = True
         while flag:
             try:
-                response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=DEFAULT_TIMEOUT)
+                response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=self._timeout)
             except Exception as e:
                 self.debug_print("Exception Message - {}".format(str(e)))
                 return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}"
@@ -1352,7 +1352,12 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
         self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
-
+        self._timeout = config.get('timeout', DEFAULT_TIMEOUT)
+        
+        ret_val, self._timeout = self._validate_integer(action_result, self._timeout, DEFENDER_TIMEOUT_KEY)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+        
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
             self._state = {
