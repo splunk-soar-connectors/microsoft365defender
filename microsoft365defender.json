@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2024 Splunk Inc.",
-    "app_version": "1.3.0",
+    "app_version": "1.3.1",
     "utctime_updated": "2023-11-02T19:23:33.000000Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
@@ -51,8 +51,8 @@
             "default": false,
             "order": 4
         },
-        "first_run_max_incidents": {
-            "description": "Maximum Incidents for scheduled polling first time",
+        "max_incidents_for_polling": {
+            "description": "Maximum Incidents for scheduled/ interval polling for each cycle",
             "data_type": "numeric",
             "default": 1000,
             "order": 5

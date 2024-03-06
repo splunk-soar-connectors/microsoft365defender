@@ -1189,14 +1189,10 @@ class Microsoft365Defender_Connector(BaseConnector):
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
         config = self.get_config()
 
-        # These parameters are not being passed as inputs to on_poll. Using defaults
-        offset = 0
-        filter = param.get(DEFENDER_INCIDENT_FILTER, "")
-        orderby = param.get(DEFENDER_INCIDENT_ORDER_BY)
+        # params for list incidents
+        filter, offset, orderby = config.get(DEFENDER_INCIDENT_FILTER, ""), 0, "lastUpdateDateTime"
         start_time_scheduled_poll = config.get(DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL)
         last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_APP_DT_STR_FORMAT)  # Let's fall back to the last 7 days
-        self._max_artifacts = config.get("max_artifacts", DEFENDER_CONFIG_MAX_ARTIFACTS_DEFAULT)
-        max_incidents = DEFENDER_INCIDENT_DEFAULT_LIMIT
 
         if start_time_scheduled_poll:
             ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
@@ -1208,201 +1204,111 @@ class Microsoft365Defender_Connector(BaseConnector):
             # set start time as the last modified time to, hence data is fetched from that point.
             last_modified_time = start_time_scheduled_poll
 
+        if self.is_poll_now():
+            max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
+        else:
+            max_incidents = config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS,
+                                       DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING)
+            ret_val, max_incidents = self._validate_integer(action_result, max_incidents, "max_incidents")
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            if self._state.get(STATE_FIRST_RUN, True):
+                self._state[STATE_FIRST_RUN] = False
+            elif self._state.get(STATE_LAST_TIME):
+                last_modified_time = self._state[STATE_LAST_TIME]  # noqa: F841
+
         start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
         filter += start_time_filter if not filter else f" and {start_time_filter}"
 
-        if self.is_poll_now():
-            max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
-        elif self._state.get(STATE_FIRST_RUN, True):
-            self._state[STATE_FIRST_RUN] = False
-            max_incidents = int(config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS, max_incidents))
-        else:
-            if self._state.get(STATE_LAST_TIME):
-                last_modified_time = self._state[STATE_LAST_TIME]  # noqa: F841
-
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
         endpoint += "?$expand=alerts"
-        incident_list = self._paginator(action_result, max_incidents, offset, endpoint, filter, orderby)
-        if not incident_list:  # Failed to fetch incidents, regardless of the reason
-            self.save_progress("Failed to retrieve incidents")
-            return action_result.get_status()
+        incident_left = max_incidents
+        self.duplicate_container = 0
+        while incident_left > 0:
+            self.debug_print("making a rest with call with offset: {}, incident_left: {}".format(offset, incident_left))
+            incident_list = self._paginator(action_result, incident_left, offset, endpoint, filter, orderby)
 
-        self.save_progress(f"Successfully fetched {len(incident_list)} incidents.")
+            if not incident_list and not isinstance(incident_list, list):  # Failed to fetch incidents, regardless of the reason
+                self.save_progress("Failed to retrieve incidents")
+                return action_result.get_status()
 
-        # Ingest the incidents
-        for incident in incident_list:
-            try:
-                # Get alerts for this incident
-                alerts = incident.pop('alerts')
-            except KeyError:
-                alerts = []
+            self.save_progress(f"Successfully fetched {len(incident_list)} incidents.")
 
-            try:
-                # Create artifact from the incident
-                artifacts = self._create_incident_artifacts(action_result, incident)
-            except Exception as e:
-                self.debug_print("Error occurred while creating artifacts for incidents. Error: {}".format(str(e)))
-                # Make incidents as empty list
-                incident_list = list()
+            # Ingest the incidents
+            self.debug_print("Creating incidents and alerts artifacts")
+            for incident in incident_list:
+                try:
+                    # Get alerts for this incident
+                    alerts = incident.pop('alerts')
+                except KeyError:
+                    alerts = []
 
-            if alerts:
-                for alert in alerts:
-                    try:
-                        artifacts.append(self._create_alert_artifacts(action_result, alert)[0])
-                    except Exception as e:
-                        self.debug_print("Error occurred while creating artifacts for alerts. Error: {}".format(str(e)))
-                        # Make alerts as empty list
-                        alert_list = list()  # noqa: F841
+                # Create artifact from the incident and alerts
+                artifacts = [self._create_alert_artifacts(alert) for alert in alerts]
+                artifacts.append(self._create_incident_artifacts(incident))
 
-            # Ingest artifacts for incidents and alerts
-            try:
-                self._ingest_artifacts_new(action_result, artifacts, name=incident["displayName"], key=incident["id"])
-            except Exception as e:
-                self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
+                # Ingest artifacts for incidents and alerts
+                try:
+                    self._ingest_artifacts_new(artifacts, name=incident["displayName"], key=incident["id"])
+                except Exception as e:
+                    self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
 
-        summary = action_result.update_summary({})
-        summary["total_incidents"] = len(incident_list)
-        summary["filter"] = filter
-        summary["first_run"] = self._state.get(STATE_FIRST_RUN, True)
+            if incident_list and not self.is_poll_now():
+                if DEFENDER_JSON_LAST_MODIFIED not in incident_list[-1]:
+                    return action_result.set_status(phantom.APP_ERROR, f"Could not extract \
+                        {DEFENDER_JSON_LAST_MODIFIED} from latest ingested incident.")
 
-        if incident_list:
-            if DEFENDER_JSON_LAST_MODIFIED not in incident_list[0]:
-                return action_result.set_status(phantom.APP_ERROR, f"Could not extract \
-                    {DEFENDER_JSON_LAST_MODIFIED} from latest ingested incident.")
+                self._state[STATE_LAST_TIME] = incident_list[-1][DEFENDER_JSON_LAST_MODIFIED]
+                self.save_state(self._state)
 
-            self._state[STATE_LAST_TIME] = incident_list[0][DEFENDER_JSON_LAST_MODIFIED]
-            self.save_state(self._state)
+            offset += incident_left
+            incident_left = self.duplicate_container
+            self.duplicate_container = 0
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _check_for_existing_container(self, action_result, key):
-        """Check for existing container and return container ID and remaining margin count.
-        Parameters:
-            :param action_result: object of ActionResult class
-            :param key: Source Data ID of the container to check
-        Returns:
-            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR),
-                    cid(container_id),
-                    count(remaining margin calculated with given _max_artifacts)
-        """
-        cid = None
-        count = None
-
-        base_url = self.get_phantom_base_url()
-        base_url = base_url if base_url.endswith('/') else base_url + '/'
-        url = f'{base_url}rest/container?_filter_source_data_identifier="{key}"&sort=start_time&order=desc'
-
-        try:
-            r = requests.get(url, verify=False)
-        except Exception as e:
-            self.debug_print("Error making local rest call: {0}".format(str(e)))
-            self.debug_print('DB QUERY: {}'.format(url))
-            return phantom.APP_ERROR, cid, count
-
-        try:
-            resp_json = r.json()
-        except Exception as e:
-            self.debug_print('Exception caught: {0}'.format(str(e)))
-            return phantom.APP_ERROR, cid, count
-
-        container = resp_json.get('data', [])
-        if not container:
-            self.debug_print("Not having any existing container")
-            return phantom.APP_ERROR, cid, count
-
-        # Consider latest container as existing container from the received list of containers
-        try:
-            container = container[0]
-            if not isinstance(container, dict):
-                self.debug_print("Invalid response received while checking for the existing container")
-                return phantom.APP_ERROR, cid, count
-        except Exception as e:
-            self.debug_print("Invalid response received while checking for the existing container. Error: {}".format(str(e)))
-            return phantom.APP_ERROR, cid, count
-
-        cid = container.get('id')
-        artifact_count = container.get('artifact_count')
-
-        self.debug_print("Existing Container ID: {}".format(cid))
-        self.debug_print("Existing Container artifacts count: {}".format(artifact_count))
-
-        try:
-            count = int(self._max_artifacts) - int(artifact_count)
-            # Not having space in latest container or exceed a configured limit for artifacts
-            if count <= 0:
-                self.debug_print("Not having enough space for the artifacts in the existing container")
-                cid = None
-                count = None
-        except Exception as e:
-            self.debug_print("Error occurred while calculating remaining container space. Error: {}".format(str(e)))
-            cid = None
-            count = None
-        return phantom.APP_SUCCESS, cid, count
-
-    def _ingest_artifacts_new(self, action_result, artifacts, name, key, cid=None):
+    def _ingest_artifacts_new(self, artifacts, name, key):
         """Save the artifacts into the given container ID(cid) and if not given create new container with given key(name).
         Parameters:
-            :param action_result: object of ActionResult class
             :param artifacts: list of artifacts of IoCs or incidents results
             :param name: name of the container in which data will be ingested
             :param key: source ID of the container in which data will be ingested
-            :param cid: value of container ID
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
         """
+        container = {
+            "name": name,
+            "description": 'incident ingested using MS Defender API',
+            "source_data_identifier": key
+        }
 
-        # Check for existing container only if it's a scheduled/interval poll and not first run
-        if not (self.is_poll_now() or self._state['first_run']):
-            ret_val, cid, count = self._check_for_existing_container(action_result, key)
-            if phantom.is_fail(ret_val):
-                self.debug_print("Failed to check for existing container")
+        ret_val, message, cid = self.save_container(container)
+        if phantom.is_fail(ret_val):
+            self.debug_print("Error occurred while creating container, reason: {}".format(message))
+            return
 
-        if not cid:
-            container = dict()
-            container.update({
-                "name": name,
-                "description": 'incident ingested using MS Defender API',
-                "source_data_identifier": key
-            })
+        self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
+        if message in "Duplicate container found":
+            self.duplicate_container += 1
+            self.debug_print("Duplicate container count: {}".format(self.duplicate_container))
 
-            ret_val, message, cid = self.save_container(container)
-            self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
-
-        artifacts[-1]["run_automation"] = True
         for artifact in artifacts:
             artifact['container_id'] = cid
         ret_val, message, _ = self.save_artifacts(artifacts)
 
         self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
-        return ret_val, message, cid
 
-    def _create_alert_artifacts(self, action_result, alert):
-        artifacts = []
+    @staticmethod
+    def _create_alert_artifacts(alert):
 
-        alert_artifact = {}
-        alert_artifact['label'] = 'alert'
-        alert_artifact['name'] = alert.get('title')
-        alert_artifact['source_data_identifier'] = alert.get('id')
-        alert_artifact['data'] = alert
-        alert_artifact['cef'] = alert
+        return {'label': 'alert', 'name': alert.get('title'), 'source_data_identifier': alert.get('id'),
+                'data': alert, 'cef': alert}
 
-        artifacts.append(alert_artifact)
-
-        return artifacts
-
-    def _create_incident_artifacts(self, action_result, incident):
-        artifacts = []
-
-        incident_artifact = {}
-        incident_artifact['label'] = 'incident'
-        incident_artifact['name'] = 'incident Artifact'
-        incident_artifact['source_data_identifier'] = incident.get('id')
-        incident_artifact['data'] = incident
-        incident_artifact['cef'] = incident
-
-        artifacts.append(incident_artifact)
-
-        return artifacts
+    @staticmethod
+    def _create_incident_artifacts(incident):
+        return {'label': 'incident', 'name': 'incident Artifact', 'source_data_identifier': incident.get('id'),
+                 'data': incident, 'cef': incident}
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
