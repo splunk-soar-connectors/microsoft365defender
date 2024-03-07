@@ -34,6 +34,13 @@ are the default ports used by Splunk SOAR.
 -   Non-Interactive Auth - It is used to determine the authentication method. If it is checked then
     non-Interactive auth will be used otherwise interactive auth will be used. Whenever this
     checkbox is toggled then the test connectivity action must be run again.
+-   Timeout - It is used to make configurable timeout for all actions.
+
+## Explanation of Asset Configuration Parameters for On Poll
+
+-   Max Incidents For Polling - In each polling cycle, incidents are fetched for schedule and interval polling based on the provided value (Default 1000). Containers are created per incident.
+-   Start Time - It is used to filter the incidents based on start time, if nothing is provided, then it will take last week as start time. <br> **NOTE: Start time is used to filter based on lastUpdateDateTime property of incident**
+-   Filter - It is used to add extra filters on incident properties.
 
 ## Configure and set up permissions of the app created on the Microsoft Azure portal
 
