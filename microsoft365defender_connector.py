@@ -1353,11 +1353,11 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
         self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
         self._timeout = config.get('timeout', DEFAULT_TIMEOUT)
-        
+
         ret_val, self._timeout = self._validate_integer(action_result, self._timeout, DEFENDER_TIMEOUT_KEY)
         if phantom.is_fail(ret_val):
             return action_result.get_status()
-        
+
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
             self._state = {
