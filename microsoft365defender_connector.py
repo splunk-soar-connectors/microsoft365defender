@@ -1238,11 +1238,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Ingest the incidents
             self.debug_print("Creating incidents and alerts artifacts")
             for incident in incident_list:
-                try:
-                    # Get alerts for this incident
-                    alerts = incident.pop('alerts')
-                except KeyError:
-                    alerts = []
+                # Get alerts for this incident
+                alerts = incident.pop('alerts', [])
 
                 # Create artifact from the incident and alerts
                 artifacts = [self._create_alert_artifacts(alert) for alert in alerts]
@@ -1253,6 +1250,9 @@ class Microsoft365Defender_Connector(BaseConnector):
                     self._ingest_artifacts_new(artifacts, name=incident["displayName"], key=incident["id"])
                 except Exception as e:
                     self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
+
+            if self.is_poll_now():
+                break
 
             if incident_list and not self.is_poll_now():
                 if DEFENDER_JSON_LAST_MODIFIED not in incident_list[-1]:
