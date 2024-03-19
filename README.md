@@ -36,16 +36,21 @@ are the default ports used by Splunk SOAR.
 
 ## Explanation of Asset Configuration Parameters
 
--   Tenant ID - It is the Directory ID of the Microsoft Azure Active Directory on the Microsoft
+-   Tenant ID - It is the Directory ID of the Microsoft Entra ID on the Microsoft
     Azure portal.
--   Client ID - It is the Application ID of an application configured in the Microsoft Azure Active
-    Directory.
+-   Client ID - It is the Application ID of an application configured in the Microsoft Entra ID.
 -   Client Secret - It is the secret string used by the application to prove its identity when
-    requesting a token. It can be generated for the configured application on the Microsoft Azure
-    Active Directory.
+    requesting a token. It can be generated for the configured application on the Microsoft Entra ID.
 -   Non-Interactive Auth - It is used to determine the authentication method. If it is checked then
     non-Interactive auth will be used otherwise interactive auth will be used. Whenever this
     checkbox is toggled then the test connectivity action must be run again.
+-   Timeout - It is used to make configurable timeout for all actions.
+
+## Explanation of Asset Configuration Parameters for On Poll
+
+-   Max Incidents For Polling - In each polling cycle, incidents are fetched for schedule and interval polling based on the provided value (Default 1000). Containers are created per incident.
+-   Start Time - It is used to filter the incidents based on start time, if nothing is provided, then it will take last week as start time. <br> **NOTE: Start time is used to filter based on lastUpdateDateTime property of incident**
+-   Filter - It is used to add extra filters on incident properties.
 
 ## Configure and set up permissions of the app created on the Microsoft Azure portal
 
@@ -54,8 +59,8 @@ are the default ports used by Splunk SOAR.
 #### Create the app
 
 1.  Navigate to <https://portal.azure.com> .
-2.  Log in with a user that has permission to create an app in the Azure Active Directory (AAD).
-3.  Select the 'Azure Active Directory'.
+2.  Log in with a user that has permission to create an app in the Microsoft Entra ID.
+3.  Select the 'Microsoft Entra ID'.
 4.  Select the 'App registrations' menu from the left-side panel.
 5.  Select the 'New Registration' option at the top of the page.
 6.  In the registration form, choose a name for your application and then click 'Register'.
@@ -69,16 +74,11 @@ are the default ports used by Splunk SOAR.
 11. Provide the following Delegated and Application permissions to the app.
     -   **Application Permissions**
 
-          
-
         -   SecurityAlert.Read.All
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
-
     -   **Delegated Permissions**
-
-          
 
         -   SecurityAlert.Read.All
         -   SecurityAlert.ReadWrite.All
@@ -90,8 +90,6 @@ are the default ports used by Splunk SOAR.
 15. Click on the 'Microsoft Graph' option.
 16. Provide the following Delegated permission to the app.
     -   **Delegated Permission**
-
-          
 
         -   offline_access
 
@@ -126,10 +124,7 @@ When creating an asset for the app,
     'Client Secret' field.
 
 -   Provide the tenant ID of the app created during the previous step of Azure app creation in the
-    'Tenant ID' field. For getting the value of tenant ID, navigate to the 'Azure Active Directory'
-    on the Microsoft Azure portal; click on the 'App registrations' menu from the left-side panel;
-    click on the earlier created app. The value displayed in the 'Directory (tenant) ID' is the
-    required tenant ID.
+    'Tenant ID' field. For getting the value of tenant ID, navigate to the  Microsoft Entra ID; The value displayed in the 'Tenant ID'.
 
 -   Save the asset with the above values.
 
@@ -138,14 +133,7 @@ When creating an asset for the app,
     incoming for Microsoft 365 Defender to this location' field. Add a suffix '/result' to the URL
     copied in the previous step. The resulting URL looks like the one mentioned below.
 
-      
-      
-      
-
     https://\<soar_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
-
-      
-      
 
 -   Add the URL created in the earlier step into the 'Redirect URIs' section of the 'Authentication'
     menu for the registered app that was created in the previous steps on the Microsoft Azure
@@ -154,7 +142,7 @@ When creating an asset for the app,
       
 
     1.  Below steps are required only in case of Interactive auth (i.e. If checkbox is unchecked)
-    2.  Navigate to the 'Azure Active Directory' on the Microsoft Azure portal.
+    2.  Navigate to the 'Microsoft Entra ID' on the Microsoft Azure portal.
     3.  Click on the 'App registrations' menu from the left-side panel.
     4.  Click on the earlier created app. You can search for the app by name or client ID.
     5.  Navigate to the 'Authentication' menu of the app on the left-side panel.
@@ -204,8 +192,7 @@ When creating an asset for the app,
 
       
 
-    -   The first step is to get an application created in a specific tenant on the Microsoft Azure
-        Active Directory. Generate the \[client_secret\] for the configured application. The
+    -   The first step is to get an application created in a specific tenant on the Microsoft Entra ID. Generate the \[client_secret\] for the configured application. The
         detailed steps have been mentioned in the earlier section.
 
     -   Configure the Microsoft 365 Defender app's asset with appropriate values for \[tenant_id\],
@@ -289,9 +276,10 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **tenant_id** |  required  | string | Tenant ID
 **client_id** |  required  | string | Client ID
 **client_secret** |  required  | password | Client Secret
+**timeout** |  optional  | numeric | HTTP API timeout in seconds
 **non_interactive** |  optional  | boolean | Non-Interactive Auth
-**first_run_max_incidents** |  optional  | numeric | Maximum Incidents for scheduled polling first time
-**start_time_scheduled_poll** |  optional  | string | Start Time for Schedule/Manual POLL (Use this format: 1970-01-01T00:00:00Z)
+**max_incidents_for_polling** |  optional  | numeric | Maximum Incidents for scheduled/ interval polling for each cycle
+**start_time** |  optional  | string | Start time for schedule/interval/manual poll (Use this format: 1970-01-01T00:00:00Z)
 **filter** |  optional  | string | Filter incidents based on property
 
 ### Supported Actions  
@@ -323,7 +311,13 @@ Type: **ingest**
 Read only: **True**
 
 #### Action Parameters
-No parameters are required for this action
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**start_time** |  optional  | Parameter ignored in this app | numeric | 
+**end_time** |  optional  | Parameter ignored in this app | numeric | 
+**container_count** |  optional  | Parameter ignored for schedule/ interval polling only | numeric | 
+**artifact_count** |  optional  | Parameter ignored in this app | numeric | 
+**container_id** |  optional  | Parameter ignored in this app | numeric | 
 
 #### Action Output
 No Output  
