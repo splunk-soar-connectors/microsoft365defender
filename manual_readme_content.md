@@ -40,6 +40,14 @@ are the default ports used by Splunk SOAR.
 -   Start Time - It is used to filter the incidents based on start time, if nothing is provided, then it will take last week as start time. <br> **NOTE: Start time is used to filter based on lastUpdateDateTime property of incident**
 -   Filter - It is used to add extra filters on incident properties.
 
+## Explanation of On Poll Behavior
+
+-    The default incident order is set to "lastUpdateDateTime," prioritizing the latest incidents as newest.
+-    The start time parameter value aligns with the lastUpdateDateTime of the incident. 
+-    The maximum incidents parameter functions exclusively with scheduled and interval polling.
+-    For Example,if the maximum incident parameter is set to 100, the 'on_poll' feature must incorporate up to 100 distinct incidents, based on the provided filter and start time parameter value.
+
+
 ## Configure and set up permissions of the app created on the Microsoft Azure portal
 
 <div style="margin-left: 2em">
@@ -234,9 +242,7 @@ Please check the permissions for the state file as mentioned below.
 
 #### State file path
 
--   For Non-NRI instance: /opt/phantom/local_data/app_states/\<appid>/\<asset_id>\_state.json
--   For NRI instance:
-    /\<PHANTOM_HOME_DIRECTORY>/local_data/app_states/\<appid>/\<asset_id>\_state.json
+- state file path on instance: /opt/phantom/local_data/app_states/\<appid>/\<asset_id>\_state.json
 
 #### State file permissions
 
