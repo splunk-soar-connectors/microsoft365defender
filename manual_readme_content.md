@@ -63,6 +63,7 @@ are the default ports used by Splunk SOAR.
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
+        -   SecurityIncident.ReadWrite.All
 
     -   **Delegated Permissions**
 
@@ -72,6 +73,8 @@ are the default ports used by Splunk SOAR.
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
+        -   SecurityIncident.ReadWrite.All
+
 12. 'Grant Admin Consent' for it.
 13. Again click on 'Add a permission'.
 14. Under the 'Select an API' section, select 'Microsoft APIs'.

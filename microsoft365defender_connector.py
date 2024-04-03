@@ -1015,6 +1015,41 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
 
+    def _handle_update_incident(self, param):
+        """ This function is used to handle the update incident action.
+
+        :param param: Dictionary of input parameters
+        :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        incident_id = param[DEFENDER_INCIDENT_ID]
+
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
+                                   .format(input=incident_id))
+
+        # make rest call
+        request_body = {
+            # "assignedTo": "",
+            "status": param["status"],
+            # "classification": "",
+            # "determination": "",
+            # "customTags": [
+            #   "Demo"
+            # ]
+        }
+        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
+                                                 data=json.dumps(request_body))
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        action_result.add_data(response)
+
+        return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY)
+
     def _handle_get_alert(self, param):
         """ This function is used to handle the get alert action.
 
@@ -1172,6 +1207,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             ret_val = self._handle_run_query(param)
         elif action_id == 'update_alert':
             ret_val = self._handle_update_alert(param)
+        elif action_id == 'update_incident':
+            ret_val = self._handle_update_incident(param)
 
         return ret_val
 

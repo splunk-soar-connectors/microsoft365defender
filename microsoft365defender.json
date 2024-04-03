@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2023 Splunk Inc.",
-    "app_version": "1.2.0",
+    "app_version": "1.2.1",
     "utctime_updated": "2022-05-26T06:24:07.659521Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
@@ -1370,6 +1370,58 @@
                 "title": "Get Incident"
             },
             "versions": "EQ(*)"
+        },
+        {
+            "action": "update incident",
+            "description": "Update the properties of an incident object",
+            "type": "investigate",
+            "identifier": "update_incident",
+            "read_only": false,
+            "versions": "EQ(*)",
+            "parameters": {
+                "incident_id": {
+                    "description": "ID of the incident",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "defender incident id"
+                    ],
+                    "order": 0
+                },
+                "status": {
+                    "description": "The status of the incident",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "active",
+                        "resolved",
+                        "redirected",
+                        "unknownFutureValue"
+                    ],
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.incident_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "48"
+                    ],
+                    "contains": [
+                        "defender incident id"
+                    ]
+                }
+            ]
         },
         {
             "action": "get alert",
