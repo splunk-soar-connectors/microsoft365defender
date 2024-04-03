@@ -242,8 +242,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # Call the BaseConnectors init first
         super(Microsoft365Defender_Connector, self).__init__()
-        import datetime
-        self._execution_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self._state = None
         self._tenant = None
         self._client_id = None
@@ -1215,8 +1213,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             if self._state.get(STATE_FIRST_RUN, True):
                 self._state[STATE_FIRST_RUN] = False
-            elif self._state.get(STATE_LAST_TIME):
-                last_modified_time = self._state[STATE_LAST_TIME]  # noqa: F841
+            elif last_time := self._state.get(STATE_LAST_TIME):
+                last_modified_time = last_time  # noqa: F841
 
         start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
         filter += start_time_filter if not filter else f" and {start_time_filter}"
@@ -1254,10 +1252,10 @@ class Microsoft365Defender_Connector(BaseConnector):
             if self.is_poll_now():
                 break
 
-            if incident_list and not self.is_poll_now():
+            if incident_list:
                 if DEFENDER_JSON_LAST_MODIFIED not in incident_list[-1]:
-                    return action_result.set_status(phantom.APP_ERROR, f"Could not extract \
-                        {DEFENDER_JSON_LAST_MODIFIED} from latest ingested incident.")
+                    return action_result.set_status(phantom.APP_ERROR, "Could not extract {} from latest ingested "
+                                                                       "incident.".format(DEFENDER_JSON_LAST_MODIFIED))
 
                 self._state[STATE_LAST_TIME] = incident_list[-1][DEFENDER_JSON_LAST_MODIFIED]
                 self.save_state(self._state)
