@@ -11,7 +11,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2023 Splunk Inc.",
-    "app_version": "1.2.1",
+    "app_version": "1.2.5",
     "utctime_updated": "2022-05-26T06:24:07.659521Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
@@ -1400,6 +1400,49 @@
                         "unknownFutureValue"
                     ],
                     "order": 1
+                },
+                "assignedTo": {
+                    "description": "Owner of the incident, or null if no owner is assigned. Free editable text",
+                    "data_type": "string",
+                    "required": false,
+                    "order": 2
+                },
+                "classification": {
+                    "description": "The specification for the incident",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "unknown",
+                        "falsePositive",
+                        "truePositive",
+                        "informationalExpectedActivity",
+                        "unknownFutureValue"
+                    ],
+                    "order": 3
+                },
+                "determination": {
+                    "description": "Specifies the determination of the incident",
+                    "data_type": "string",
+                    "required": false,
+                    "value_list": [
+                        "unknown",
+                        "apt",
+                        "malware",
+                        "securityPersonnel",
+                        "securityTesting",
+                        "unwantedSoftware",
+                        "other",
+                        "multiStagedAttack",
+                        "compromisedUser",
+                        "phishing",
+                        "maliciousUserActivity",
+                        "notMalicious",
+                        "notEnoughDataToValidate",
+                        "confirmedUserActivity",
+                        "lineOfBusinessApplication",
+                        "unknownFutureValue"
+                    ],
+                    "order": 4
                 }
             },
             "output": [
@@ -1420,6 +1463,10 @@
                     "contains": [
                         "defender incident id"
                     ]
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
                 }
             ]
         },

@@ -1030,16 +1030,14 @@ class Microsoft365Defender_Connector(BaseConnector):
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
                                    .format(input=incident_id))
 
-        # make rest call
-        request_body = {
-            # "assignedTo": "",
-            "status": param["status"],
-            # "classification": "",
-            # "determination": "",
-            # "customTags": [
-            #   "Demo"
-            # ]
-        }
+        request_body = {}
+        for param_name in ("assignedTo", "status", "classification", "determination"):
+            if param.get(param_name) is not None:
+                value = param[param_name]
+                request_body[param_name] = value
+
+        self.save_progress(f"Attempting to update incident {incident_id} with data={request_body}")
+
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
                                                  data=json.dumps(request_body))
 
