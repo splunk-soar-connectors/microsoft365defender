@@ -1188,7 +1188,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         config = self.get_config()
 
         # params for list incidents
-        filter, offset, orderby = config.get(DEFENDER_INCIDENT_FILTER, ""), 0, "lastUpdateDateTime"
+        poll_filter, offset, orderby = config.get(DEFENDER_INCIDENT_FILTER, ""), 0, "lastUpdateDateTime"
         start_time_scheduled_poll = config.get(DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL)
         last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_APP_DT_STR_FORMAT)  # Let's fall back to the last 7 days
 
@@ -1217,7 +1217,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                 last_modified_time = last_time  # noqa: F841
 
         start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
-        filter += start_time_filter if not filter else f" and {start_time_filter}"
+        poll_filter += start_time_filter if not poll_filter else f" and {start_time_filter}"
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
         endpoint += "?$expand=alerts"
@@ -1225,7 +1225,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         self.duplicate_container = 0
         while incident_left > 0:
             self.debug_print("making a rest with call with offset: {}, incident_left: {}".format(offset, incident_left))
-            incident_list = self._paginator(action_result, incident_left, offset, endpoint, filter, orderby)
+            incident_list = self._paginator(action_result, incident_left, offset, endpoint, poll_filter, orderby)
 
             if not incident_list and not isinstance(incident_list, list):  # Failed to fetch incidents, regardless of the reason
                 self.save_progress("Failed to retrieve incidents")
@@ -1257,7 +1257,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                     return action_result.set_status(phantom.APP_ERROR, "Could not extract {} from latest ingested "
                                                                        "incident.".format(DEFENDER_JSON_LAST_MODIFIED))
 
-                self._state[STATE_LAST_TIME] = incident_list[-1][DEFENDER_JSON_LAST_MODIFIED]
+                self._state[STATE_LAST_TIME] = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
                 self.save_state(self._state)
 
             offset += incident_left

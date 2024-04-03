@@ -6,7 +6,7 @@ Connector Version: 1.3.0
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.1  
+Minimum Product Version: 6.2.0  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
@@ -501,25 +501,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 
@@ -670,25 +652,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 
@@ -817,25 +781,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 
