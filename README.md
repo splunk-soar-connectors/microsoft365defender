@@ -2,7 +2,7 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1.2.1  
+Connector Version: 1.2.5  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
@@ -569,12 +569,16 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **incident_id** |  required  | ID of the incident | string |  `defender incident id` 
 **status** |  optional  | The status of the incident | string | 
+**assignedTo** |  optional  | Owner of the incident, or null if no owner is assigned. Free editable text | string | 
+**classification** |  optional  | The specification for the incident | string | 
+**determination** |  optional  | Specifies the determination of the incident | string | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string |  |   success  failed 
-action_result.parameter.incident_id | string |  `defender incident id`  |   48   
+action_result.parameter.incident_id | string |  `defender incident id`  |   48 
+action_result.data | string |  |    
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
