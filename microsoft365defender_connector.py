@@ -1210,7 +1210,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             if self._state.get(STATE_FIRST_RUN, True):
                 self._state[STATE_FIRST_RUN] = False
             elif last_time := self._state.get(STATE_LAST_TIME):
-                last_modified_time = last_time  # noqa: F841
+                last_modified_time = last_time
 
         start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
         poll_filter += start_time_filter if not poll_filter else f" and {start_time_filter}"
