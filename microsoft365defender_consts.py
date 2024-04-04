@@ -25,6 +25,7 @@ DEFENDER_TC_FILE = 'oauth_task.out'
 DEFENDER_CONFIG_TENANT_ID = 'tenant_id'
 DEFENDER_CONFIG_CLIENT_ID = 'client_id'
 DEFENDER_CONFIG_CLIENT_SECRET = 'client_secret'  # pragma: allowlist secret
+DEFENDER_CONFIG_TIMEOUT = 'timeout'
 
 DEFENDER_TOKEN_STRING = 'token'
 DEFENDER_ACCESS_TOKEN_STRING = 'access_token'
@@ -163,7 +164,7 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
 # For on_poll action:
 DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time"
-DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_for_polling"
+DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_for_poll"
 STATE_FIRST_RUN = "first_run"
 STATE_LAST_TIME = "last_time"
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"

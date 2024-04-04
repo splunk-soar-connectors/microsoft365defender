@@ -1150,28 +1150,24 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
-    def _check_invalid_since_utc_time(self, action_result, time):
+    @staticmethod
+    def _check_invalid_since_utc_time(time):
         """Determine that given time is not before 1970-01-01T00:00:00Z.
         Parameters:
-            :param action_result: object of ActionResult class
             :param time: object of time
         Returns:
-            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+            :return: bool(True/False)
         """
         # Check that given time must not be before 1970-01-01T00:00:00Z.
-        if time < datetime.strptime("1970-01-01T00:00:00Z", DEFENDER_APP_DT_STR_FORMAT):
-            return phantom.APP_ERROR
-        return phantom.APP_SUCCESS
+        return time < datetime.strptime("1970-01-01T00:00:00Z", DEFENDER_APP_DT_STR_FORMAT)
 
     def _check_date_format(self, action_result, date):
-        time = None
         try:
             # Check for the time is in valid format or not
             time = datetime.strptime(date, DEFENDER_APP_DT_STR_FORMAT)
             # Taking current UTC time as end time
             end_time = datetime.utcnow()
-            ret_val = self._check_invalid_since_utc_time(action_result, time)
-            if phantom.is_fail(ret_val):
+            if self._check_invalid_since_utc_time(time):
                 return action_result.set_status(phantom.APP_ERROR, LOG_UTC_SINCE_TIME_ERROR)
             # Checking future date
             if time >= end_time:
@@ -1219,8 +1215,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
         poll_filter += start_time_filter if not poll_filter else f" and {start_time_filter}"
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
-        endpoint += "?$expand=alerts"
+        endpoint = "{0}{1}?$expand=alerts".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
         incident_left = max_incidents
         self.duplicate_container = 0
         while incident_left > 0:
@@ -1300,13 +1295,21 @@ class Microsoft365Defender_Connector(BaseConnector):
     @staticmethod
     def _create_alert_artifacts(alert):
 
-        return {'label': 'alert', 'name': alert.get('title'), 'source_data_identifier': alert.get('id'),
-                'data': alert, 'cef': alert}
+        return {
+            'label': 'alert',
+            'name': alert.get('title'),
+            'source_data_identifier': alert.get('id'),
+            'data': alert, 'cef': alert
+        }
 
     @staticmethod
     def _create_incident_artifacts(incident):
-        return {'label': 'incident', 'name': 'incident Artifact', 'source_data_identifier': incident.get('id'),
-                 'data': incident, 'cef': incident}
+        return {
+            'label': 'incident',
+            'name': 'incident Artifact',
+            'source_data_identifier': incident.get('id'),
+            'data': incident, 'cef': incident
+        }
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
@@ -1350,7 +1353,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
         self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
-        self._timeout = config.get('timeout', DEFAULT_TIMEOUT)
+        self._timeout = config.get(DEFENDER_CONFIG_TIMEOUT, DEFAULT_TIMEOUT)
 
         ret_val, self._timeout = self._validate_integer(action_result, self._timeout, DEFENDER_TIMEOUT_KEY)
         if phantom.is_fail(ret_val):

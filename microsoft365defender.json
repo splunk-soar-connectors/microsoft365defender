@@ -56,8 +56,8 @@
             "default": false,
             "order": 5
         },
-        "max_incidents_for_polling": {
-            "description": "Maximum Incidents for scheduled/ interval polling for each cycle",
+        "max_incidents_per_poll": {
+            "description": "Maximum Incidents for scheduled/interval polling for each cycle",
             "data_type": "numeric",
             "default": 1000,
             "order": 6
@@ -68,7 +68,7 @@
             "order": 7
         },
         "filter": {
-            "description": "Filter incidents based on property",
+            "description": "Filter incidents based on property (example: status ne 'active')",
             "data_type": "string",
             "order": 8
         }
