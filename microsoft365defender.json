@@ -103,7 +103,7 @@
                 },
                 "container_count": {
                     "data_type": "numeric",
-                    "description": "Parameter ignored for schedule/ interval polling only",
+                    "description": "Parameter ignored for schedule/interval polling only",
                     "order": 2
                 },
                 "artifact_count": {
