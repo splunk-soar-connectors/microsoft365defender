@@ -1,6 +1,6 @@
 # File: microsoft365defender_consts.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 # Define your constants here
 DEFENDER_USER_AGENT = "M365dPartner-Splunk-SOAR/{product_version}"
 DEFENDER_AUTHORIZATION_HEADER = "Bearer {token}"
+DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 DEFENDER_SOAR_BASE_URL = '{soar_base_url}rest'
 DEFENDER_SOAR_SYS_INFO_URL = '/system_info'
@@ -24,6 +25,7 @@ DEFENDER_TC_FILE = 'oauth_task.out'
 DEFENDER_CONFIG_TENANT_ID = 'tenant_id'
 DEFENDER_CONFIG_CLIENT_ID = 'client_id'
 DEFENDER_CONFIG_CLIENT_SECRET = 'client_secret'  # pragma: allowlist secret
+DEFENDER_CONFIG_TIMEOUT = 'timeout'
 
 DEFENDER_TOKEN_STRING = 'token'
 DEFENDER_ACCESS_TOKEN_STRING = 'access_token'
@@ -57,8 +59,9 @@ DEFENDER_CODE_RECEIVED_MSG = 'Code Received'
 DEFENDER_CLIENT_CREDENTIALS_STRING = 'client_credentials'
 DEFENDER_TOKEN_NOT_AVAILABLE_MSG = 'Token not available. Please run test connectivity first'
 DEFENDER_TOKEN_EXPIRED = 'Status Code: 401'
-DEFENDER_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to its unexpected format. Resetting the state file with the default format. \
-Please run the 'test connectivity' action again."
+DEFENDER_STATE_FILE_CORRUPT_ERROR = "Error occurred while loading the state file due to its unexpected format. \
+    Resetting the state file with the default format. \
+    Please run the 'test connectivity' action again."
 
 DEFENDER_AUTHORIZE_WAIT_TIME = 15
 DEFENDER_TC_STATUS_SLEEP = 3
@@ -91,6 +94,7 @@ DEFENDER_INCIDENT_FILTER = 'filter'
 DEFENDER_INCIDENT_ORDER_BY = 'orderby'
 DEFENDER_ACTION_TAKEN = 'action_taken'
 DEFENDER_INCIDENT_DEFAULT_LIMIT = 50
+DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING = 1000
 DEFAULT_TIMEOUT = 30
 DEFENDER_ALERT_DEFAULT_LIMIT = 2000
 DEFENDER_INCIDENT_DEFAULT_OFFSET = 0
@@ -112,6 +116,7 @@ DEFENDER_RUN_CONNECTIVITY_MSG = "Please run test connectivity first to complete 
     "generate a token that the app can use to make calls to the server "
 DEFENDER_LIMIT_KEY = "'limit' action parameter"
 DEFENDER_OFFSET_KEY = "'offset' action parameter"
+DEFENDER_TIMEOUT_KEY = "'timeout' asset parameter"
 
 DEFENDER_INVALID_CLASSIFICATION = "Please provide a valid value in the 'classification' parameter"
 DEFENDER_INVALID_DETERMINATION = "Please provide a valid value in the 'determination' parameter"
@@ -154,3 +159,15 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
         "Line of business application": "lineOfBusinessApplication",
         "Other": "other"
 }
+
+
+# For on_poll action:
+DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time"
+DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_for_poll"
+STATE_FIRST_RUN = "first_run"
+STATE_LAST_TIME = "last_time"
+DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
+LOG_UTC_SINCE_TIME_ERROR = "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
+LOG_GREATER_EQUAL_TIME_ERROR = 'Invalid {0}, can not be greater than or equal to current UTC time'
+LOG_CONFIG_TIME_POLL_NOW = "'Time range for POLL NOW' or 'Start Time for Schedule/Manual POLL' asset configuration parameter"

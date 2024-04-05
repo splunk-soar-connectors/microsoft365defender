@@ -1,6 +1,6 @@
 # File: microsoft365defender_connector.py
 #
-# Copyright (c) 2022-2023 Splunk Inc.
+# Copyright (c) 2022-2024 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import json
 import os
 import pwd
 import time
+from datetime import datetime, timedelta
 
 import encryption_helper
 import requests
@@ -241,7 +242,6 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # Call the BaseConnectors init first
         super(Microsoft365Defender_Connector, self).__init__()
-
         self._state = None
         self._tenant = None
         self._client_id = None
@@ -557,7 +557,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         flag = True
         while flag:
             try:
-                response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=DEFAULT_TIMEOUT)
+                response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=self._timeout)
             except Exception as e:
                 self.debug_print("Exception Message - {}".format(str(e)))
                 return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}"
@@ -1150,6 +1150,167 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
+    @staticmethod
+    def _check_invalid_since_utc_time(time: datetime) -> bool:
+        """Determine that given time is not before 1970-01-01T00:00:00Z.
+        Parameters:
+            :param time: object of time
+        Returns:
+            :return: bool(True/False)
+        """
+        # Check that given time must not be before 1970-01-01T00:00:00Z.
+        return time < datetime.strptime("1970-01-01T00:00:00Z", DEFENDER_APP_DT_STR_FORMAT)
+
+    def _check_date_format(self, action_result, date):
+        try:
+            # Check for the time is in valid format or not
+            time = datetime.strptime(date, DEFENDER_APP_DT_STR_FORMAT)
+            # Taking current UTC time as end time
+            end_time = datetime.utcnow()
+            if self._check_invalid_since_utc_time(time):
+                return action_result.set_status(phantom.APP_ERROR, LOG_UTC_SINCE_TIME_ERROR)
+            # Checking future date
+            if time >= end_time:
+                message = LOG_GREATER_EQUAL_TIME_ERROR.format(LOG_CONFIG_TIME_POLL_NOW)
+                return action_result.set_status(phantom.APP_ERROR, message)
+        except Exception as e:
+            message = "Invalid date string received. Error occurred while checking date format. Error: {}".format(str(e))
+            return action_result.set_status(phantom.APP_ERROR, message)
+        return phantom.APP_SUCCESS
+
+    def _handle_on_poll(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        config = self.get_config()
+
+        # params for list incidents
+        poll_filter, offset, orderby = config.get(DEFENDER_INCIDENT_FILTER, ""), 0, "lastUpdateDateTime"
+        start_time_scheduled_poll = config.get(DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL)
+        last_modified_time = (datetime.now() - timedelta(days=7)).strftime(DEFENDER_APP_DT_STR_FORMAT)  # Let's fall back to the last 7 days
+
+        if start_time_scheduled_poll:
+            ret_val = self._check_date_format(action_result, start_time_scheduled_poll)
+            # if date format is not valid
+            if phantom.is_fail(ret_val):
+                self.save_progress(action_result.get_message())
+                return action_result.set_status(phantom.APP_ERROR)
+
+            # set start time as the last modified time to, hence data is fetched from that point.
+            last_modified_time = start_time_scheduled_poll
+
+        if self.is_poll_now():
+            max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
+        else:
+            max_incidents = config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS,
+                                       DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING)
+            ret_val, max_incidents = self._validate_integer(action_result, max_incidents, "max_incidents")
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            if self._state.get(STATE_FIRST_RUN, True):
+                self._state[STATE_FIRST_RUN] = False
+            elif last_time := self._state.get(STATE_LAST_TIME):
+                last_modified_time = last_time
+
+        start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
+        poll_filter += start_time_filter if not poll_filter else f" and {start_time_filter}"
+
+        endpoint = "{0}{1}?$expand=alerts".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_LIST_INCIDENTS_ENDPOINT)
+        incident_left = max_incidents
+        self.duplicate_container = 0
+        while incident_left > 0:
+            self.debug_print("making a rest with call with offset: {}, incident_left: {}".format(offset, incident_left))
+            incident_list = self._paginator(action_result, incident_left, offset, endpoint, poll_filter, orderby)
+
+            if not incident_list and not isinstance(incident_list, list):  # Failed to fetch incidents, regardless of the reason
+                self.save_progress("Failed to retrieve incidents")
+                return action_result.get_status()
+
+            self.save_progress(f"Successfully fetched {len(incident_list)} incidents.")
+
+            # Ingest the incidents
+            self.debug_print("Creating incidents and alerts artifacts")
+            for incident in incident_list:
+                # Get alerts for this incident
+                alerts = incident.pop('alerts', [])
+
+                # Create artifact from the incident and alerts
+                artifacts = [self._create_alert_artifacts(alert) for alert in alerts]
+                artifacts.append(self._create_incident_artifacts(incident))
+
+                # Ingest artifacts for incidents and alerts
+                try:
+                    self._ingest_artifacts_new(artifacts, name=incident["displayName"], key=incident["id"])
+                except Exception as e:
+                    self.debug_print("Error occurred while saving artifacts for incidents. Error: {}".format(str(e)))
+
+            if self.is_poll_now():
+                break
+
+            if incident_list:
+                if DEFENDER_JSON_LAST_MODIFIED not in incident_list[-1]:
+                    return action_result.set_status(phantom.APP_ERROR, "Could not extract {} from latest ingested "
+                                                                       "incident.".format(DEFENDER_JSON_LAST_MODIFIED))
+
+                self._state[STATE_LAST_TIME] = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
+                self.save_state(self._state)
+
+            offset += incident_left
+            incident_left = self.duplicate_container
+            self.duplicate_container = 0
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _ingest_artifacts_new(self, artifacts, name, key):
+        """Save the artifacts into the given container ID(cid) and if not given create new container with given key(name).
+        Parameters:
+            :param artifacts: list of artifacts of IoCs or incidents results
+            :param name: name of the container in which data will be ingested
+            :param key: source ID of the container in which data will be ingested
+        Returns:
+            :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
+        """
+        container = {
+            "name": name,
+            "description": 'incident ingested using MS Defender API',
+            "source_data_identifier": key
+        }
+
+        ret_val, message, cid = self.save_container(container)
+        if phantom.is_fail(ret_val):
+            self.debug_print("Error occurred while creating container, reason: {}".format(message))
+            return
+
+        self.debug_print("save_container (with artifacts) returns, value: {}, reason: {}, id: {}".format(ret_val, message, cid))
+        if message in "Duplicate container found":
+            self.duplicate_container += 1
+            self.debug_print("Duplicate container count: {}".format(self.duplicate_container))
+
+        for artifact in artifacts:
+            artifact['container_id'] = cid
+        ret_val, message, _ = self.save_artifacts(artifacts)
+
+        self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
+
+    @staticmethod
+    def _create_alert_artifacts(alert):
+
+        return {
+            'label': 'alert',
+            'name': alert.get('title'),
+            'source_data_identifier': alert.get('id'),
+            'data': alert, 'cef': alert
+        }
+
+    @staticmethod
+    def _create_incident_artifacts(incident):
+        return {
+            'label': 'incident',
+            'name': 'incident Artifact',
+            'source_data_identifier': incident.get('id'),
+            'data': incident, 'cef': incident
+        }
+
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
 
@@ -1172,6 +1333,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             ret_val = self._handle_run_query(param)
         elif action_id == 'update_alert':
             ret_val = self._handle_update_alert(param)
+        elif action_id == 'on_poll':
+            ret_val = self._handle_on_poll(param)
 
         return ret_val
 
@@ -1190,6 +1353,11 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
         self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
+        self._timeout = config.get(DEFENDER_CONFIG_TIMEOUT, DEFAULT_TIMEOUT)
+
+        ret_val, self._timeout = self._validate_integer(action_result, self._timeout, DEFENDER_TIMEOUT_KEY)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
