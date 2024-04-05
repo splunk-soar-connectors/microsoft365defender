@@ -284,9 +284,9 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **client_secret** |  required  | password | Client Secret
 **timeout** |  optional  | numeric | HTTP API timeout in seconds
 **non_interactive** |  optional  | boolean | Non-Interactive Auth
-**max_incidents_for_polling** |  optional  | numeric | Maximum Incidents for scheduled/ interval polling for each cycle
+**max_incidents_per_poll** |  optional  | numeric | Maximum Incidents for scheduled/interval polling for each cycle
 **start_time** |  optional  | string | Start time for schedule/interval/manual poll (Use this format: 1970-01-01T00:00:00Z)
-**filter** |  optional  | string | Filter incidents based on property
+**filter** |  optional  | string | Filter incidents based on property (example: status ne 'active')
 
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration  
@@ -321,7 +321,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **start_time** |  optional  | Parameter ignored in this app | numeric | 
 **end_time** |  optional  | Parameter ignored in this app | numeric | 
-**container_count** |  optional  | Parameter ignored for schedule/ interval polling only | numeric | 
+**container_count** |  optional  | Parameter ignored for schedule/interval polling only | numeric | 
 **artifact_count** |  optional  | Parameter ignored in this app | numeric | 
 **container_id** |  optional  | Parameter ignored in this app | numeric | 
 
