@@ -1151,7 +1151,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 
     @staticmethod
-    def _check_invalid_since_utc_time(time):
+    def _check_invalid_since_utc_time(time: datetime) -> bool:
         """Determine that given time is not before 1970-01-01T00:00:00Z.
         Parameters:
             :param time: object of time
