@@ -86,12 +86,16 @@ are the default ports used by Splunk SOAR.
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
+        -   SecurityIncident.ReadWrite.All
+
     -   **Delegated Permissions**
 
         -   SecurityAlert.Read.All
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
+        -   SecurityIncident.ReadWrite.All
+
 12. 'Grant Admin Consent' for it.
 13. Again click on 'Add a permission'.
 14. Under the 'Select an API' section, select 'Microsoft APIs'.
@@ -295,6 +299,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [list incidents](#action-list-incidents) - List all the incidents  
 [list alerts](#action-list-alerts) - List all the alerts  
 [get incident](#action-get-incident) - Retrieve specific incident by its ID  
+[update incident](#action-update-incident) - Update the properties of an incident object  
 [get alert](#action-get-alert) - Retrieve specific alert by its ID  
 [update alert](#action-update-alert) - Update properties of existing alert  
 
@@ -551,6 +556,28 @@ action_result.summary | string |  |
 action_result.message | string |  |   Successfully retrieved the incident 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1   
+
+## action: 'update incident'
+Update the properties of an incident object
+
+Type: **investigate**  
+Read only: **False**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**incident_id** |  required  | ID of the incident | string |  `defender incident id` 
+**status** |  optional  | The status of the incident | string | 
+**assignedTo** |  optional  | Owner of the incident, or null if no owner is assigned. Free editable text | string | 
+**classification** |  optional  | The specification for the incident | string | 
+**determination** |  optional  | Specifies the determination of the incident | string | 
+
+#### Action Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string |  |   success  failed 
+action_result.parameter.incident_id | string |  `defender incident id`  |   48 
+action_result.data | string |  |    
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
