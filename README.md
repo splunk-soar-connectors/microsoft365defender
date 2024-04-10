@@ -575,10 +575,14 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string |  |   success  failed 
 action_result.parameter.incident_id | string |  `defender incident id`  |   48 
 action_result.data.\*.id | string |  `defender incident id`  |   145 
-action_result.data.\*.status | string |  |   active   
+action_result.data.\*.status | string |  |   active 
+action_result.status | string |  |   success  failed 
+action_result.summary | string |  |  
+action_result.message | string |  |  
+summary.total_objects | numeric |  |  
+summary.total_objects_successful | numeric |  |    
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
