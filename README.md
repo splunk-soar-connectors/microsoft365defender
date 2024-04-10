@@ -2,7 +2,7 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1.3.0  
+Connector Version: 1.4.0  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
