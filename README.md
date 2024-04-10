@@ -577,7 +577,8 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string |  |   success  failed 
 action_result.parameter.incident_id | string |  `defender incident id`  |   48 
-action_result.data | string |  |    
+action_result.data.\*.id | string |  `defender incident id`  |   145 
+action_result.data.\*.status | string |  |   active   
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
