@@ -2,17 +2,17 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1.2.0  
+Connector Version: 1.3.0  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.1.0  
+Minimum Product Version: 6.1.1  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
 [comment]: # " File: README.md"
 [comment]: # ""
-[comment]: # "Copyright (c) 2022-2023 Splunk Inc."
+[comment]: # "Copyright (c) 2022-2024 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
@@ -36,16 +36,29 @@ are the default ports used by Splunk SOAR.
 
 ## Explanation of Asset Configuration Parameters
 
--   Tenant ID - It is the Directory ID of the Microsoft Azure Active Directory on the Microsoft
+-   Tenant ID - It is the Directory ID of the Microsoft Entra ID on the Microsoft
     Azure portal.
--   Client ID - It is the Application ID of an application configured in the Microsoft Azure Active
-    Directory.
+-   Client ID - It is the Application ID of an application configured in the Microsoft Entra ID.
 -   Client Secret - It is the secret string used by the application to prove its identity when
-    requesting a token. It can be generated for the configured application on the Microsoft Azure
-    Active Directory.
+    requesting a token. It can be generated for the configured application on the Microsoft Entra ID.
 -   Non-Interactive Auth - It is used to determine the authentication method. If it is checked then
     non-Interactive auth will be used otherwise interactive auth will be used. Whenever this
     checkbox is toggled then the test connectivity action must be run again.
+-   Timeout - It is used to make configurable timeout for all actions.
+
+## Explanation of Asset Configuration Parameters for On Poll
+
+-   Max Incidents For Polling - In each polling cycle, incidents are fetched for schedule and interval polling based on the provided value (Default 1000). Containers are created per incident.
+-   Start Time - It is used to filter the incidents based on start time, if nothing is provided, then it will take last week as start time. <br> **NOTE: Start time is used to filter based on lastUpdateDateTime property of incident**
+-   Filter - It is used to add extra filters on incident properties.
+
+## Explanation of On Poll Behavior
+
+-    The default incident order is set to "lastUpdateDateTime," prioritizing the latest incidents as newest.
+-    The start time parameter value aligns with the lastUpdateDateTime of the incident. 
+-    The maximum incidents parameter functions exclusively with scheduled and interval polling.
+-    For Example,if the maximum incident parameter is set to 100, the 'on_poll' feature must incorporate up to 100 distinct incidents, based on the provided filter and start time parameter value.
+
 
 ## Configure and set up permissions of the app created on the Microsoft Azure portal
 
@@ -54,8 +67,8 @@ are the default ports used by Splunk SOAR.
 #### Create the app
 
 1.  Navigate to <https://portal.azure.com> .
-2.  Log in with a user that has permission to create an app in the Azure Active Directory (AAD).
-3.  Select the 'Azure Active Directory'.
+2.  Log in with a user that has permission to create an app in the Microsoft Entra ID.
+3.  Select the 'Microsoft Entra ID'.
 4.  Select the 'App registrations' menu from the left-side panel.
 5.  Select the 'New Registration' option at the top of the page.
 6.  In the registration form, choose a name for your application and then click 'Register'.
@@ -69,16 +82,11 @@ are the default ports used by Splunk SOAR.
 11. Provide the following Delegated and Application permissions to the app.
     -   **Application Permissions**
 
-          
-
         -   SecurityAlert.Read.All
         -   SecurityAlert.ReadWrite.All
         -   ThreatHunting.Read.All
         -   SecurityIncident.Read.All
-
     -   **Delegated Permissions**
-
-          
 
         -   SecurityAlert.Read.All
         -   SecurityAlert.ReadWrite.All
@@ -90,8 +98,6 @@ are the default ports used by Splunk SOAR.
 15. Click on the 'Microsoft Graph' option.
 16. Provide the following Delegated permission to the app.
     -   **Delegated Permission**
-
-          
 
         -   offline_access
 
@@ -126,10 +132,7 @@ When creating an asset for the app,
     'Client Secret' field.
 
 -   Provide the tenant ID of the app created during the previous step of Azure app creation in the
-    'Tenant ID' field. For getting the value of tenant ID, navigate to the 'Azure Active Directory'
-    on the Microsoft Azure portal; click on the 'App registrations' menu from the left-side panel;
-    click on the earlier created app. The value displayed in the 'Directory (tenant) ID' is the
-    required tenant ID.
+    'Tenant ID' field. For getting the value of tenant ID, navigate to the  Microsoft Entra ID; The value displayed in the 'Tenant ID'.
 
 -   Save the asset with the above values.
 
@@ -138,14 +141,7 @@ When creating an asset for the app,
     incoming for Microsoft 365 Defender to this location' field. Add a suffix '/result' to the URL
     copied in the previous step. The resulting URL looks like the one mentioned below.
 
-      
-      
-      
-
     https://\<soar_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
-
-      
-      
 
 -   Add the URL created in the earlier step into the 'Redirect URIs' section of the 'Authentication'
     menu for the registered app that was created in the previous steps on the Microsoft Azure
@@ -154,7 +150,7 @@ When creating an asset for the app,
       
 
     1.  Below steps are required only in case of Interactive auth (i.e. If checkbox is unchecked)
-    2.  Navigate to the 'Azure Active Directory' on the Microsoft Azure portal.
+    2.  Navigate to the 'Microsoft Entra ID' on the Microsoft Azure portal.
     3.  Click on the 'App registrations' menu from the left-side panel.
     4.  Click on the earlier created app. You can search for the app by name or client ID.
     5.  Navigate to the 'Authentication' menu of the app on the left-side panel.
@@ -204,8 +200,7 @@ When creating an asset for the app,
 
       
 
-    -   The first step is to get an application created in a specific tenant on the Microsoft Azure
-        Active Directory. Generate the \[client_secret\] for the configured application. The
+    -   The first step is to get an application created in a specific tenant on the Microsoft Entra ID. Generate the \[client_secret\] for the configured application. The
         detailed steps have been mentioned in the earlier section.
 
     -   Configure the Microsoft 365 Defender app's asset with appropriate values for \[tenant_id\],
@@ -259,9 +254,7 @@ Please check the permissions for the state file as mentioned below.
 
 #### State file path
 
--   For Non-NRI instance: /opt/phantom/local_data/app_states/\<appid>/\<asset_id>\_state.json
--   For NRI instance:
-    /\<PHANTOM_HOME_DIRECTORY>/local_data/app_states/\<appid>/\<asset_id>\_state.json
+- state file path on instance: /opt/phantom/local_data/app_states/\<appid>/\<asset_id>\_state.json
 
 #### State file permissions
 
@@ -289,10 +282,15 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **tenant_id** |  required  | string | Tenant ID
 **client_id** |  required  | string | Client ID
 **client_secret** |  required  | password | Client Secret
+**timeout** |  optional  | numeric | HTTP API timeout in seconds
 **non_interactive** |  optional  | boolean | Non-Interactive Auth
+**max_incidents_per_poll** |  optional  | numeric | Maximum Incidents for scheduled/interval polling for each cycle
+**start_time** |  optional  | string | Start time for schedule/interval/manual poll (Use this format: 1970-01-01T00:00:00Z)
+**filter** |  optional  | string | Filter incidents based on property (example: status ne 'active')
 
 ### Supported Actions  
 [test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration  
+[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality  
 [run query](#action-run-query) - An advanced search query  
 [list incidents](#action-list-incidents) - List all the incidents  
 [list alerts](#action-list-alerts) - List all the alerts  
@@ -308,6 +306,24 @@ Read only: **True**
 
 #### Action Parameters
 No parameters are required for this action
+
+#### Action Output
+No Output  
+
+## action: 'on poll'
+Callback action for the on_poll ingest functionality
+
+Type: **ingest**  
+Read only: **True**
+
+#### Action Parameters
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**start_time** |  optional  | Parameter ignored in this app | numeric | 
+**end_time** |  optional  | Parameter ignored in this app | numeric | 
+**container_count** |  optional  | Parameter ignored for schedule/interval polling only | numeric | 
+**artifact_count** |  optional  | Parameter ignored in this app | numeric | 
+**container_id** |  optional  | Parameter ignored in this app | numeric | 
 
 #### Action Output
 No Output  
@@ -485,25 +501,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 
@@ -654,25 +652,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 
@@ -801,25 +781,7 @@ action_result.data.\*.incidentWebUrl | string |  `url`  |   https://test.com/inc
 action_result.data.\*.lastActivityDateTime | string |  |   2022-02-23T11:22:20.1835364Z 
 action_result.data.\*.lastUpdateDateTime | string |  |   2022-02-24T03:52:41.7933333Z 
 action_result.data.\*.providerAlertId | string |  `defender alert id`  |   xxxx7812122456454120_-1108217xxx 
-action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.
-1. Find related machines, network addresses, and files in the incident graph.
-2. Check for other suspicious activities in the machine timeline.
-3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.
-4. Submit relevant files for deep analysis and review file behaviors. 
-5. Identify unusual system activity with system owners. 
-
-B. If you have validated the alert, contain and mitigate the breach.
-1. Record relevant artifacts, including those you need in mitigation rules.
-2. Stop suspicious processes. Block prevalent malware files across the network.
-3. Isolate affected machines.
-4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.
-5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.
-6. Update antimalware signatures and run full scans. 
-7. Deploy the latest security updates for Windows, web browsers, and other applications.
-
-C. Contact your incident response team, or contact test support for forensic analysis and remediation services.
-
-Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
+action_result.data.\*.recommendedActions | string |  |   A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. 
 action_result.data.\*.resolvedDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.serviceSource | string |  |   TestEndpoint 
 action_result.data.\*.severity | string |  `defender severity`  |   medium 

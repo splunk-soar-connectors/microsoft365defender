@@ -10,14 +10,14 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2022-2023 Splunk Inc.",
-    "app_version": "1.2.0",
-    "utctime_updated": "2022-05-26T06:24:07.659521Z",
+    "license": "Copyright (c) 2022-2024 Splunk Inc.",
+    "app_version": "1.3.0",
+    "utctime_updated": "2023-11-02T19:23:33.000000Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
-    "min_phantom_version": "6.1.0",
+    "min_phantom_version": "6.1.1",
     "latest_tested_versions": [
-        "graph.microsoft.com/v1.0, Oct 9 2023"
+        "graph.microsoft.com/v1.0, April 2 2024"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
@@ -45,11 +45,32 @@
             "required": true,
             "order": 3
         },
+        "timeout": {
+            "description": "HTTP API timeout in seconds",
+            "data_type": "numeric",
+            "order": 4
+        },
         "non_interactive": {
             "description": "Non-Interactive Auth",
             "data_type": "boolean",
             "default": false,
-            "order": 4
+            "order": 5
+        },
+        "max_incidents_per_poll": {
+            "description": "Maximum Incidents for scheduled/interval polling for each cycle",
+            "data_type": "numeric",
+            "default": 1000,
+            "order": 6
+        },
+        "start_time": {
+            "description": "Start time for schedule/interval/manual poll (Use this format: 1970-01-01T00:00:00Z)",
+            "data_type": "string",
+            "order": 7
+        },
+        "filter": {
+            "description": "Filter incidents based on property (example: status ne 'active')",
+            "data_type": "string",
+            "order": 8
         }
     },
     "actions": [
@@ -60,6 +81,42 @@
             "type": "test",
             "read_only": true,
             "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "on poll",
+            "description": "Callback action for the on_poll ingest functionality",
+            "type": "ingest",
+            "identifier": "on_poll",
+            "read_only": true,
+            "parameters": {
+                "start_time": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 0
+                },
+                "end_time": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 1
+                },
+                "container_count": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored for schedule/interval polling only",
+                    "order": 2
+                },
+                "artifact_count": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 3
+                },
+                "container_id": {
+                    "data_type": "numeric",
+                    "description": "Parameter ignored in this app",
+                    "order": 4
+                }
+            },
             "output": [],
             "versions": "EQ(*)"
         },
@@ -1075,7 +1132,7 @@
                     "data_path": "action_result.data.*.recommendedActions",
                     "data_type": "string",
                     "example_values": [
-                        "A. Validate the alert and scope the suspected breach.\n1. Find related machines, network addresses, and files in the incident graph.\n2. Check for other suspicious activities in the machine timeline.\n3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.\n4. Submit relevant files for deep analysis and review file behaviors. \n5. Identify unusual system activity with system owners. \n\nB. If you have validated the alert, contain and mitigate the breach.\n1. Record relevant artifacts, including those you need in mitigation rules.\n2. Stop suspicious processes. Block prevalent malware files across the network.\n3. Isolate affected machines.\n4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.\n5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.\n6. Update antimalware signatures and run full scans. \n7. Deploy the latest security updates for Windows, web browsers, and other applications.\n\nC. Contact your incident response team, or contact test support for forensic analysis and remediation services.\n\nDisclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
+                        "A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
                     ]
                 },
                 {
@@ -2033,7 +2090,7 @@
                     "data_path": "action_result.data.*.recommendedActions",
                     "data_type": "string",
                     "example_values": [
-                        "A. Validate the alert and scope the suspected breach.\n1. Find related machines, network addresses, and files in the incident graph.\n2. Check for other suspicious activities in the machine timeline.\n3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.\n4. Submit relevant files for deep analysis and review file behaviors. \n5. Identify unusual system activity with system owners. \n\nB. If you have validated the alert, contain and mitigate the breach.\n1. Record relevant artifacts, including those you need in mitigation rules.\n2. Stop suspicious processes. Block prevalent malware files across the network.\n3. Isolate affected machines.\n4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.\n5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.\n6. Update antimalware signatures and run full scans. \n7. Deploy the latest security updates for Windows, web browsers, and other applications.\n\nC. Contact your incident response team, or contact test support for forensic analysis and remediation services.\n\nDisclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
+                        "A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
                     ]
                 },
                 {
@@ -2914,7 +2971,7 @@
                     "data_path": "action_result.data.*.recommendedActions",
                     "data_type": "string",
                     "example_values": [
-                        "A. Validate the alert and scope the suspected breach.\n1. Find related machines, network addresses, and files in the incident graph.\n2. Check for other suspicious activities in the machine timeline.\n3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.\n4. Submit relevant files for deep analysis and review file behaviors. \n5. Identify unusual system activity with system owners. \n\nB. If you have validated the alert, contain and mitigate the breach.\n1. Record relevant artifacts, including those you need in mitigation rules.\n2. Stop suspicious processes. Block prevalent malware files across the network.\n3. Isolate affected machines.\n4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.\n5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.\n6. Update antimalware signatures and run full scans. \n7. Deploy the latest security updates for Windows, web browsers, and other applications.\n\nC. Contact your incident response team, or contact test support for forensic analysis and remediation services.\n\nDisclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
+                        "A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal."
                     ]
                 },
                 {
