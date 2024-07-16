@@ -1451,10 +1451,9 @@
                     "data_type": "string",
                     "required": false,
                     "value_list": [
-                        "active",
-                        "resolved",
-                        "redirected",
-                        "unknownFutureValue"
+                        "Active",
+                        "Resolved",
+                        "Redirected"
                     ],
                     "order": 1
                 },
@@ -1469,11 +1468,10 @@
                     "data_type": "string",
                     "required": false,
                     "value_list": [
-                        "unknown",
-                        "falsePositive",
-                        "truePositive",
-                        "informationalExpectedActivity",
-                        "unknownFutureValue"
+                        "Unknown",
+                        "False Positive",
+                        "True Positive",
+                        "Informational, expected activity"
                     ],
                     "order": 3
                 },
@@ -1482,22 +1480,19 @@
                     "data_type": "string",
                     "required": false,
                     "value_list": [
-                        "unknown",
-                        "apt",
-                        "malware",
-                        "securityPersonnel",
-                        "securityTesting",
-                        "unwantedSoftware",
-                        "other",
-                        "multiStagedAttack",
-                        "compromisedUser",
-                        "phishing",
-                        "maliciousUserActivity",
-                        "notMalicious",
-                        "notEnoughDataToValidate",
-                        "confirmedUserActivity",
-                        "lineOfBusinessApplication",
-                        "unknownFutureValue"
+                        "Unknown",
+                        "Malware",
+                        "Security testing",
+                        "Unwanted software",
+                        "Other",
+                        "Multi staged attack",
+                        "Compromised account",
+                        "Phishing",
+                        "Malicious user activity",
+                        "Not malicious",
+                        "Not enough data to validate",
+                        "Confirmed activity",
+                        "Line of business application"
                     ],
                     "order": 4
                 }
@@ -3198,27 +3193,9 @@
         }
     ],
     "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.3.2.post1-py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     },
     "pip39_dependencies": {
-        "wheel": [
-            {
-                "module": "beautifulsoup4",
-                "input_file": "wheels/py3/beautifulsoup4-4.9.1-py3-none-any.whl"
-            },
-            {
-                "module": "soupsieve",
-                "input_file": "wheels/py3/soupsieve-2.5-py3-none-any.whl"
-            }
-        ]
+        "wheel": []
     }
 }

@@ -127,6 +127,7 @@ DEFENDER_NO_ALERT_FOUND = "No alert found"
 DEFENDER_NO_INCIDENT_FOUND = "No incident found"
 DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Successfully updated the alert"
 DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY = "Successfully updated the incident"
+DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED = "Please provide at least one of the property to update the incident"
 
 DEFENDER_UPDATE_ALERT_USER_PARAM_LIST = [DEFENDER_JSON_STATUS, DEFENDER_JSON_ASSIGNED_TO,
              DEFENDER_JSON_CLASSIFICATION, DEFENDER_JSON_DETERMINATION]
@@ -161,6 +162,55 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
         "Other": "other"
 }
 
+
+DEFENDER_UPDATE_INCIDENT_STATUS_DICT = {
+    "Active": "active",
+    "Resolved": "resolved",
+    "Redirected": "redirected",
+}
+
+DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT = {
+    "Unknown": "unknown",
+    "Malware": "malware",
+    "Security testing": "securityTesting",
+    "Unwanted software": "unwantedSoftware",
+    "Other": "other",
+    "Multi staged attack": "multiStagedAttack",
+    "Compromised account": "compromisedUser",
+    "Phishing": "phishing",
+    "Malicious user activity": "maliciousUserActivity",
+    "Not malicious": "notMalicious",
+    "Not enough data to validate": "notEnoughDataToValidate",
+    "Confirmed activity": "confirmedActivity",
+    "Line of business application": "lineOfBusinessApplication"
+}
+
+DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT = {
+    "Informational, expected activity": "informationalExpectedActivity",
+    "False Positive": "falsePositive",
+    "True Positive": "truePositive",
+    "Unknown": "unknown"
+}
+
+DEFENDER_INCIDENT_PARAMS_MAPPING = {
+
+    "status": {
+        "value_map": DEFENDER_UPDATE_INCIDENT_STATUS_DICT,
+        "req_param_name": "status",
+    },
+    "determination": {
+        "value_map": DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT,
+        "req_param_name": "determination"
+    },
+    "classification": {
+        "value_map": DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT,
+        "req_param_name": "classification"
+    },
+    "assign_to": {
+        "value_map": {},
+        "req_param_name": "assignedTo"
+    }
+}
 
 # For on_poll action:
 DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'

@@ -1026,15 +1026,21 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         incident_id = param[DEFENDER_INCIDENT_ID]
+        params = ("assign_to", "status", "classification", "determination")
+
+        if not any(param.get(x) for x in params):
+            return action_result.set_status(phantom.APP_ERROR, DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED)
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
                                    .format(input=incident_id))
 
         request_body = {}
-        for param_name in ("assignedTo", "status", "classification", "determination"):
-            if param.get(param_name) is not None:
-                value = param[param_name]
-                request_body[param_name] = value
+        for param_name in params:
+            self.save_progress(f"param.get(param_name) {param.get(param_name)} ")
+            mapped_dict = DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]["value_map"]
+            if param.get(param_name) in mapped_dict.keys() or mapped_dict == {}:
+                value = mapped_dict.get(param[param_name], param[param_name])
+                request_body[DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]["req_param_name"]] = value
 
         self.save_progress(f"Attempting to update incident {incident_id} with data={request_body}")
 
