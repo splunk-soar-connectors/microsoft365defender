@@ -15,9 +15,9 @@
     "utctime_updated": "2023-11-02T19:23:33.000000Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
-    "min_phantom_version": "6.2.0",
+    "min_phantom_version": "6.2.1",
     "latest_tested_versions": [
-        "graph.microsoft.com/v1.0, April 2 2024"
+        "graph.microsoft.com/v1.0, Jul 18 2024"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
