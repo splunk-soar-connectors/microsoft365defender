@@ -1673,7 +1673,14 @@
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric"
                 }
-            ]
+            ],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "microsoft365defender_view.update_incident",
+                "title": "Update Incident"
+            }
         },
         {
             "action": "get alert",
