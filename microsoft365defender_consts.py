@@ -207,7 +207,7 @@ DEFENDER_INVALID_INCIDENT_INPUT = "Please provide a valid value in the '{0}' par
 # For on_poll action:
 DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time"
-DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_for_poll"
+DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_per_poll"
 STATE_FIRST_RUN = "first_run"
 STATE_LAST_TIME = "last_time"
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"

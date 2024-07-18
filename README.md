@@ -6,6 +6,7 @@ Connector Version: 1.4.0
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
+
 Minimum Product Version: 6.2.1  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
