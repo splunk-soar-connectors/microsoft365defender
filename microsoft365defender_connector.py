@@ -1042,7 +1042,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             value = param[param_name]
             if param_name in DEFENDER_INCIDENT_PARAMS_MAPPING:
                 if value not in DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]:
-                    return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_INCIDENT_INPUT.format(param_name) + " " + param_name + str(value_mapping.keys()))
+                    return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_INCIDENT_INPUT.format(param_name))
                 else:
                     value = DEFENDER_INCIDENT_PARAMS_MAPPING[param_name][value]
 
