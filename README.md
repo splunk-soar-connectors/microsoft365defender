@@ -568,13 +568,33 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **incident_id** |  required  | ID of the incident | string |  `defender incident id` 
 **status** |  optional  | The status of the incident | string | 
-**assignedTo** |  optional  | Owner of the incident, or null if no owner is assigned. Free editable text | string | 
+**assign_to** |  optional  | Owner of the incident, or null if no owner is assigned. Free editable text | string | 
 **classification** |  optional  | The specification for the incident | string | 
 **determination** |  optional  | Specifies the determination of the incident | string | 
 
 #### Action Output
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
+action_result.parameter.incident_id | string |  `defender incident id`  |   48 
+action_result.parameter.determination | string |  |   Malware 
+action_result.parameter.classification | string |  |   True Positive 
+action_result.parameter.assign_to | string |  |   testuser 
+action_result.parameter.status | string |  |   Active 
+action_result.data.\*.summary | string |  |  
+action_result.data.\*.severity | string |  |   medium 
+action_result.data.\*.tenantId | string |  |   a417c578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.assignedTo | string |  |  
+action_result.data.\*.description | string |  |  
+action_result.data.\*.displayName | string |  |   Suspicious authentication activity on one endpoint 
+action_result.data.\*.determination | string |  |   unknown 
+action_result.data.\*.@odata.context | string |  |   https://graph.microsoft.com/v1.0/$metadata#security/incidents/$entity 
+action_result.data.\*.classification | string |  |   unknownFutureValue 
+action_result.data.\*.incidentWebUrl | string |  |   https://security.microsoft.com/incidents/308?tid=a417c578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.lastModifiedBy | string |  |   Automation 
+action_result.data.\*.createdDateTime | string |  |   2024-01-07T05:12:17.0266667Z 
+action_result.data.\*.resolvingComment | string |  |  
+action_result.data.\*.lastUpdateDateTime | string |  |   2024-07-04T09:44:46.7112452Z 
+action_result.data.\*.redirectIncidentId | string |  |  
 action_result.parameter.incident_id | string |  `defender incident id`  |   48 
 action_result.data.\*.id | string |  `defender incident id`  |   145 
 action_result.data.\*.status | string |  |   active 
