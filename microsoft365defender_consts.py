@@ -193,24 +193,16 @@ DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT = {
 }
 
 DEFENDER_INCIDENT_PARAMS_MAPPING = {
-
-    "status": {
-        "value_map": DEFENDER_UPDATE_INCIDENT_STATUS_DICT,
-        "req_param_name": "status",
-    },
-    "determination": {
-        "value_map": DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT,
-        "req_param_name": "determination"
-    },
-    "classification": {
-        "value_map": DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT,
-        "req_param_name": "classification"
-    },
-    "assign_to": {
-        "value_map": {},
-        "req_param_name": "assignedTo"
-    }
+    "status": DEFENDER_UPDATE_INCIDENT_STATUS_DICT,
+    "determination": DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT,
+    "classification": DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT,
 }
+
+DEFENDER_INCIDENT_KEYS_MAPPING = {
+    "assign_to": "assignedTo"
+}
+
+DEFENDER_INVALID_INCIDENT_INPUT = "Please provide a valid value in the '{0}' parameter"
 
 # For on_poll action:
 DEFENDER_APP_DT_STR_FORMAT = '%Y-%m-%dT%H:%M:%SZ'

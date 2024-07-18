@@ -1026,21 +1026,31 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         incident_id = param[DEFENDER_INCIDENT_ID]
-        params = ("assign_to", "status", "classification", "determination")
+        inputs = ("assign_to", "status", "classification", "determination")
 
-        if not any(param.get(x) for x in params):
+        if not any(param.get(x) for x in inputs):
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED)
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
                                    .format(input=incident_id))
 
         request_body = {}
-        for param_name in params:
-            self.save_progress(f"param.get(param_name) {param.get(param_name)} ")
-            mapped_dict = DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]["value_map"]
-            if param.get(param_name) in mapped_dict.keys() or mapped_dict == {}:
-                value = mapped_dict.get(param[param_name], param[param_name])
-                request_body[DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]["req_param_name"]] = value
+        for param_name in inputs:
+            if param_name not in param:
+                continue
+
+            value = param[param_name]
+            if param_name in DEFENDER_INCIDENT_PARAMS_MAPPING:
+                if value not in DEFENDER_INCIDENT_PARAMS_MAPPING[param_name]:
+                    return action_result.set_status(phantom.APP_ERROR, DEFENDER_INVALID_INCIDENT_INPUT.format(param_name) + " " + param_name + str(value_mapping.keys()))
+                else:
+                    value = DEFENDER_INCIDENT_PARAMS_MAPPING[param_name][value]
+
+            key = param_name
+            if key in DEFENDER_INCIDENT_KEYS_MAPPING:
+                key = DEFENDER_INCIDENT_KEYS_MAPPING[key]
+
+            request_body[key] = value
 
         self.save_progress(f"Attempting to update incident {incident_id} with data={request_body}")
 
