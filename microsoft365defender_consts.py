@@ -166,30 +166,32 @@ DEFENDER_UPDATE_ALERT_DETERMINATION_DICT = {
 DEFENDER_UPDATE_INCIDENT_STATUS_DICT = {
     "Active": "active",
     "Resolved": "resolved",
-    "Redirected": "redirected",
+    "Redirected": "redirected"
 }
 
 DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT = {
     "Unknown": "unknown",
+    "apt": "apt",
     "Malware": "malware",
+    "Security Personnel": "securityPersonnel",
     "Security testing": "securityTesting",
     "Unwanted software": "unwantedSoftware",
     "Other": "other",
     "Multi staged attack": "multiStagedAttack",
-    "Compromised account": "compromisedUser",
     "Phishing": "phishing",
     "Malicious user activity": "maliciousUserActivity",
     "Not malicious": "notMalicious",
     "Not enough data to validate": "notEnoughDataToValidate",
-    "Confirmed activity": "confirmedActivity",
-    "Line of business application": "lineOfBusinessApplication"
+    "Line of business application": "lineOfBusinessApplication",
+    "Unknown Future Value": "unknownFutureValue"
 }
 
 DEFENDER_UPDATE_INCIDENT_CLASSIFICATION_DICT = {
     "Informational, expected activity": "informationalExpectedActivity",
     "False Positive": "falsePositive",
     "True Positive": "truePositive",
-    "Unknown": "unknown"
+    "Unknown": "unknown",
+    "Unknown Future Value": "unknownFutureValue"
 }
 
 DEFENDER_INCIDENT_PARAMS_MAPPING = {

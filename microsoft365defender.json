@@ -1468,7 +1468,8 @@
                         "Unknown",
                         "False Positive",
                         "True Positive",
-                        "Informational, expected activity"
+                        "Informational, expected activity",
+                        "Unknown Future Value"
                     ],
                     "order": 3
                 },
@@ -1477,18 +1478,19 @@
                     "data_type": "string",
                     "value_list": [
                         "Unknown",
+                        "apt",
                         "Malware",
+                        "Security Personnel",
                         "Security testing",
                         "Unwanted software",
                         "Other",
                         "Multi staged attack",
-                        "Compromised account",
                         "Phishing",
                         "Malicious user activity",
                         "Not malicious",
                         "Not enough data to validate",
-                        "Confirmed activity",
-                        "Line of business application"
+                        "Line of business application",
+                        "Unknown Future Value"
                     ],
                     "order": 4
                 }
