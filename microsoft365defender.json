@@ -17,7 +17,7 @@
     "main_module": "microsoft365defender_connector.py",
     "min_phantom_version": "6.2.1",
     "latest_tested_versions": [
-        "graph.microsoft.com/v1.0, Jul 18 2024"
+        "test.com/v1.0, Jul 18 2024"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
@@ -400,6 +400,25 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.lastModifiedBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "API-App:test@test.test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.resolvingComment",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary.total_incidents",
                     "data_type": "numeric",
                     "example_values": [
@@ -515,7 +534,7 @@
                     "data_path": "action_result.data.*.alertWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=test578-c7ee-480d-a225-d4805xxxxxxx"
                     ],
                     "contains": [
                         "url"
@@ -591,7 +610,7 @@
                     "data_path": "action_result.data.*.detectorId",
                     "data_type": "string",
                     "example_values": [
-                        "360fdb3b-18a9-471b-9ad0-ad80a4cbcb02"
+                        "testdb3b-18a9-471b-9ad0-ad80a4cbtest"
                     ]
                 },
                 {
@@ -1195,6 +1214,297 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.vmId",
+                    "data_type": "string",
+                    "example_values": [
+                        "test363-806f-4d19-9b75-9ec2f59test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.resourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.cloudProvider",
+                    "data_type": "string",
+                    "example_values": [
+                        "azure"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.subscriptionId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastIpAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "10.0.2.15"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastExternalIpAddress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceName",
+                    "data_type": "string",
+                    "example_values": [
+                        "phantom-identity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceType",
+                    "data_type": "string",
+                    "example_values": [
+                        "Virtual Machine"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.productName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Microsoft Defender for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alertPolicyId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8193
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.AlertUri",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/#blade/testa/AlertBlade/alertId/test359247191461_35466e20-7dde-41ef-ac20-5141d4test7/subscriptionId/test906-2c22-4d91-98aa-180d9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.TimeGenerated",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-02-08T05:11:57.256Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProcessingEndTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-02-08T05:11:57.6847793Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source IP",
+                    "data_type": "string",
+                    "example_values": [
+                        "IP Address: 45.141.85.1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProductComponentName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Servers"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceResourceGroup",
+                    "data_type": "string",
+                    "example_values": [
+                        "defaultresourcegroup-eus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity end time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/02/08 04:59:22.9525229"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "test7906-2c22-4d91-98aa-180d9a85test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "test7906-2c22-4d91-98aa-180d9a85test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveAzureResourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/Microsoft.Compute/virtualMachines/phantom-identity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProductName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Detection-WarmPathV2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity start time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/02/08 04:01:15.2808538"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProviderName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Microsoft Defender for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Was RDP session initiated",
+                    "data_type": "string",
+                    "example_values": [
+                        "No"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source computer name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of failed authentication attempts to host",
+                    "data_type": "string",
+                    "example_values": [
+                        "59"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Top accounts with failed sign in attempts (count)",
+                    "data_type": "string",
+                    "example_values": [
+                        "Administrat\u00c3\u00b6r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), J\u00c3\u00a4rjestelm\u00c3\u00a4nvalvoja (3), Administrator (3), audit1 (3), audit0 (3)"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of existing accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of nonexistent accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "20"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.stream",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.userAccount.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location.city",
+                    "data_type": "string",
+                    "example_values": [
+                        "Denver"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "Colorado"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location.latitude",
+                    "data_type": "numeric",
+                    "example_values": [
+                        39.75263
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location.longitude",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -104.99809
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location.countryName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.countryLetterCode",
+                    "data_type": "string",
+                    "example_values": [
+                        "US"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.displayName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Herman Edwards"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.primaryAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "test@test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.location",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary.total_alerts",
                     "data_type": "numeric",
                     "example_values": [
@@ -1394,6 +1704,32 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/v1.0/$metadata/incidents/$entity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.lastModifiedBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "API-App:test@test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.resolvingComment",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary",
                     "data_type": "string"
                 },
@@ -1431,7 +1767,8 @@
         {
             "action": "update incident",
             "description": "Update the properties of an incident object",
-            "type": "investigate",
+            "verbose": "In this `SecurityIncident.ReadWrite.All` delegated or application permission is required. One of the parameters `status`, `assign_to`, `classification` or `determination` must be specified; otherwise, the action fails.",
+            "type": "generic",
             "identifier": "update_incident",
             "read_only": false,
             "versions": "EQ(*)",
@@ -1549,7 +1886,7 @@
                     "data_path": "action_result.data.*.tenantId",
                     "data_type": "string",
                     "example_values": [
-                        "a417c578-c7ee-480d-a225-d48057e74df5"
+                        "testc578-c7ee-480d-atest-d48057etest"
                     ]
                 },
                 {
@@ -1578,7 +1915,7 @@
                     "data_path": "action_result.data.*.@odata.context",
                     "data_type": "string",
                     "example_values": [
-                        "https://graph.microsoft.com/v1.0/$metadata#security/incidents/$entity"
+                        "https://test.com/v1.0/$metadata#/incidents/$entity"
                     ]
                 },
                 {
@@ -1592,7 +1929,7 @@
                     "data_path": "action_result.data.*.incidentWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://security.microsoft.com/incidents/308?tid=a417c578-c7ee-480d-a225-d48057e74df5"
+                        "https://test.com/incidents/308?tid=testc578-c7ee-480d-atest-d48057etest"
                     ]
                 },
                 {
@@ -1623,16 +1960,6 @@
                 {
                     "data_path": "action_result.data.*.redirectIncidentId",
                     "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.parameter.incident_id",
-                    "data_type": "string",
-                    "example_values": [
-                        "48"
-                    ],
-                    "contains": [
-                        "defender incident id"
-                    ]
                 },
                 {
                     "data_path": "action_result.data.*.id",
@@ -1732,7 +2059,7 @@
                     "data_path": "action_result.data.*.alertWebUrl",
                     "data_type": "string",
                     "example_values": [
-                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx"
+                        "https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=testc578-c7ee-480d-a225-d4805xxxxxxx"
                     ]
                 },
                 {
@@ -2563,7 +2890,7 @@
                     "data_path": "action_result.data.*.@odata.context",
                     "data_type": "string",
                     "example_values": [
-                        "https://graph.microsoft.com/beta/$metadata#security/alerts_v2/$entity"
+                        "https://test.com/beta/$metadata#security/alerts_v2/$entity"
                     ],
                     "contains": [
                         "url"

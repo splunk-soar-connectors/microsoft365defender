@@ -6,7 +6,6 @@ Connector Version: 1.4.0
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
-
 Minimum Product Version: 6.2.1  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
@@ -396,6 +395,10 @@ action_result.data.\*.redirectIncidentId | string |  `defender incident id`  |  
 action_result.data.\*.severity | string |  `defender severity`  |   high 
 action_result.data.\*.status | string |  |   active 
 action_result.data.\*.tenantId | string |  |   xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.data.\*.summary | string |  |  
+action_result.data.\*.description | string |  |  
+action_result.data.\*.lastModifiedBy | string |  |   API-App:test@test.test.com 
+action_result.data.\*.resolvingComment | string |  |  
 action_result.summary.total_incidents | numeric |  |   50 
 action_result.message | string |  |   Total incidents: 50 
 summary.total_objects | numeric |  |   1 
@@ -424,7 +427,7 @@ action_result.parameter.filter | string |  |   status eq 'inProgress'
 action_result.parameter.orderby | string |  |   lastUpdateDateTime desc 
 action_result.parameter.offset | numeric |  |   0 
 action_result.data.\*.actorDisplayName | string |  |   test@abc.com 
-action_result.data.\*.alertWebUrl | string |  `url`  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx 
+action_result.data.\*.alertWebUrl | string |  `url`  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=test578-c7ee-480d-a225-d4805xxxxxxx 
 action_result.data.\*.assignedTo | string |  `email`  |   test@abc.com 
 action_result.data.\*.category | string |  |   SuspiciousActivity 
 action_result.data.\*.classification | string |  |   Test 
@@ -434,7 +437,7 @@ action_result.data.\*.comments.\*.createdDateTime | string |  |   2022-04-08T18:
 action_result.data.\*.createdDateTime | string |  |   2022-02-23T11:24:05.6454411Z 
 action_result.data.\*.description | string |  |   Test alert 
 action_result.data.\*.detectionSource | string |  |   customTi 
-action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
+action_result.data.\*.detectorId | string |  |   testdb3b-18a9-471b-9ad0-ad80a4cbtest 
 action_result.data.\*.determination | string |  |   Test 
 action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
 action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
@@ -516,6 +519,51 @@ action_result.data.\*.tenantId | string |  |   xxxxc578-c7ee-480d-a225-d48057e74
 action_result.data.\*.threatDisplayName | string |  |   threat 
 action_result.data.\*.threatFamilyName | string |  |   threat 
 action_result.data.\*.title | string |  |   Test alert 
+action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |   test363-806f-4d19-9b75-9ec2f59test 
+action_result.data.\*.evidence.\*.vmMetadata.resourceId | string |  |   /subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY 
+action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string |  |   azure 
+action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string |  |  
+action_result.data.\*.evidence.\*.lastIpAddress | string |  |   10.0.2.15 
+action_result.data.\*.evidence.\*.lastExternalIpAddress | string |  |  
+action_result.data.\*.evidence.\*.resourceId | string |  |   /subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY 
+action_result.data.\*.evidence.\*.resourceName | string |  |   phantom-identity 
+action_result.data.\*.evidence.\*.resourceType | string |  |   Virtual Machine 
+action_result.data.\*.productName | string |  |   Microsoft Defender for Cloud 
+action_result.data.\*.alertPolicyId | string |  |  
+action_result.data.\*.additionalData.Intent | numeric |  |   8193 
+action_result.data.\*.additionalData.AlertUri | string |  |   https://test.com/#blade/testa/AlertBlade/alertId/test359247191461_35466e20-7dde-41ef-ac20-5141d4test7/subscriptionId/test906-2c22-4d91-98aa-180d9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus 
+action_result.data.\*.additionalData.TimeGenerated | string |  |   2024-02-08T05:11:57.256Z 
+action_result.data.\*.additionalData.Intent@odata.type | string |  |   #Int64 
+action_result.data.\*.additionalData.ProcessingEndTime | string |  |   2024-02-08T05:11:57.6847793Z 
+action_result.data.\*.additionalData.Attacker source IP | string |  |   IP Address: 45.141.85.1 
+action_result.data.\*.additionalData.ProductComponentName | string |  |   Servers 
+action_result.data.\*.additionalData.WorkspaceResourceGroup | string |  |   defaultresourcegroup-eus 
+action_result.data.\*.additionalData.Activity end time (UTC) | string |  |   2024/02/08 04:59:22.9525229 
+action_result.data.\*.additionalData.EffectiveSubscriptionId | string |  |   test7906-2c22-4d91-98aa-180d9a85test 
+action_result.data.\*.additionalData.WorkspaceSubscriptionId | string |  |   test7906-2c22-4d91-98aa-180d9a85test 
+action_result.data.\*.additionalData.EffectiveAzureResourceId | string |  |   /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/Microsoft.Compute/virtualMachines/phantom-identity 
+action_result.data.\*.additionalData.OriginalAlertProductName | string |  |   Detection-WarmPathV2 
+action_result.data.\*.additionalData.Activity start time (UTC) | string |  |   2024/02/08 04:01:15.2808538 
+action_result.data.\*.additionalData.OriginalAlertProviderName | string |  |   Microsoft Defender for Cloud 
+action_result.data.\*.additionalData.Was RDP session initiated | string |  |   No 
+action_result.data.\*.additionalData.Attacker source computer name | string |  |   Unknown 
+action_result.data.\*.additionalData.Number of failed authentication attempts to host | string |  |   59 
+action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string |  |   AdministratÃ¶r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), JÃ¤rjestelmÃ¤nvalvoja (3), Administrator (3), audit1 (3), audit0 (3) 
+action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string |  |   1 
+action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string |  |   20 
+action_result.data.\*.evidence.\*.vmMetadata | string |  |  
+action_result.data.\*.evidence.\*.stream | string |  |  
+action_result.data.\*.evidence.\*.userAccount.displayName | string |  |   Herman Edwards 
+action_result.data.\*.evidence.\*.location.city | string |  |   Denver 
+action_result.data.\*.evidence.\*.location.state | string |  |   Colorado 
+action_result.data.\*.evidence.\*.location.latitude | numeric |  |   39.75263 
+action_result.data.\*.evidence.\*.location.longitude | numeric |  |   -104.99809 
+action_result.data.\*.evidence.\*.location.countryName | string |  |  
+action_result.data.\*.evidence.\*.countryLetterCode | string |  |   US 
+action_result.data.\*.additionalData | string |  |  
+action_result.data.\*.evidence.\*.displayName | string |  |   Herman Edwards 
+action_result.data.\*.evidence.\*.primaryAddress | string |  |   test@test.com 
+action_result.data.\*.evidence.\*.location | string |  |  
 action_result.summary.total_alerts | numeric |  |   2 
 action_result.message | string |  |   Total alerts: 2 
 summary.total_objects | numeric |  |   1 
@@ -553,6 +601,11 @@ action_result.data.\*.severity | string |  `defender severity`  |   high
 action_result.data.\*.status | string |  |   active 
 action_result.data.\*.tags.\* | string |  |  
 action_result.data.\*.tenantId | string |  `microsoft tenantid`  |   xxxxx670-d7ef-580d-a225-d48057e74df6 
+action_result.data.\*.summary | string |  |  
+action_result.data.\*.description | string |  |  
+action_result.data.\*.@odata.context | string |  |   https://test.com/v1.0/$metadata/incidents/$entity 
+action_result.data.\*.lastModifiedBy | string |  |   API-App:test@test.com 
+action_result.data.\*.resolvingComment | string |  |  
 action_result.summary | string |  |  
 action_result.message | string |  |   Successfully retrieved the incident 
 summary.total_objects | numeric |  |   1 
@@ -561,8 +614,10 @@ summary.total_objects_successful | numeric |  |   1
 ## action: 'update incident'
 Update the properties of an incident object
 
-Type: **investigate**  
+Type: **generic**  
 Read only: **False**
+
+In this `SecurityIncident.ReadWrite.All` delegated or application permission is required. One of the parameters `status`, `assign_to`, `classification` or `determination` must be specified; otherwise, the action fails.
 
 #### Action Parameters
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
@@ -583,20 +638,19 @@ action_result.parameter.assign_to | string |  |   testuser
 action_result.parameter.status | string |  |   Active 
 action_result.data.\*.summary | string |  |  
 action_result.data.\*.severity | string |  |   medium 
-action_result.data.\*.tenantId | string |  |   a417c578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.tenantId | string |  |   testc578-c7ee-480d-atest-d48057etest 
 action_result.data.\*.assignedTo | string |  |  
 action_result.data.\*.description | string |  |  
 action_result.data.\*.displayName | string |  |   Suspicious authentication activity on one endpoint 
 action_result.data.\*.determination | string |  |   unknown 
-action_result.data.\*.@odata.context | string |  |   https://graph.microsoft.com/v1.0/$metadata#security/incidents/$entity 
+action_result.data.\*.@odata.context | string |  |   https://test.com/v1.0/$metadata#/incidents/$entity 
 action_result.data.\*.classification | string |  |   unknownFutureValue 
-action_result.data.\*.incidentWebUrl | string |  |   https://security.microsoft.com/incidents/308?tid=a417c578-c7ee-480d-a225-d48057e74df5 
+action_result.data.\*.incidentWebUrl | string |  |   https://test.com/incidents/308?tid=testc578-c7ee-480d-atest-d48057etest 
 action_result.data.\*.lastModifiedBy | string |  |   Automation 
 action_result.data.\*.createdDateTime | string |  |   2024-01-07T05:12:17.0266667Z 
 action_result.data.\*.resolvingComment | string |  |  
 action_result.data.\*.lastUpdateDateTime | string |  |   2024-07-04T09:44:46.7112452Z 
 action_result.data.\*.redirectIncidentId | string |  |  
-action_result.parameter.incident_id | string |  `defender incident id`  |   48 
 action_result.data.\*.id | string |  `defender incident id`  |   145 
 action_result.data.\*.status | string |  |   active 
 action_result.status | string |  |   success  failed 
@@ -622,7 +676,7 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string |  |   success  failed 
 action_result.parameter.alert_id | string |  `defender alert id`  |   xxxxx812122456454120_-11082xxxxx 
 action_result.data.\*.actorDisplayName | string |  |   test@abc.com 
-action_result.data.\*.alertWebUrl | string |  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx 
+action_result.data.\*.alertWebUrl | string |  |   https://test.com/alerts/xxxxx812122456454120_-1108217295?tid=testc578-c7ee-480d-a225-d4805xxxxxxx 
 action_result.data.\*.assignedTo | string |  `email`  |   test@abc.com 
 action_result.data.\*.category | string |  |   SuspiciousActivity 
 action_result.data.\*.classification | string |  |   Test 
@@ -743,7 +797,7 @@ action_result.parameter.assign_to | string |  `email`  |   test@abc.com
 action_result.parameter.classification | string |  |   Unknown 
 action_result.parameter.determination | string |  |   Other 
 action_result.parameter.status | string |  |   New 
-action_result.data.\*.@odata.context | string |  `url`  |   https://graph.microsoft.com/beta/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.@odata.context | string |  `url`  |   https://test.com/beta/$metadata#security/alerts_v2/$entity 
 action_result.data.\*.mitreTechniques.\* | string |  |   T1546.008 
 action_result.data.\*.evidence.\*.tags.\* | string |  |   testtag 
 action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |  
