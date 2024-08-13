@@ -86,7 +86,7 @@ DEFENDER_DECRYPTION_ERROR = "Error occurred while decrypting the state file"
 DEFENDER_UNEXPECTED_RESPONSE_ERROR = "Unexpected response retrieved"
 DEFENDER_NO_DATA_FOUND = "No data found"
 DEFENDER_STATE_IS_ENCRYPTED = 'is_encrypted'
-DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one of the property to update the alert"
+DEFENDER_NO_PARAMETER_PROVIDED = "Please provide at least one of the properties to update the alert"
 
 DEFENDER_INCIDENT_LIMIT = 'limit'
 DEFENDER_INCIDENT_OFFSET = 'offset'
@@ -127,7 +127,7 @@ DEFENDER_NO_ALERT_FOUND = "No alert found"
 DEFENDER_NO_INCIDENT_FOUND = "No incident found"
 DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Successfully updated the alert"
 DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY = "Successfully updated the incident"
-DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED = "Please provide at least one of the property to update the incident"
+DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED = "Please provide at least one of the properties to update the incident"
 
 DEFENDER_UPDATE_ALERT_USER_PARAM_LIST = [DEFENDER_JSON_STATUS, DEFENDER_JSON_ASSIGNED_TO,
              DEFENDER_JSON_CLASSIFICATION, DEFENDER_JSON_DETERMINATION]
