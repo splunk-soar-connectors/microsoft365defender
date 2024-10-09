@@ -40,29 +40,29 @@ from microsoft365defender_consts import *
 
 
 def _handle_login_redirect(request, key):
-    """ This function is used to redirect login request to Microsoft login page.
+    """This function is used to redirect login request to Microsoft login page.
 
     :param request: Data given to REST endpoint
     :param key: Key to search in state file
     :return: response authorization_url/admin_consent_url
     """
 
-    asset_id = request.GET.get('asset_id')
+    asset_id = request.GET.get("asset_id")
     if not asset_id:
-        return HttpResponse('ERROR: Asset ID not found in URL', content_type="text/plain", status=400)
+        return HttpResponse("ERROR: Asset ID not found in URL", content_type="text/plain", status=400)
     state = _load_app_state(asset_id)
     if not state:
-        return HttpResponse('ERROR: Invalid asset_id', content_type="text/plain", status=400)
+        return HttpResponse("ERROR: Invalid asset_id", content_type="text/plain", status=400)
     url = state.get(key)
     if not url:
-        return HttpResponse('App state is invalid, {key} not found.'.format(key=key), content_type="text/plain", status=400)
+        return HttpResponse("App state is invalid, {key} not found.".format(key=key), content_type="text/plain", status=400)
     response = HttpResponse(status=302)
-    response['Location'] = url
+    response["Location"] = url
     return response
 
 
 def _load_app_state(asset_id, app_connector=None):
-    """ This function is used to load the current state file.
+    """This function is used to load the current state file.
 
     :param asset_id: asset_id
     :param app_connector: Object of app_connector class
@@ -72,34 +72,34 @@ def _load_app_state(asset_id, app_connector=None):
     asset_id = str(asset_id)
     if not asset_id or not asset_id.isalnum():
         if app_connector:
-            app_connector.debug_print('In _load_app_state: Invalid asset_id')
+            app_connector.debug_print("In _load_app_state: Invalid asset_id")
         return {}
 
     app_dir = os.path.dirname(os.path.abspath(__file__))
-    state_file = '{0}/{1}_state.json'.format(app_dir, asset_id)
+    state_file = "{0}/{1}_state.json".format(app_dir, asset_id)
     real_state_file_path = os.path.abspath(state_file)
     if not os.path.dirname(real_state_file_path) == app_dir:
         if app_connector:
-            app_connector.debug_print('In _load_app_state: Invalid asset_id')
+            app_connector.debug_print("In _load_app_state: Invalid asset_id")
         return {}
 
     state = {}
     try:
-        with open(real_state_file_path, 'r') as state_file_obj:
+        with open(real_state_file_path, "r") as state_file_obj:
             state_file_data = state_file_obj.read()
             state = json.loads(state_file_data)
     except Exception as e:
         if app_connector:
-            app_connector.debug_print('In _load_app_state: Exception: {0}'.format(str(e)))
+            app_connector.debug_print("In _load_app_state: Exception: {0}".format(str(e)))
 
     if app_connector:
-        app_connector.debug_print('Loaded state: ', state)
+        app_connector.debug_print("Loaded state: ", state)
 
     return state
 
 
 def _save_app_state(state, asset_id, app_connector):
-    """ This function is used to save current state in file.
+    """This function is used to save current state in file.
 
     :param state: Dictionary which contains data to write in state file
     :param asset_id: asset_id
@@ -110,57 +110,57 @@ def _save_app_state(state, asset_id, app_connector):
     asset_id = str(asset_id)
     if not asset_id or not asset_id.isalnum():
         if app_connector:
-            app_connector.debug_print('In _save_app_state: Invalid asset_id')
+            app_connector.debug_print("In _save_app_state: Invalid asset_id")
         return {}
 
     app_dir = os.path.split(__file__)[0]
-    state_file = '{0}/{1}_state.json'.format(app_dir, asset_id)
+    state_file = "{0}/{1}_state.json".format(app_dir, asset_id)
 
     real_state_file_path = os.path.abspath(state_file)
     if not os.path.dirname(real_state_file_path) == app_dir:
         if app_connector:
-            app_connector.debug_print('In _save_app_state: Invalid asset_id')
+            app_connector.debug_print("In _save_app_state: Invalid asset_id")
         return {}
 
     if app_connector:
-        app_connector.debug_print('Saving state: ', state)
+        app_connector.debug_print("Saving state: ", state)
 
     try:
-        with open(real_state_file_path, 'w+') as state_file_obj:
+        with open(real_state_file_path, "w+") as state_file_obj:
             state_file_obj.write(json.dumps(state))
     except Exception as e:
-        print('Unable to save state file: {0}'.format(str(e)))
+        print("Unable to save state file: {0}".format(str(e)))
 
     return phantom.APP_SUCCESS
 
 
 def _handle_login_response(request):
-    """ This function is used to get the login response of authorization request from Microsoft login page.
+    """This function is used to get the login response of authorization request from Microsoft login page.
 
     :param request: Data given to REST endpoint
     :return: HttpResponse. The response displayed on authorization URL page
     """
 
-    asset_id = request.GET.get('state')
+    asset_id = request.GET.get("state")
     if not asset_id:
-        return HttpResponse('ERROR: Asset ID not found in URL\n{}'.format(json.dumps(request.GET)), content_type="text/plain", status=400)
+        return HttpResponse("ERROR: Asset ID not found in URL\n{}".format(json.dumps(request.GET)), content_type="text/plain", status=400)
 
     # Check for error in URL
-    error = request.GET.get('error')
-    error_description = request.GET.get('error_description')
+    error = request.GET.get("error")
+    error_description = request.GET.get("error_description")
 
     # If there is an error in response
     if error:
-        message = 'Error: {0}'.format(error)
+        message = "Error: {0}".format(error)
         if error_description:
-            message = '{0} Details: {1}'.format(message, error_description)
-        return HttpResponse('Server returned {0}'.format(message), content_type="text/plain", status=400)
+            message = "{0} Details: {1}".format(message, error_description)
+        return HttpResponse("Server returned {0}".format(message), content_type="text/plain", status=400)
 
     code = request.GET.get(DEFENDER_CODE_STRING)
 
     # If code is not available
     if not code:
-        return HttpResponse('Error while authenticating\n{0}'.format(json.dumps(request.GET)), content_type="text/plain", status=400)
+        return HttpResponse("Error while authenticating\n{0}".format(json.dumps(request.GET)), content_type="text/plain", status=400)
 
     state = _load_app_state(asset_id)
 
@@ -173,11 +173,11 @@ def _handle_login_response(request):
 
     _save_app_state(state, asset_id, None)
 
-    return HttpResponse('Code received. Please close this window, the action will continue to get new token.', content_type="text/plain")
+    return HttpResponse("Code received. Please close this window, the action will continue to get new token.", content_type="text/plain")
 
 
 def _handle_rest_request(request, path_parts):
-    """ Handle requests for authorization.
+    """Handle requests for authorization.
 
     :param request: Data given to REST endpoint
     :param path_parts: parts of the URL passed
@@ -185,48 +185,48 @@ def _handle_rest_request(request, path_parts):
     """
 
     if len(path_parts) < 2:
-        return HttpResponse('error: True, message: Invalid REST endpoint request', content_type="text/plain", status=404)
+        return HttpResponse("error: True, message: Invalid REST endpoint request", content_type="text/plain", status=404)
 
     call_type = path_parts[1]
 
     # To handle authorize request in test connectivity action
-    if call_type == 'start_oauth':
-        return _handle_login_redirect(request, 'authorization_url')
+    if call_type == "start_oauth":
+        return _handle_login_redirect(request, "authorization_url")
 
     # To handle response from microsoft login page
-    if call_type == 'result':
+    if call_type == "result":
         return_val = _handle_login_response(request)
-        asset_id = request.GET.get('state')  # nosemgrep
+        asset_id = request.GET.get("state")  # nosemgrep
         if asset_id and asset_id.isalnum():
             app_dir = os.path.dirname(os.path.abspath(__file__))
-            auth_status_file_path = '{0}/{1}_{2}'.format(app_dir, asset_id, DEFENDER_TC_FILE)
+            auth_status_file_path = "{0}/{1}_{2}".format(app_dir, asset_id, DEFENDER_TC_FILE)
             real_auth_status_file_path = os.path.abspath(auth_status_file_path)
             if not os.path.dirname(real_auth_status_file_path) == app_dir:
                 return HttpResponse("Error: Invalid asset_id", content_type="text/plain", status=400)
-            open(auth_status_file_path, 'w').close()
+            open(auth_status_file_path, "w").close()
             try:
-                uid = pwd.getpwnam('apache').pw_uid
-                gid = grp.getgrnam('phantom').gr_gid
+                uid = pwd.getpwnam("apache").pw_uid
+                gid = grp.getgrnam("phantom").gr_gid
                 os.chown(auth_status_file_path, uid, gid)
-                os.chmod(auth_status_file_path, '0664')
+                os.chmod(auth_status_file_path, "0664")
             except Exception:
                 pass
 
         return return_val
-    return HttpResponse('error: Invalid endpoint', content_type="text/plain", status=404)
+    return HttpResponse("error: Invalid endpoint", content_type="text/plain", status=404)
 
 
 def _get_dir_name_from_app_name(app_name):
-    """ Get name of the directory for the app.
+    """Get name of the directory for the app.
 
     :param app_name: Name of the application for which directory name is required
     :return: app_name: Name of the directory for the application
     """
 
-    app_name = ''.join([x for x in app_name if x.isalnum()])
+    app_name = "".join([x for x in app_name if x.isalnum()])
     app_name = app_name.lower()
     if not app_name:
-        app_name = 'app_for_phantom'
+        app_name = "app_for_phantom"
     return app_name
 
 
@@ -252,7 +252,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         self.asset_id = None
 
     def encrypt_state(self, encrypt_var, asset_id=None):
-        """ Handle encryption of token.
+        """Handle encryption of token.
         :param encrypt_var: Variable needs to be encrypted
         :return: encrypted variable
         """
@@ -263,7 +263,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return encrypt_var
 
     def decrypt_state(self, decrypt_var):
-        """ Handle decryption of token.
+        """Handle decryption of token.
         :param decrypt_var: Variable needs to be decrypted
         :return: decrypted variable
         """
@@ -272,7 +272,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return decrypt_var
 
     def _process_empty_response(self, response, action_result):
-        """ This function is used to process empty response.
+        """This function is used to process empty response.
 
         :param response: response data
         :param action_result: object of Action Result
@@ -282,11 +282,15 @@ class Microsoft365Defender_Connector(BaseConnector):
         if response.status_code in [200, 204]:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(action_result.set_status(
-            phantom.APP_ERROR, "Status Code: {0}. Error: Empty response and no information in the header".format(response.status_code)), None)
+        return RetVal(
+            action_result.set_status(
+                phantom.APP_ERROR, "Status Code: {0}. Error: Empty response and no information in the header".format(response.status_code)
+            ),
+            None,
+        )
 
     def _process_html_response(self, response, action_result):
-        """ This function is used to process html response.
+        """This function is used to process html response.
 
         :param response: response data
         :param action_result: object of Action Result
@@ -302,9 +306,9 @@ class Microsoft365Defender_Connector(BaseConnector):
             for element in soup(["script", "style", "footer", "nav"]):
                 element.extract()
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except Exception:
             error_text = "Cannot parse error details"
 
@@ -313,12 +317,12 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
 
-        message = message.replace('{', '{{').replace('}', '}}')
+        message = message.replace("{", "{{").replace("}", "}}")
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_json_response(self, response, action_result):
-        """ This function is used to process json response.
+        """This function is used to process json response.
 
         :param response: response data
         :param action_result: object of Action Result
@@ -329,8 +333,12 @@ class Microsoft365Defender_Connector(BaseConnector):
             # Process a json response
             resp_json = response.json()
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}"
-                                                   .format(self._get_error_message_from_exception(e))), None)
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, "Unable to parse JSON response. Error: {0}".format(self._get_error_message_from_exception(e))
+                ),
+                None,
+            )
 
         # Please specify the status codes here
         if 200 <= response.status_code < 399:
@@ -340,32 +348,36 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # Check whether the response contains error and error description fields
         # This condition will be used in test_connectivity
-        if not isinstance(resp_json.get('error'), dict) and resp_json.get('error_description'):
+        if not isinstance(resp_json.get("error"), dict) and resp_json.get("error_description"):
             err = "Error:{0}, Error Description:{1} Please check your asset configuration parameters and run the test connectivity".format(
-                    resp_json.get('error'), resp_json.get('error_description'))
+                resp_json.get("error"), resp_json.get("error_description")
+            )
             message = "Error from server. Status Code: {0} Data from server: {1}".format(response.status_code, err)
 
         # For other actions
-        if isinstance(resp_json.get('error'), dict) and resp_json.get('error', {}).get(DEFENDER_CODE_STRING):
-            msg = resp_json.get('error', {}).get('message')
-            if 'text/html' in msg:
+        if isinstance(resp_json.get("error"), dict) and resp_json.get("error", {}).get(DEFENDER_CODE_STRING):
+            msg = resp_json.get("error", {}).get("message")
+            if "text/html" in msg:
                 msg = BeautifulSoup(msg, "html.parser")
                 for element in msg(["title"]):
                     element.extract()
                 message = "Error from server. Status Code: {0} Error Code: {1} Data from server: {2}".format(
-                    response.status_code, resp_json.get('error', {}).get(DEFENDER_CODE_STRING), msg.text)
+                    response.status_code, resp_json.get("error", {}).get(DEFENDER_CODE_STRING), msg.text
+                )
             else:
                 message = "Error from server. Status Code: {0} Error Code: {1} Data from server: {2}".format(
-                    response.status_code, resp_json.get('error', {}).get(DEFENDER_CODE_STRING), msg)
+                    response.status_code, resp_json.get("error", {}).get(DEFENDER_CODE_STRING), msg
+                )
 
         if not message:
-            message = "Error from server. Status Code: {0} Data from server: {1}"\
-                .format(response.status_code, response.text.replace('{', '{{').replace('}', '}}'))
+            message = "Error from server. Status Code: {0} Data from server: {1}".format(
+                response.status_code, response.text.replace("{", "{{").replace("}", "}}")
+            )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, response, action_result):
-        """ This function is used to process html response.
+        """This function is used to process html response.
 
         :param response: response data
         :param action_result: object of Action Result
@@ -373,24 +385,24 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
 
         # store the response_text in debug data, it will get dumped in the logs if the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': response.status_code})
-            action_result.add_debug_data({'r_text': response.text})
-            action_result.add_debug_data({'r_headers': response.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": response.status_code})
+            action_result.add_debug_data({"r_text": response.text})
+            action_result.add_debug_data({"r_headers": response.headers})
 
         # Process each 'Content-Type' of response separately
 
-        if 'json' in response.headers.get('Content-Type', ''):
+        if "json" in response.headers.get("Content-Type", ""):
             return self._process_json_response(response, action_result)
 
-        if 'text/javascript' in response.headers.get('Content-Type', ''):
+        if "text/javascript" in response.headers.get("Content-Type", ""):
             return self._process_json_response(response, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between SOAR and the rest of
         # world, in case of errors, PROXY's return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in response.headers.get('Content-Type', ''):
+        if "html" in response.headers.get("Content-Type", ""):
             return self._process_html_response(response, action_result)
 
         # it's not content-type that is to be parsed, handle an empty response
@@ -399,7 +411,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # everything else is actually an error at this point
         message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
-            response.status_code, response.text.replace('{', '{{').replace('}', '}}'))
+            response.status_code, response.text.replace("{", "{{").replace("}", "}}")
+        )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
@@ -452,8 +465,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return error_text
 
-    def _update_request(self, action_result, endpoint, headers=None, params=None, data=None, method='get'):
-        """ This function is used to update the headers with access_token before making REST call.
+    def _update_request(self, action_result, endpoint, headers=None, params=None, data=None, method="get"):
+        """This function is used to update the headers with access_token before making REST call.
 
         :param endpoint: REST endpoint that needs to appended to the service address
         :param action_result: object of ActionResult class
@@ -470,18 +483,18 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if not self._non_interactive:
             token_data = {
-                'client_id': self._client_id,
-                'grant_type': DEFENDER_REFRESH_TOKEN_STRING,
-                'refresh_token': self._refresh_token,
-                'client_secret': self._client_secret,
-                'resource': DEFENDER_RESOURCE_URL
+                "client_id": self._client_id,
+                "grant_type": DEFENDER_REFRESH_TOKEN_STRING,
+                "refresh_token": self._refresh_token,
+                "client_secret": self._client_secret,
+                "resource": DEFENDER_RESOURCE_URL,
             }
         else:
             token_data = {
-                'client_id': self._client_id,
-                'grant_type': DEFENDER_CLIENT_CREDENTIALS_STRING,
-                'client_secret': self._client_secret,
-                'resource': DEFENDER_RESOURCE_URL
+                "client_id": self._client_id,
+                "grant_type": DEFENDER_CLIENT_CREDENTIALS_STRING,
+                "client_secret": self._client_secret,
+                "resource": DEFENDER_RESOURCE_URL,
             }
 
         if not self._access_token:
@@ -502,13 +515,18 @@ class Microsoft365Defender_Connector(BaseConnector):
                 if phantom.is_fail(status):
                     return action_result.get_status(), None
 
-        headers.update({'Authorization': 'Bearer {0}'.format(self._access_token),
-                        'Accept': 'application/json',
-                        "User-Agent": DEFENDER_USER_AGENT.format(product_version=self.get_app_json().get('app_version')),
-                        'Content-Type': 'application/json'})
+        headers.update(
+            {
+                "Authorization": "Bearer {0}".format(self._access_token),
+                "Accept": "application/json",
+                "User-Agent": DEFENDER_USER_AGENT.format(product_version=self.get_app_json().get("app_version")),
+                "Content-Type": "application/json",
+            }
+        )
 
-        ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=endpoint, headers=headers,
-                                                  params=params, data=data, method=method)
+        ret_val, resp_json = self._make_rest_call(
+            action_result=action_result, endpoint=endpoint, headers=headers, params=params, data=data, method=method
+        )
 
         # If token is expired, generate new token
         if DEFENDER_TOKEN_EXPIRED in action_result.get_message():
@@ -518,10 +536,11 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.get_status(), None
 
             action_result.set_status(phantom.APP_SUCCESS, "Token generated successfully")
-            headers.update({'Authorization': 'Bearer {0}'.format(self._access_token)})
+            headers.update({"Authorization": "Bearer {0}".format(self._access_token)})
 
-            ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=endpoint, headers=headers,
-                                                      params=params, data=data, method=method)
+            ret_val, resp_json = self._make_rest_call(
+                action_result=action_result, endpoint=endpoint, headers=headers, params=params, data=data, method=method
+            )
 
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
@@ -529,7 +548,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return phantom.APP_SUCCESS, resp_json
 
     def _make_rest_call(self, endpoint, action_result, headers=None, params=None, data=None, method="get", verify=True):
-        """ Function that makes the REST call to the app.
+        """Function that makes the REST call to the app.
 
         :param endpoint: REST endpoint that needs to appended to the service address
         :param action_result: object of ActionResult class
@@ -546,9 +565,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if headers is None:
             headers = {}
 
-        headers.update({
-            "User-Agent": DEFENDER_USER_AGENT.format(product_version=self.get_app_json().get('app_version'))
-        })
+        headers.update({"User-Agent": DEFENDER_USER_AGENT.format(product_version=self.get_app_json().get("app_version"))})
         try:
             request_func = getattr(requests, method)
         except AttributeError:
@@ -560,15 +577,21 @@ class Microsoft365Defender_Connector(BaseConnector):
                 response = request_func(endpoint, data=data, headers=headers, verify=verify, params=params, timeout=self._timeout)
             except Exception as e:
                 self.debug_print("Exception Message - {}".format(str(e)))
-                return RetVal(action_result.set_status(phantom.APP_ERROR, "Error Connecting to server. Details: {0}"
-                                                    .format(self._get_error_message_from_exception(e))), resp_json)
+                return RetVal(
+                    action_result.set_status(
+                        phantom.APP_ERROR, "Error Connecting to server. Details: {0}".format(self._get_error_message_from_exception(e))
+                    ),
+                    resp_json,
+                )
 
-            if response.status_code == 429 and response.headers['Retry-After']:
-                retry_time = int(response.headers['Retry-After'])
+            if response.status_code == 429 and response.headers["Retry-After"]:
+                retry_time = int(response.headers["Retry-After"])
                 if retry_time > 300:  # throw error if wait time greater than 300 seconds
                     flag = False
-                    return RetVal(action_result.set_status(phantom.APP_ERROR, "Error occured : {}, {}"
-                                        .format(response.status_code, str(response.text))), resp_json)
+                    return RetVal(
+                        action_result.set_status(phantom.APP_ERROR, "Error occured : {}, {}".format(response.status_code, str(response.text))),
+                        resp_json,
+                    )
                 self.debug_print("Retrying after {} seconds".format(retry_time))
                 time.sleep(retry_time + 1)
             else:
@@ -577,7 +600,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return self._process_response(response, action_result)
 
     def _get_asset_name(self, action_result):
-        """ Get name of the asset using SOAR URL.
+        """Get name of the asset using SOAR URL.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message), asset name
@@ -585,38 +608,37 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         asset_id = self.get_asset_id()
         rest_endpoint = DEFENDER_SOAR_ASSET_INFO_URL.format(asset_id=asset_id)
-        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), rest_endpoint)
+        url = "{}{}".format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), rest_endpoint)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
 
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        asset_name = resp_json.get('name')
+        asset_name = resp_json.get("name")
         if not asset_name:
-            return action_result.set_status(phantom.APP_ERROR, 'Asset Name for id: {0} not found.'.format(asset_id),
-                                            None)
+            return action_result.set_status(phantom.APP_ERROR, "Asset Name for id: {0} not found.".format(asset_id), None)
         return phantom.APP_SUCCESS, asset_name
 
     def _get_phantom_base_url_defender(self, action_result):
-        """ Get base url of phantom.
+        """Get base url of phantom.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message),
         base url of phantom
         """
 
-        url = '{}{}'.format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), DEFENDER_SOAR_SYS_INFO_URL)
+        url = "{}{}".format(DEFENDER_SOAR_BASE_URL.format(soar_base_url=self.get_phantom_base_url()), DEFENDER_SOAR_SYS_INFO_URL)
         ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=url, verify=False)
         if phantom.is_fail(ret_val):
             return ret_val, None
 
-        soar_base_url = resp_json.get('base_url').rstrip('/')
+        soar_base_url = resp_json.get("base_url").rstrip("/")
         if not soar_base_url:
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_BASE_URL_NOT_FOUND_MSG), None
         return phantom.APP_SUCCESS, soar_base_url
 
     def _get_app_rest_url(self, action_result):
-        """ Get URL for making rest calls.
+        """Get URL for making rest calls.
 
         :param action_result: object of ActionResult class
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS(along with appropriate message),
@@ -631,17 +653,16 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status(), None
 
-        self.save_progress('Using SOAR base URL as: {0}'.format(soar_base_url))
+        self.save_progress("Using SOAR base URL as: {0}".format(soar_base_url))
         app_json = self.get_app_json()
-        app_name = app_json['name']
+        app_name = app_json["name"]
 
         app_dir_name = _get_dir_name_from_app_name(app_name)
-        url_to_app_rest = '{0}/rest/handler/{1}_{2}/{3}'.format(soar_base_url, app_dir_name, app_json['appid'],
-                                                                asset_name)
+        url_to_app_rest = "{0}/rest/handler/{1}_{2}/{3}".format(soar_base_url, app_dir_name, app_json["appid"], asset_name)
         return phantom.APP_SUCCESS, url_to_app_rest
 
     def _generate_new_access_token(self, action_result, data):
-        """ This function is used to generate new access token using the code obtained on authorization.
+        """This function is used to generate new access token using the code obtained on authorization.
 
         :param action_result: object of ActionResult class
         :param data: Data to send in REST call
@@ -649,10 +670,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         """
 
         self.debug_print("Generating new token")
-        req_url = '{}{}'.format(DEFENDER_LOGIN_BASE_URL, DEFENDER_SERVER_TOKEN_URL.format(tenant_id=quote(self._tenant)))
+        req_url = "{}{}".format(DEFENDER_LOGIN_BASE_URL, DEFENDER_SERVER_TOKEN_URL.format(tenant_id=quote(self._tenant)))
 
-        ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=req_url,
-                                                  data=urlencode(data), method="post")
+        ret_val, resp_json = self._make_rest_call(action_result=action_result, endpoint=req_url, data=urlencode(data), method="post")
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -691,7 +711,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         except Exception:
             return action_result.set_status(
                 phantom.APP_ERROR,
-                "Error occurred while parsing the state file. Please delete the state file and run the test connectivity again."
+                "Error occurred while parsing the state file. Please delete the state file and run the test connectivity again.",
             )
 
         self._state = self.load_state()
@@ -703,24 +723,30 @@ class Microsoft365Defender_Connector(BaseConnector):
         # So we have to check that token from response and token which are saved
         # to state file after successful generation of new token are same or not.
 
-        if self._access_token != self.decrypt_state(self._state.get(DEFENDER_TOKEN_STRING, {}).get
-                    (DEFENDER_ACCESS_TOKEN_STRING)):
-            message = "Error occurred while saving the newly generated access token (in place of the expired token) in the state file."\
-                      " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "\
-                      "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
+        if self._access_token != self.decrypt_state(self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_ACCESS_TOKEN_STRING)):
+            message = (
+                "Error occurred while saving the newly generated access token (in place of the expired token) in the state file."
+                " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "
+                "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
+            )
             return action_result.set_status(phantom.APP_ERROR, message)
 
-        if not self._non_interactive and self._refresh_token and self._refresh_token != self.decrypt_state(self._state.get
-                    (DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING)):
-            message = "Error occurred while saving the newly generated refresh token in the state file."\
-                " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "\
+        if (
+            not self._non_interactive
+            and self._refresh_token
+            and self._refresh_token != self.decrypt_state(self._state.get(DEFENDER_TOKEN_STRING, {}).get(DEFENDER_REFRESH_TOKEN_STRING))
+        ):
+            message = (
+                "Error occurred while saving the newly generated refresh token in the state file."
+                " Please check the owner, owner group, and the permissions of the state file. The SOAR user should have "
                 "the correct access rights and ownership for the corresponding state file (refer to readme file for more information)"
+            )
             return action_result.set_status(phantom.APP_ERROR, message)
 
         return phantom.APP_SUCCESS
 
     def _wait(self, action_result):
-        """ This function is used to hold the action till user login for 105 seconds.
+        """This function is used to hold the action till user login for 105 seconds.
 
         :param action_result: Object of ActionResult class
         :return: status (success/failed)
@@ -728,12 +754,12 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         app_dir = os.path.dirname(os.path.abspath(__file__))
         # file to check whether the request has been granted or not
-        auth_status_file_path = '{0}/{1}_{2}'.format(app_dir, self.get_asset_id(), DEFENDER_TC_FILE)
+        auth_status_file_path = "{0}/{1}_{2}".format(app_dir, self.get_asset_id(), DEFENDER_TC_FILE)
         time_out = False
 
         # wait-time while request is being granted for 105 seconds
         for _ in range(DEFENDER_TC_STATUS_WAIT_TIME // DEFENDER_TC_STATUS_SLEEP):
-            self.send_progress('Waiting...')
+            self.send_progress("Waiting...")
             if os.path.isfile(auth_status_file_path):
                 time_out = True
                 os.unlink(auth_status_file_path)
@@ -741,9 +767,9 @@ class Microsoft365Defender_Connector(BaseConnector):
             time.sleep(DEFENDER_TC_STATUS_SLEEP)
 
         if not time_out:
-            self.send_progress('')
+            self.send_progress("")
             return action_result.set_status(phantom.APP_ERROR, "Timeout. Please try again later")
-        self.send_progress('Authenticated')
+        self.send_progress("Authenticated")
         return phantom.APP_SUCCESS
 
     def _remove_tokens(self, action_result):
@@ -756,7 +782,7 @@ class Microsoft365Defender_Connector(BaseConnector):
                 self._state.pop(DEFENDER_CODE_STRING)
 
     def _handle_test_connectivity(self, param):
-        """ Testing of given credentials and obtaining authorization for all other actions.
+        """Testing of given credentials and obtaining authorization for all other actions.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -777,22 +803,27 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.get_status()
 
             # Append /result to create redirect_uri
-            redirect_uri = '{0}/result'.format(app_rest_url)
-            self._state['redirect_uri'] = redirect_uri
+            redirect_uri = "{0}/result".format(app_rest_url)
+            self._state["redirect_uri"] = redirect_uri
 
             self.save_progress(DEFENDER_OAUTH_URL_MSG)
             self.save_progress(redirect_uri)
 
             # Authorization URL used to make request for getting code which is used to generate access token
-            authorization_url = DEFENDER_AUTHORIZE_URL.format(tenant_id=quote(self._tenant), client_id=quote(self._client_id),
-                                                                redirect_uri=redirect_uri, state=self.get_asset_id(),
-                                                                response_type=DEFENDER_CODE_STRING, resource=DEFENDER_RESOURCE_URL)
-            authorization_url = '{}{}'.format(DEFENDER_LOGIN_BASE_URL, authorization_url)
+            authorization_url = DEFENDER_AUTHORIZE_URL.format(
+                tenant_id=quote(self._tenant),
+                client_id=quote(self._client_id),
+                redirect_uri=redirect_uri,
+                state=self.get_asset_id(),
+                response_type=DEFENDER_CODE_STRING,
+                resource=DEFENDER_RESOURCE_URL,
+            )
+            authorization_url = "{}{}".format(DEFENDER_LOGIN_BASE_URL, authorization_url)
 
-            self._state['authorization_url'] = authorization_url
+            self._state["authorization_url"] = authorization_url
 
             # URL which would be shown to the user
-            url_for_authorize_request = '{0}/start_oauth?asset_id={1}&'.format(app_rest_url, self.get_asset_id())
+            url_for_authorize_request = "{0}/start_oauth?asset_id={1}&".format(app_rest_url, self.get_asset_id())
             _save_app_state(self._state, self.get_asset_id(), self)
 
             self.save_progress(DEFENDER_AUTHORIZE_USER_MSG)
@@ -805,7 +836,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             status = self._wait(action_result=action_result)
 
             # Empty message to override last message of waiting
-            self.send_progress('')
+            self.send_progress("")
             if phantom.is_fail(status):
                 self._remove_tokens(action_result)
                 self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
@@ -825,38 +856,36 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if not self._non_interactive:
             data = {
-                'client_id': self._client_id,
-                'grant_type': 'authorization_code',
-                'redirect_uri': redirect_uri,
+                "client_id": self._client_id,
+                "grant_type": "authorization_code",
+                "redirect_uri": redirect_uri,
                 DEFENDER_CODE_STRING: current_code,
-                'resource': DEFENDER_RESOURCE_URL,
-                'client_secret': self._client_secret
+                "resource": DEFENDER_RESOURCE_URL,
+                "client_secret": self._client_secret,
             }
         else:
             data = {
-                'client_id': self._client_id,
-                'grant_type': DEFENDER_CLIENT_CREDENTIALS_STRING,
-                'client_secret': self._client_secret,
-                'resource': DEFENDER_RESOURCE_URL
+                "client_id": self._client_id,
+                "grant_type": DEFENDER_CLIENT_CREDENTIALS_STRING,
+                "client_secret": self._client_secret,
+                "resource": DEFENDER_RESOURCE_URL,
             }
         # For first time access, new access token is generated
         ret_val = self._generate_new_access_token(action_result=action_result, data=data)
 
         if phantom.is_fail(ret_val):
-            self.send_progress('')
+            self.send_progress("")
             self._remove_tokens(action_result)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
 
         self.save_progress(DEFENDER_ALERTS_INFO_MSG)
 
-        url = '{}{}'.format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ENDPOINT)
-        params = {
-            '$top': 1  # page size of the result set
-        }
+        url = "{}{}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ENDPOINT)
+        params = {"$top": 1}  # page size of the result set
         ret_val, _ = self._update_request(action_result=action_result, endpoint=url, params=params)
         if phantom.is_fail(ret_val):
-            self.send_progress('')
+            self.send_progress("")
             self._remove_tokens(action_result)
             self.save_progress(DEFENDER_TEST_CONNECTIVITY_FAILED_MSG)
             return action_result.get_status()
@@ -875,20 +904,20 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param endpoint: Endpoint to make REST call
         """
         resource_list = []
-        next_page_token = ''
+        next_page_token = ""
 
         while True:
             params = {}
             if not next_page_token and filter:
-                params['$filter'] = filter
+                params["$filter"] = filter
             if not next_page_token and orderby:
-                params['$orderby'] = orderby
+                params["$orderby"] = orderby
             if next_page_token:
                 endpoint = next_page_token
 
             # First run
             if not next_page_token and offset:
-                params['$skip'] = offset
+                params["$skip"] = offset
 
             # make rest call
             ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, params=params)
@@ -899,13 +928,12 @@ class Microsoft365Defender_Connector(BaseConnector):
             if not response:
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_UNEXPECTED_RESPONSE_ERROR)
             try:
-                for ele in response['value']:
+                for ele in response["value"]:
                     resource_list.append(ele)
             except Exception as e:
                 error_message = self._get_error_message_from_exception(e)
                 self.debug_print("{}: {}".format(DEFENDER_UNEXPECTED_RESPONSE_ERROR, error_message))
-                return action_result.set_status(phantom.APP_ERROR, "Error occurred while fetching data. Details: {0}"
-                                                   .format(error_message))
+                return action_result.set_status(phantom.APP_ERROR, "Error occurred while fetching data. Details: {0}".format(error_message))
             if not response.get(DEFENDER_NEXT_PAGE_TOKEN):
                 break
 
@@ -916,7 +944,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return resource_list[:limit]
 
     def _handle_list_incidents(self, param):
-        """ This function is used to handle the list incident action.
+        """This function is used to handle the list incident action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -949,12 +977,12 @@ class Microsoft365Defender_Connector(BaseConnector):
             action_result.add_data(incident)
 
         summary = action_result.update_summary({})
-        summary['total_incidents'] = len(incident_list)
+        summary["total_incidents"] = len(incident_list)
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_alerts(self, param):
-        """ This function is used to handle the list alert action.
+        """This function is used to handle the list alert action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -986,12 +1014,12 @@ class Microsoft365Defender_Connector(BaseConnector):
             action_result.add_data(incident)
 
         summary = action_result.update_summary({})
-        summary['total_alerts'] = len(alert_list)
+        summary["total_alerts"] = len(alert_list)
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_get_incident(self, param):
-        """ This function is used to handle the get incident action.
+        """This function is used to handle the get incident action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -1002,8 +1030,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         incident_id = param[DEFENDER_INCIDENT_ID]
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
-                                   .format(input=incident_id))
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT.format(input=incident_id))
 
         # make rest call
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result)
@@ -1016,7 +1043,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
 
     def _handle_update_incident(self, param):
-        """ This function is used to handle the update incident action.
+        """This function is used to handle the update incident action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -1031,8 +1058,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if not any(param.get(x) for x in inputs):
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED)
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT
-                                   .format(input=incident_id))
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_INCIDENT_ID_ENDPOINT.format(input=incident_id))
 
         request_body = {}
         for param_name in inputs:
@@ -1054,8 +1080,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         self.save_progress(f"Attempting to update incident {incident_id} with data={request_body}")
 
-        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
-                                                 data=json.dumps(request_body))
+        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch", data=json.dumps(request_body))
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -1065,7 +1090,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY)
 
     def _handle_get_alert(self, param):
-        """ This function is used to handle the get alert action.
+        """This function is used to handle the get alert action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -1076,8 +1101,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         alert_id = param[DEFENDER_ALERT_ID]
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
-                                   .format(input=alert_id))
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT.format(input=alert_id))
 
         # make rest call
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result)
@@ -1090,7 +1114,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT)
 
     def _handle_run_query(self, param):
-        """ This function is used to handle the run query action.
+        """This function is used to handle the run query action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -1102,9 +1126,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         query = param[DEFENDER_JSON_QUERY]
 
         # prepare data parameters
-        data = {
-            "Query": query
-        }
+        data = {"Query": query}
 
         endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_RUN_QUERY_ENDPOINT)
 
@@ -1114,19 +1136,19 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        results = response.get('results', [])
+        results = response.get("results", [])
         len_results = len(results)
 
         for result in results:
             action_result.add_data(result)
 
         summary = action_result.update_summary({})
-        summary['total_results'] = len_results
+        summary["total_results"] = len_results
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_update_alert(self, param):
-        """ This function is used to handle the update alert action.
+        """This function is used to handle the update alert action.
 
         :param param: Dictionary of input parameters
         :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR)
@@ -1140,8 +1162,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if not any(param.get(x) for x in DEFENDER_UPDATE_ALERT_USER_PARAM_LIST):
             return action_result.set_status(phantom.APP_ERROR, DEFENDER_NO_PARAMETER_PROVIDED)
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
-                                   .format(input=alert_id))
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT.format(input=alert_id))
 
         # make rest call
         ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result)
@@ -1186,11 +1207,9 @@ class Microsoft365Defender_Connector(BaseConnector):
             else:
                 request_body[DEFENDER_JSON_DETERMINATION] = determination
 
-        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT
-                                   .format(input=alert_id))
+        endpoint = "{0}{1}".format(DEFENDER_MSGRAPH_API_BASE_URL, DEFENDER_ALERTS_ID_ENDPOINT.format(input=alert_id))
         # make rest call
-        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch",
-                                                 data=json.dumps(request_body))
+        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="patch", data=json.dumps(request_body))
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -1250,8 +1269,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         if self.is_poll_now():
             max_incidents = int(param.get(phantom.APP_JSON_CONTAINER_COUNT))
         else:
-            max_incidents = config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS,
-                                       DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING)
+            max_incidents = config.get(DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS, DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING)
             ret_val, max_incidents = self._validate_integer(action_result, max_incidents, "max_incidents")
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
@@ -1281,7 +1299,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             self.debug_print("Creating incidents and alerts artifacts")
             for incident in incident_list:
                 # Get alerts for this incident
-                alerts = incident.pop('alerts', [])
+                alerts = incident.pop("alerts", [])
 
                 # Create artifact from the incident and alerts
                 artifacts = [self._create_alert_artifacts(alert) for alert in alerts]
@@ -1298,8 +1316,9 @@ class Microsoft365Defender_Connector(BaseConnector):
 
             if incident_list:
                 if DEFENDER_JSON_LAST_MODIFIED not in incident_list[-1]:
-                    return action_result.set_status(phantom.APP_ERROR, "Could not extract {} from latest ingested "
-                                                                       "incident.".format(DEFENDER_JSON_LAST_MODIFIED))
+                    return action_result.set_status(
+                        phantom.APP_ERROR, "Could not extract {} from latest ingested " "incident.".format(DEFENDER_JSON_LAST_MODIFIED)
+                    )
 
                 self._state[STATE_LAST_TIME] = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
                 self.save_state(self._state)
@@ -1319,11 +1338,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         Returns:
             :return: status(phantom.APP_SUCCESS/phantom.APP_ERROR), message, cid(container_id)
         """
-        container = {
-            "name": name,
-            "description": 'incident ingested using MS Defender API',
-            "source_data_identifier": key
-        }
+        container = {"name": name, "description": "incident ingested using MS Defender API", "source_data_identifier": key}
 
         ret_val, message, cid = self.save_container(container)
         if phantom.is_fail(ret_val):
@@ -1336,7 +1351,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             self.debug_print("Duplicate container count: {}".format(self.duplicate_container))
 
         for artifact in artifacts:
-            artifact['container_id'] = cid
+            artifact["container_id"] = cid
         ret_val, message, _ = self.save_artifacts(artifacts)
 
         self.debug_print("save_artifacts returns, value: {}, reason: {}".format(ret_val, message))
@@ -1344,20 +1359,16 @@ class Microsoft365Defender_Connector(BaseConnector):
     @staticmethod
     def _create_alert_artifacts(alert):
 
-        return {
-            'label': 'alert',
-            'name': alert.get('title'),
-            'source_data_identifier': alert.get('id'),
-            'data': alert, 'cef': alert
-        }
+        return {"label": "alert", "name": alert.get("title"), "source_data_identifier": alert.get("id"), "data": alert, "cef": alert}
 
     @staticmethod
     def _create_incident_artifacts(incident):
         return {
-            'label': 'incident',
-            'name': 'incident Artifact',
-            'source_data_identifier': incident.get('id'),
-            'data': incident, 'cef': incident
+            "label": "incident",
+            "name": "incident Artifact",
+            "source_data_identifier": incident.get("id"),
+            "data": incident,
+            "cef": incident,
         }
 
     def handle_action(self, param):
@@ -1368,23 +1379,23 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         self.debug_print("action_id", self.get_action_identifier())
 
-        if action_id == 'test_connectivity':
+        if action_id == "test_connectivity":
             ret_val = self._handle_test_connectivity(param)
-        elif action_id == 'list_incidents':
+        elif action_id == "list_incidents":
             ret_val = self._handle_list_incidents(param)
-        elif action_id == 'list_alerts':
+        elif action_id == "list_alerts":
             ret_val = self._handle_list_alerts(param)
-        elif action_id == 'get_incident':
+        elif action_id == "get_incident":
             ret_val = self._handle_get_incident(param)
-        elif action_id == 'get_alert':
+        elif action_id == "get_alert":
             ret_val = self._handle_get_alert(param)
-        elif action_id == 'run_query':
+        elif action_id == "run_query":
             ret_val = self._handle_run_query(param)
-        elif action_id == 'update_alert':
+        elif action_id == "update_alert":
             ret_val = self._handle_update_alert(param)
-        elif action_id == 'update_incident':
+        elif action_id == "update_incident":
             ret_val = self._handle_update_incident(param)
-        elif action_id == 'on_poll':
+        elif action_id == "on_poll":
             ret_val = self._handle_on_poll(param)
 
         return ret_val
@@ -1400,7 +1411,7 @@ class Microsoft365Defender_Connector(BaseConnector):
         action_id = self.get_action_identifier()
         action_result = ActionResult()
         self.asset_id = self.get_asset_id()
-        self._non_interactive = config.get('non_interactive', False)
+        self._non_interactive = config.get("non_interactive", False)
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
         self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
@@ -1412,9 +1423,7 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         if not isinstance(self._state, dict):
             self.debug_print("Resetting the state file with the default format")
-            self._state = {
-                "app_version": self.get_app_json().get('app_version')
-            }
+            self._state = {"app_version": self.get_app_json().get("app_version")}
             if not self._non_interactive:
                 return self.set_status(phantom.APP_ERROR, DEFENDER_STATE_FILE_CORRUPT_ERROR)
 
@@ -1436,13 +1445,13 @@ class Microsoft365Defender_Connector(BaseConnector):
                 self.debug_print("{}: {}".format(DEFENDER_DECRYPTION_ERROR, self._get_error_message_from_exception(e)))
                 self._refresh_token = None
 
-        if not self._non_interactive and action_id != 'test_connectivity' and (not self._access_token or not self._refresh_token):
+        if not self._non_interactive and action_id != "test_connectivity" and (not self._access_token or not self._refresh_token):
             token_data = {
-                'client_id': self._client_id,
-                'grant_type': DEFENDER_REFRESH_TOKEN_STRING,
-                'refresh_token': self._refresh_token,
-                'client_secret': self._client_secret,
-                'resource': DEFENDER_RESOURCE_URL
+                "client_id": self._client_id,
+                "grant_type": DEFENDER_REFRESH_TOKEN_STRING,
+                "refresh_token": self._refresh_token,
+                "client_secret": self._client_secret,
+                "resource": DEFENDER_RESOURCE_URL,
             }
             ret_val = self._generate_new_access_token(action_result=action_result, data=token_data)
 
@@ -1488,10 +1497,10 @@ def main():
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
-    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
+    argparser.add_argument("-v", "--verify", action="store_true", help="verify", required=False, default=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -1504,6 +1513,7 @@ def main():
 
         # User specified a username but not a password, so ask
         import getpass
+
         password = getpass.getpass("Password: ")
 
     if username and password:
@@ -1512,20 +1522,20 @@ def main():
 
             print("Accessing the Login page")
             r = requests.get(login_url, verify=verify, timeout=DEFAULT_TIMEOUT)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken={}'.format(csrftoken)
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken={}".format(csrftoken)
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=DEFAULT_TIMEOUT)
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: {0}".format(str(e)))
             sys.exit(1)
@@ -1539,8 +1549,8 @@ def main():
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
@@ -1548,5 +1558,5 @@ def main():
     sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -14,6 +14,7 @@
 # and limitations under the License.
 #
 
+
 def get_ctx_result(result):
 
     ctx_result = {}
@@ -21,68 +22,68 @@ def get_ctx_result(result):
     summary = result.get_summary()
     data = result.get_data()
 
-    ctx_result['param'] = param
+    ctx_result["param"] = param
 
     if data:
-        ctx_result['data'] = data
+        ctx_result["data"] = data
 
     if summary:
-        ctx_result['summary'] = summary
+        ctx_result["summary"] = summary
 
     return ctx_result
 
 
 def display_incidents(provides, all_app_runs, context):
 
-    context['results'] = results = []
+    context["results"] = results = []
 
     for summary, action_results in all_app_runs:
         for result in action_results:
             ctx_result = get_ctx_result(result)
-            if (not ctx_result):
+            if not ctx_result:
                 continue
             results.append(ctx_result)
 
-    return 'microsoft365defender_list_incidents.html'
+    return "microsoft365defender_list_incidents.html"
 
 
 def display_alerts(provides, all_app_runs, context):
 
-    context['results'] = results = []
+    context["results"] = results = []
 
     for summary, action_results in all_app_runs:
         for result in action_results:
             ctx_result = get_ctx_result(result)
-            if (not ctx_result):
+            if not ctx_result:
                 continue
             results.append(ctx_result)
 
-    return 'microsoft365defender_list_alerts.html'
+    return "microsoft365defender_list_alerts.html"
 
 
 def update_alert(provides, all_app_runs, context):
 
-    context['results'] = results = []
+    context["results"] = results = []
 
     for summary, action_results in all_app_runs:
         for result in action_results:
             ctx_result = get_ctx_result(result)
-            if (not ctx_result):
+            if not ctx_result:
                 continue
             results.append(ctx_result)
 
-    return 'microsoft365defender_update_alert.html'
+    return "microsoft365defender_update_alert.html"
 
 
 def update_incident(provides, all_app_runs, context):
 
-    context['results'] = results = []
+    context["results"] = results = []
 
     for summary, action_results in all_app_runs:
         for result in action_results:
             ctx_result = get_ctx_result(result)
-            if (not ctx_result):
+            if not ctx_result:
                 continue
             results.append(ctx_result)
 
-    return 'microsoft365defender_update_incident.html'
+    return "microsoft365defender_update_incident.html"
