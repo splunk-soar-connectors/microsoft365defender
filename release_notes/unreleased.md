@@ -1,2 +1,1 @@
 **Unreleased**
-* Added 'update incident' action [PAPP-33652]
