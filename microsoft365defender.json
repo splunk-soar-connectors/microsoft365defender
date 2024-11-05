@@ -621,7 +621,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
@@ -1303,7 +1303,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_path": "action_result.data.*.additionalData.Intent_odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#Int64"
@@ -1712,7 +1712,7 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/v1.0/$metadata/incidents/$entity"
@@ -1912,7 +1912,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/v1.0/$metadata#/incidents/$entity"
@@ -2143,7 +2143,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
@@ -2887,7 +2887,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/beta/$metadata#security/alerts_v2/$entity"
@@ -3024,7 +3024,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
