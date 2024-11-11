@@ -788,20 +788,26 @@ class Microsoft365Defender_Connector(BaseConnector):
         :return: Dictionary containing the response by the Defender API with additional fields.
         """
 
-        
+        if not isinstance(response, dict):
+            return response
+
         # @odata.context
         if "@odata.context" in response:
             response["odata_context"] = response["@odata.context"]
 
         # @odata.type
-        for i, evidence_item in enumerate(response["evidence"]):
-            if "@odata.type" in evidence_item:
-                response["evidence"][i]["odata_type"] = evidence_item["@data.type"]
+        evidence = response.get("evidence", [])
+        if isinstance(evidence, list):
+            for evidence_item in evidence:
+                if isinstance(evidence_item, dict) and "@odata.type" in evidence_item:
+                    evidence_item["odata_type"] = evidence_item["@odata.type"]
 
         # Intent@odata.type
-        if "additionalData" in response:
-            if "Intent@odata.type" in response["additionalData"]:
-                response["Intent_odata_type"] = response["additionalData"]["Intent@odata.type"]
+        additional_data = response.get("additionalData", {})
+        if isinstance(additional_data, dict):
+            intent_odata_type = additional_data.get("Intent@odata.type")
+            if intent_odata_type is not None:
+                response["Intent_odata_type"] = intent_odata_type
 
         return response
 
