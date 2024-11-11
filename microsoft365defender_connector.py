@@ -1004,7 +1004,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         for incident in incident_list:
-            action_result.add_data(incident)
+            odata_enriched_incident = self._fix_up_odata_fields(incident)
+            action_result.add_data(odata_enriched_incident)
 
         summary = action_result.update_summary({})
         summary["total_incidents"] = len(incident_list)
@@ -1177,7 +1178,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         len_results = len(results)
 
         for result in results:
-            action_result.add_data(result)
+            odata_enriched_result = self._fix_up_odata_fields(result)
+            action_result.add_data(odata_enriched_result)
 
         summary = action_result.update_summary({})
         summary["total_results"] = len_results
