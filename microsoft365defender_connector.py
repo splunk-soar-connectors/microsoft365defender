@@ -804,10 +804,8 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         # Intent@odata.type
         additional_data = response.get("additionalData", {})
-        if isinstance(additional_data, dict):
-            intent_odata_type = additional_data.get("Intent@odata.type")
-            if intent_odata_type is not None:
-                response["Intent_odata_type"] = intent_odata_type
+        if isinstance(additional_data, dict) and additional_data.get("Intent@odata.type") is not None:
+            response["Intent_odata_type"] = additional_data.get("Intent@odata.type")
 
         return response
 
@@ -1071,7 +1069,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         odata_fixed_response = self._fix_up_odata_fields(response)
-        
+
         action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
@@ -1120,7 +1118,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         odata_fixed_response = self._fix_up_odata_fields(response)
-        
+
         action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY)
@@ -1146,7 +1144,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         odata_fixed_response = self._fix_up_odata_fields(response)
-        
+
         action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT)
