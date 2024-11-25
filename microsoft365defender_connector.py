@@ -781,6 +781,34 @@ class Microsoft365Defender_Connector(BaseConnector):
             if self._state.get(DEFENDER_CODE_STRING):
                 self._state.pop(DEFENDER_CODE_STRING)
 
+    def _fix_up_odata_fields(self, response):
+        """Fields containing a period are incompatible with data path syntax. Create fields that are accessible instead
+
+        :param response: Dictionary containing the response by the Defender API
+        :return: Dictionary containing the response by the Defender API with additional fields.
+        """
+
+        if not isinstance(response, dict):
+            return response
+
+        # @odata.context
+        if "@odata.context" in response:
+            response["odata_context"] = response["@odata.context"]
+
+        # @odata.type
+        evidence = response.get("evidence", [])
+        if isinstance(evidence, list):
+            for evidence_item in evidence:
+                if isinstance(evidence_item, dict) and "@odata.type" in evidence_item:
+                    evidence_item["odata_type"] = evidence_item["@odata.type"]
+
+        # Intent@odata.type
+        additional_data = response.get("additionalData", {})
+        if isinstance(additional_data, dict) and additional_data.get("Intent@odata.type") is not None:
+            response["Intent_odata_type"] = additional_data.get("Intent@odata.type")
+
+        return response
+
     def _handle_test_connectivity(self, param):
         """Testing of given credentials and obtaining authorization for all other actions.
 
@@ -974,7 +1002,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         for incident in incident_list:
-            action_result.add_data(incident)
+            odata_enriched_incident = self._fix_up_odata_fields(incident)
+            action_result.add_data(odata_enriched_incident)
 
         summary = action_result.update_summary({})
         summary["total_incidents"] = len(incident_list)
@@ -1011,7 +1040,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             return action_result.get_status()
 
         for incident in alert_list:
-            action_result.add_data(incident)
+            odata_enriched_incident = self._fix_up_odata_fields(incident)
+            action_result.add_data(odata_enriched_incident)
 
         summary = action_result.update_summary({})
         summary["total_alerts"] = len(alert_list)
@@ -1038,7 +1068,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        action_result.add_data(response)
+        odata_fixed_response = self._fix_up_odata_fields(response)
+
+        action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT)
 
@@ -1085,7 +1117,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        action_result.add_data(response)
+        odata_fixed_response = self._fix_up_odata_fields(response)
+
+        action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY)
 
@@ -1109,7 +1143,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        action_result.add_data(response)
+        odata_fixed_response = self._fix_up_odata_fields(response)
+
+        action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT)
 
@@ -1140,7 +1176,8 @@ class Microsoft365Defender_Connector(BaseConnector):
         len_results = len(results)
 
         for result in results:
-            action_result.add_data(result)
+            odata_enriched_result = self._fix_up_odata_fields(result)
+            action_result.add_data(odata_enriched_result)
 
         summary = action_result.update_summary({})
         summary["total_results"] = len_results
@@ -1214,7 +1251,9 @@ class Microsoft365Defender_Connector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        action_result.add_data(response)
+        odata_fixed_response = self._fix_up_odata_fields(response)
+
+        action_result.add_data(odata_fixed_response)
 
         return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_ALERT_UPDATED_SUCCESSFULLY)
 

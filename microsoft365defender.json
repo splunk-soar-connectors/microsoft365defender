@@ -11,13 +11,13 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2024 Splunk Inc.",
-    "app_version": "1.4.0",
+    "app_version": "1.4.1",
     "utctime_updated": "2023-11-02T19:23:33.000000Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
-    "min_phantom_version": "6.2.1",
+    "min_phantom_version": "6.3.0",
     "latest_tested_versions": [
-        "test.com/v1.0, Jul 18 2024"
+        "test.com/v1.0, Nov 11 2024"
     ],
     "app_wizard_version": "1.0.0",
     "fips_compliant": true,
@@ -176,6 +176,34 @@
                     "data_type": "string",
                     "example_values": [
                         "2022-06-12T04:24:25.0406516Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.odata_context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/v1.0/$metadata/incidents/$entity"
+                ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent_odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#test.graph.security.deviceEvidence"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.Intent_odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
                     ]
                 },
                 {
@@ -621,7 +649,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
@@ -1224,7 +1252,7 @@
                     "data_path": "action_result.data.*.evidence.*.vmMetadata.resourceId",
                     "data_type": "string",
                     "example_values": [
-                        "/subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY"
+                        "/subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID"
                     ]
                 },
                 {
@@ -1253,14 +1281,14 @@
                     "data_path": "action_result.data.*.evidence.*.resourceId",
                     "data_type": "string",
                     "example_values": [
-                        "/subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY"
+                        "/subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-identity"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.evidence.*.resourceName",
                     "data_type": "string",
                     "example_values": [
-                        "phantom-identity"
+                        "test-resource"
                     ]
                 },
                 {
@@ -1274,7 +1302,7 @@
                     "data_path": "action_result.data.*.productName",
                     "data_type": "string",
                     "example_values": [
-                        "Microsoft Defender for Cloud"
+                        "Test Platform for Cloud"
                     ]
                 },
                 {
@@ -1292,7 +1320,7 @@
                     "data_path": "action_result.data.*.additionalData.AlertUri",
                     "data_type": "string",
                     "example_values": [
-                        "https://test.com/#blade/testa/AlertBlade/alertId/test359247191461_35466e20-7dde-41ef-ac20-5141d4test7/subscriptionId/test906-2c22-4d91-98aa-180d9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus"
+                        "https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus"
                     ]
                 },
                 {
@@ -1303,7 +1331,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_path": "action_result.data.*.additionalData.Intent_odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#Int64"
@@ -1362,7 +1390,7 @@
                     "data_path": "action_result.data.*.additionalData.EffectiveAzureResourceId",
                     "data_type": "string",
                     "example_values": [
-                        "/subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/Microsoft.Compute/virtualMachines/phantom-identity"
+                        "/subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id"
                     ]
                 },
                 {
@@ -1383,7 +1411,7 @@
                     "data_path": "action_result.data.*.additionalData.OriginalAlertProviderName",
                     "data_type": "string",
                     "example_values": [
-                        "Microsoft Defender for Cloud"
+                        "Test Platform for Cloud"
                     ]
                 },
                 {
@@ -1530,6 +1558,39 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.hostName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ntDomain",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.dnsDomain",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#test.graph.security.deviceEvidence"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.Intent_odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
                     ]
                 }
             ],
@@ -1712,7 +1773,7 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/v1.0/$metadata/incidents/$entity"
@@ -1752,6 +1813,13 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.test.com/v1.0/$metadata#security/incidents/$entity"
                     ]
                 }
             ],
@@ -1912,7 +1980,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/v1.0/$metadata#/incidents/$entity"
@@ -2001,6 +2069,13 @@
                 {
                     "data_path": "summary.total_objects_successful",
                     "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.test.com/v1.0/$metadata#security/incidents/$entity"
+                    ]
                 }
             ],
             "render": {
@@ -2143,7 +2218,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
@@ -2759,6 +2834,262 @@
                     "example_values": [
                         1
                     ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.hostName",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ntDomain",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.dnsDomain",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#test.graph.security.deviceEvidence"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastIpAddress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastExternalIpAddress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/PluginFrameworkWinTargetVM"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceName",
+                    "data_type": "string",
+                    "example_values": [
+                        "PluginFrameworkWinTargetVM"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceType",
+                    "data_type": "string",
+                    "example_values": [
+                        "Virtual Machine"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.productName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test Platform for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alertPolicyId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.odata_context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8193
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.AlertUri",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.TimeGenerated",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-05-16T00:12:00.174Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProcessingEndTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-05-16T00:12:02.7000014Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source IP",
+                    "data_type": "string",
+                    "example_values": [
+                        "IP Address: 177.12.214.64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProductComponentName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Servers"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceResourceGroup",
+                    "data_type": "string",
+                    "example_values": [
+                        "defaultresourcegroup-eus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity end time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/05/15 23:59:49.1923578"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c357906-2c22-4d91-98aa-180d9a85a370"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c357906-2c22-4d91-98aa-180d9a85a370"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveAzureResourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProductName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Detection-WarmPathV2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity start time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/05/15 23:00:07.9736272"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProviderName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test Platform for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Was RDP session initiated",
+                    "data_type": "string",
+                    "example_values": [
+                        "No"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source computer name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of failed authentication attempts to host",
+                    "data_type": "string",
+                    "example_values": [
+                        "23"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Top accounts with failed sign in attempts (count)",
+                    "data_type": "string",
+                    "example_values": [
+                        "admin (2), ARAXI (1), user1 (1), daveb231 (1), Sp3 (1), DefaultAccount (1), 29zj (1), Adminisrator (1), aselsan (1), backup (1)"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of existing accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of nonexistent accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "21"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.Intent_odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.vmId",
+                    "data_type": "string",
+                    "example_values": [
+                        "e3d18363-806f-4d19-9b75-9ec2f5953cd4"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.resourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.cloudProvider",
+                    "data_type": "string",
+                    "example_values": [
+                        "azure"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.vmMetadata.subscriptionId",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -2887,7 +3218,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.@odata.context",
+                    "data_path": "action_result.data.*.odata_context",
                     "data_type": "string",
                     "example_values": [
                         "https://test.com/beta/$metadata#security/alerts_v2/$entity"
@@ -3024,7 +3355,7 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_path": "action_result.data.*.evidence.*.odata_type",
                     "data_type": "string",
                     "example_values": [
                         "#test.graph.security.deviceEvidence"
@@ -3639,6 +3970,238 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.hostName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test-id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.ntDomain",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.dnsDomain",
+                    "data_type": "string",
+                    "example_values": [
+                        "identity.test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#test.graph.security.deviceEvidence"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastIpAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "10.0.2.15"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.lastExternalIpAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "20.119.52.149"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceName",
+                    "data_type": "string",
+                    "example_values": [
+                        "test-resource"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.evidence.*.resourceType",
+                    "data_type": "string",
+                    "example_values": [
+                        "Virtual Machine"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.productName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test Platform for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.alertPolicyId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.@odata.context",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8193
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.AlertUri",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.TimeGenerated",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-05-16T13:12:23.408Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Intent@odata.type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProcessingEndTime",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-05-16T13:12:24.022927Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source IP",
+                    "data_type": "string",
+                    "example_values": [
+                        "IP Address: 80.94.95.121"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.ProductComponentName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Servers"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceResourceGroup",
+                    "data_type": "string",
+                    "example_values": [
+                        "defaultresourcegroup-eus"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity end time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/05/16 12:45:11.3814938"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c357906-2c22-4d91-98aa-180d9a85a370"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.WorkspaceSubscriptionId",
+                    "data_type": "string",
+                    "example_values": [
+                        "4c357906-2c22-4d91-98aa-180d9a85a370"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.EffectiveAzureResourceId",
+                    "data_type": "string",
+                    "example_values": [
+                        "/subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProductName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Detection-WarmPathV2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Activity start time (UTC)",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024/05/16 12:08:57.1962468"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.OriginalAlertProviderName",
+                    "data_type": "string",
+                    "example_values": [
+                        "Test Platform for Cloud"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Was RDP session initiated",
+                    "data_type": "string",
+                    "example_values": [
+                        "No"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Attacker source computer name",
+                    "data_type": "string",
+                    "example_values": [
+                        "Unknown"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of failed authentication attempts to host",
+                    "data_type": "string",
+                    "example_values": [
+                        "532"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Top accounts with failed sign in attempts (count)",
+                    "data_type": "string",
+                    "example_values": [
+                        "Zaphod! (1), Gearhostadmin (1), Ssadmin (1), 3 (1), Wheeler (1), Receptionist (1), Jerome (1), Bernie (1), Will (1), 1admin3 (1)"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of existing accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "1"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.additionalData.Number of nonexistent accounts used by source to sign in",
+                    "data_type": "string",
+                    "example_values": [
+                        "531"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.Intent_odata_type",
+                    "data_type": "string",
+                    "example_values": [
+                        "#Int64"
                     ]
                 }
             ],
