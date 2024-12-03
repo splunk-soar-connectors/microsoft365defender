@@ -2,11 +2,11 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk  
-Connector Version: 1.4.0  
+Connector Version: 1.4.1  
 Product Vendor: Microsoft  
 Product Name: Microsoft 365 Defender  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.1  
+Minimum Product Version: 6.3.0  
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
@@ -353,6 +353,10 @@ action_result.data.\*.DeviceId | string |  |   xxxxx9d48ec4859bd94a25039dcba09f4
 action_result.data.\*.FileName | string |  |   test.exe 
 action_result.data.\*.InitiatingProcessFileName | string |  |   powershell.exe 
 action_result.data.\*.Timestamp | string |  |   2022-06-12T04:24:25.0406516Z 
+action_result.data.\*.odata_context | string |  |   https://test.com/v1.0/$metadata/incidents/$entity 
+action_result.data.\*.additionalData.Intent_odata_type | string |  |   #Int64 
+action_result.data.\*.evidence.\*.odata_type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.Intent_odata_type | string |  |   #Int64 
 action_result.summary.total_results | numeric |  |   1 
 action_result.message | string |  |   Total results: 1 
 summary.total_objects | numeric |  |   1 
@@ -439,7 +443,7 @@ action_result.data.\*.description | string |  |   Test alert
 action_result.data.\*.detectionSource | string |  |   customTi 
 action_result.data.\*.detectorId | string |  |   testdb3b-18a9-471b-9ad0-ad80a4cbtest 
 action_result.data.\*.determination | string |  |   Test 
-action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.odata_type | string |  |   #test.graph.security.deviceEvidence 
 action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
 action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
 action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
@@ -520,20 +524,20 @@ action_result.data.\*.threatDisplayName | string |  |   threat
 action_result.data.\*.threatFamilyName | string |  |   threat 
 action_result.data.\*.title | string |  |   Test alert 
 action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |   test363-806f-4d19-9b75-9ec2f59test 
-action_result.data.\*.evidence.\*.vmMetadata.resourceId | string |  |   /subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY 
+action_result.data.\*.evidence.\*.vmMetadata.resourceId | string |  |   /subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID 
 action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string |  |   azure 
 action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string |  |  
 action_result.data.\*.evidence.\*.lastIpAddress | string |  |   10.0.2.15 
 action_result.data.\*.evidence.\*.lastExternalIpAddress | string |  |  
-action_result.data.\*.evidence.\*.resourceId | string |  |   /subscriptions/test906-2c22-4d91-98aa-180d9test70/resourceGroups/PLUGINFRAMEWORK/providers/Microsoft.Compute/virtualMachines/PHANTOM-IDENTITY 
-action_result.data.\*.evidence.\*.resourceName | string |  |   phantom-identity 
+action_result.data.\*.evidence.\*.resourceId | string |  |   /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-identity 
+action_result.data.\*.evidence.\*.resourceName | string |  |   test-resource 
 action_result.data.\*.evidence.\*.resourceType | string |  |   Virtual Machine 
-action_result.data.\*.productName | string |  |   Microsoft Defender for Cloud 
+action_result.data.\*.productName | string |  |   Test Platform for Cloud 
 action_result.data.\*.alertPolicyId | string |  |  
 action_result.data.\*.additionalData.Intent | numeric |  |   8193 
-action_result.data.\*.additionalData.AlertUri | string |  |   https://test.com/#blade/testa/AlertBlade/alertId/test359247191461_35466e20-7dde-41ef-ac20-5141d4test7/subscriptionId/test906-2c22-4d91-98aa-180d9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus 
+action_result.data.\*.additionalData.AlertUri | string |  |   https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus 
 action_result.data.\*.additionalData.TimeGenerated | string |  |   2024-02-08T05:11:57.256Z 
-action_result.data.\*.additionalData.Intent@odata.type | string |  |   #Int64 
+action_result.data.\*.additionalData.Intent_odata_type | string |  |   #Int64 
 action_result.data.\*.additionalData.ProcessingEndTime | string |  |   2024-02-08T05:11:57.6847793Z 
 action_result.data.\*.additionalData.Attacker source IP | string |  |   IP Address: 45.141.85.1 
 action_result.data.\*.additionalData.ProductComponentName | string |  |   Servers 
@@ -541,10 +545,10 @@ action_result.data.\*.additionalData.WorkspaceResourceGroup | string |  |   defa
 action_result.data.\*.additionalData.Activity end time (UTC) | string |  |   2024/02/08 04:59:22.9525229 
 action_result.data.\*.additionalData.EffectiveSubscriptionId | string |  |   test7906-2c22-4d91-98aa-180d9a85test 
 action_result.data.\*.additionalData.WorkspaceSubscriptionId | string |  |   test7906-2c22-4d91-98aa-180d9a85test 
-action_result.data.\*.additionalData.EffectiveAzureResourceId | string |  |   /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/Microsoft.Compute/virtualMachines/phantom-identity 
+action_result.data.\*.additionalData.EffectiveAzureResourceId | string |  |   /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id 
 action_result.data.\*.additionalData.OriginalAlertProductName | string |  |   Detection-WarmPathV2 
 action_result.data.\*.additionalData.Activity start time (UTC) | string |  |   2024/02/08 04:01:15.2808538 
-action_result.data.\*.additionalData.OriginalAlertProviderName | string |  |   Microsoft Defender for Cloud 
+action_result.data.\*.additionalData.OriginalAlertProviderName | string |  |   Test Platform for Cloud 
 action_result.data.\*.additionalData.Was RDP session initiated | string |  |   No 
 action_result.data.\*.additionalData.Attacker source computer name | string |  |   Unknown 
 action_result.data.\*.additionalData.Number of failed authentication attempts to host | string |  |   59 
@@ -567,7 +571,13 @@ action_result.data.\*.evidence.\*.location | string |  |
 action_result.summary.total_alerts | numeric |  |   2 
 action_result.message | string |  |   Total alerts: 2 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1   
+summary.total_objects_successful | numeric |  |   1 
+action_result.data.\*.evidence.\*.hostName | string |  |  
+action_result.data.\*.evidence.\*.ntDomain | string |  |  
+action_result.data.\*.evidence.\*.dnsDomain | string |  |  
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.additionalData.Intent@odata.type | string |  |   #Int64 
+action_result.data.\*.Intent_odata_type | string |  |   #Int64   
 
 ## action: 'get incident'
 Retrieve specific incident by its ID
@@ -603,13 +613,14 @@ action_result.data.\*.tags.\* | string |  |
 action_result.data.\*.tenantId | string |  `microsoft tenantid`  |   xxxxx670-d7ef-580d-a225-d48057e74df6 
 action_result.data.\*.summary | string |  |  
 action_result.data.\*.description | string |  |  
-action_result.data.\*.@odata.context | string |  |   https://test.com/v1.0/$metadata/incidents/$entity 
+action_result.data.\*.odata_context | string |  |   https://test.com/v1.0/$metadata/incidents/$entity 
 action_result.data.\*.lastModifiedBy | string |  |   API-App:test@test.com 
 action_result.data.\*.resolvingComment | string |  |  
 action_result.summary | string |  |  
 action_result.message | string |  |   Successfully retrieved the incident 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1   
+summary.total_objects_successful | numeric |  |   1 
+action_result.data.\*.@odata.context | string |  |   https://graph.test.com/v1.0/$metadata#security/incidents/$entity   
 
 ## action: 'update incident'
 Update the properties of an incident object
@@ -643,7 +654,7 @@ action_result.data.\*.assignedTo | string |  |
 action_result.data.\*.description | string |  |  
 action_result.data.\*.displayName | string |  |   Suspicious authentication activity on one endpoint 
 action_result.data.\*.determination | string |  |   unknown 
-action_result.data.\*.@odata.context | string |  |   https://test.com/v1.0/$metadata#/incidents/$entity 
+action_result.data.\*.odata_context | string |  |   https://test.com/v1.0/$metadata#/incidents/$entity 
 action_result.data.\*.classification | string |  |   unknownFutureValue 
 action_result.data.\*.incidentWebUrl | string |  |   https://test.com/incidents/308?tid=testc578-c7ee-480d-atest-d48057etest 
 action_result.data.\*.lastModifiedBy | string |  |   Automation 
@@ -657,7 +668,8 @@ action_result.status | string |  |   success  failed
 action_result.summary | string |  |  
 action_result.message | string |  |  
 summary.total_objects | numeric |  |  
-summary.total_objects_successful | numeric |  |    
+summary.total_objects_successful | numeric |  |  
+action_result.data.\*.@odata.context | string |  |   https://graph.test.com/v1.0/$metadata#security/incidents/$entity   
 
 ## action: 'get alert'
 Retrieve specific alert by its ID
@@ -688,7 +700,7 @@ action_result.data.\*.description | string |  |   Test alert
 action_result.data.\*.detectionSource | string |  |   customTi 
 action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
 action_result.data.\*.determination | string |  |   Test 
-action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.odata_type | string |  |   #test.graph.security.deviceEvidence 
 action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
 action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
 action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
@@ -771,7 +783,47 @@ action_result.data.\*.title | string |  |   Test alert
 action_result.summary | string |  |  
 action_result.message | string |  |   Successfully retrieved the alert 
 summary.total_objects | numeric |  |   1 
-summary.total_objects_successful | numeric |  |   1   
+summary.total_objects_successful | numeric |  |   1 
+action_result.data.\*.evidence.\*.hostName | string |  |  
+action_result.data.\*.evidence.\*.ntDomain | string |  |  
+action_result.data.\*.evidence.\*.dnsDomain | string |  |  
+action_result.data.\*.evidence.\*.vmMetadata | string |  |  
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.lastIpAddress | string |  |  
+action_result.data.\*.evidence.\*.lastExternalIpAddress | string |  |  
+action_result.data.\*.evidence.\*.resourceId | string |  |   /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/PluginFrameworkWinTargetVM 
+action_result.data.\*.evidence.\*.resourceName | string |  |   PluginFrameworkWinTargetVM 
+action_result.data.\*.evidence.\*.resourceType | string |  |   Virtual Machine 
+action_result.data.\*.productName | string |  |   Test Platform for Cloud 
+action_result.data.\*.alertPolicyId | string |  |  
+action_result.data.\*.odata_context | string |  |   https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.@odata.context | string |  |   https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.additionalData.Intent | numeric |  |   8193 
+action_result.data.\*.additionalData.AlertUri | string |  |   https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus 
+action_result.data.\*.additionalData.TimeGenerated | string |  |   2024-05-16T00:12:00.174Z 
+action_result.data.\*.additionalData.Intent@odata.type | string |  |   #Int64 
+action_result.data.\*.additionalData.ProcessingEndTime | string |  |   2024-05-16T00:12:02.7000014Z 
+action_result.data.\*.additionalData.Attacker source IP | string |  |   IP Address: 177.12.214.64 
+action_result.data.\*.additionalData.ProductComponentName | string |  |   Servers 
+action_result.data.\*.additionalData.WorkspaceResourceGroup | string |  |   defaultresourcegroup-eus 
+action_result.data.\*.additionalData.Activity end time (UTC) | string |  |   2024/05/15 23:59:49.1923578 
+action_result.data.\*.additionalData.EffectiveSubscriptionId | string |  |   4c357906-2c22-4d91-98aa-180d9a85a370 
+action_result.data.\*.additionalData.WorkspaceSubscriptionId | string |  |   4c357906-2c22-4d91-98aa-180d9a85a370 
+action_result.data.\*.additionalData.EffectiveAzureResourceId | string |  |   /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id 
+action_result.data.\*.additionalData.OriginalAlertProductName | string |  |   Detection-WarmPathV2 
+action_result.data.\*.additionalData.Activity start time (UTC) | string |  |   2024/05/15 23:00:07.9736272 
+action_result.data.\*.additionalData.OriginalAlertProviderName | string |  |   Test Platform for Cloud 
+action_result.data.\*.additionalData.Was RDP session initiated | string |  |   No 
+action_result.data.\*.additionalData.Attacker source computer name | string |  |   Unknown 
+action_result.data.\*.additionalData.Number of failed authentication attempts to host | string |  |   23 
+action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string |  |   admin (2), ARAXI (1), user1 (1), daveb231 (1), Sp3 (1), DefaultAccount (1), 29zj (1), Adminisrator (1), aselsan (1), backup (1) 
+action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string |  |   1 
+action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string |  |   21 
+action_result.data.\*.Intent_odata_type | string |  |   #Int64 
+action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |   e3d18363-806f-4d19-9b75-9ec2f5953cd4 
+action_result.data.\*.evidence.\*.vmMetadata.resourceId | string |  |   /subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID 
+action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string |  |   azure 
+action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string |  |    
 
 ## action: 'update alert'
 Update properties of existing alert
@@ -797,7 +849,7 @@ action_result.parameter.assign_to | string |  `email`  |   test@abc.com
 action_result.parameter.classification | string |  |   Unknown 
 action_result.parameter.determination | string |  |   Other 
 action_result.parameter.status | string |  |   New 
-action_result.data.\*.@odata.context | string |  `url`  |   https://test.com/beta/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.odata_context | string |  `url`  |   https://test.com/beta/$metadata#security/alerts_v2/$entity 
 action_result.data.\*.mitreTechniques.\* | string |  |   T1546.008 
 action_result.data.\*.evidence.\*.tags.\* | string |  |   testtag 
 action_result.data.\*.evidence.\*.vmMetadata.vmId | string |  |  
@@ -817,7 +869,7 @@ action_result.data.\*.description | string |  |   Test alert
 action_result.data.\*.detectionSource | string |  |   customTi 
 action_result.data.\*.detectorId | string |  |   360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 
 action_result.data.\*.determination | string |  |   Test 
-action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.odata_type | string |  |   #test.graph.security.deviceEvidence 
 action_result.data.\*.evidence.\*.azureAdDeviceId | string |  |  
 action_result.data.\*.evidence.\*.createdDateTime | string |  |   2022-02-23T11:24:05.9366667Z 
 action_result.data.\*.evidence.\*.defenderAvStatus | string |  |   unknown 
@@ -901,3 +953,37 @@ action_result.summary | string |  |
 action_result.message | string |  |   Successfully updated the alert 
 summary.total_objects | numeric |  |   1 
 summary.total_objects_successful | numeric |  |   1 
+action_result.data.\*.evidence.\*.hostName | string |  |   test-id 
+action_result.data.\*.evidence.\*.ntDomain | string |  |  
+action_result.data.\*.evidence.\*.dnsDomain | string |  |   identity.test 
+action_result.data.\*.evidence.\*.@odata.type | string |  |   #test.graph.security.deviceEvidence 
+action_result.data.\*.evidence.\*.lastIpAddress | string |  |   10.0.2.15 
+action_result.data.\*.evidence.\*.lastExternalIpAddress | string |  |   20.119.52.149 
+action_result.data.\*.evidence.\*.resourceId | string |  |   /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id 
+action_result.data.\*.evidence.\*.resourceName | string |  |   test-resource 
+action_result.data.\*.evidence.\*.resourceType | string |  |   Virtual Machine 
+action_result.data.\*.productName | string |  |   Test Platform for Cloud 
+action_result.data.\*.alertPolicyId | string |  |  
+action_result.data.\*.@odata.context | string |  |   https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity 
+action_result.data.\*.additionalData.Intent | numeric |  |   8193 
+action_result.data.\*.additionalData.AlertUri | string |  |   https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus 
+action_result.data.\*.additionalData.TimeGenerated | string |  |   2024-05-16T13:12:23.408Z 
+action_result.data.\*.additionalData.Intent@odata.type | string |  |   #Int64 
+action_result.data.\*.additionalData.ProcessingEndTime | string |  |   2024-05-16T13:12:24.022927Z 
+action_result.data.\*.additionalData.Attacker source IP | string |  |   IP Address: 80.94.95.121 
+action_result.data.\*.additionalData.ProductComponentName | string |  |   Servers 
+action_result.data.\*.additionalData.WorkspaceResourceGroup | string |  |   defaultresourcegroup-eus 
+action_result.data.\*.additionalData.Activity end time (UTC) | string |  |   2024/05/16 12:45:11.3814938 
+action_result.data.\*.additionalData.EffectiveSubscriptionId | string |  |   4c357906-2c22-4d91-98aa-180d9a85a370 
+action_result.data.\*.additionalData.WorkspaceSubscriptionId | string |  |   4c357906-2c22-4d91-98aa-180d9a85a370 
+action_result.data.\*.additionalData.EffectiveAzureResourceId | string |  |   /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id 
+action_result.data.\*.additionalData.OriginalAlertProductName | string |  |   Detection-WarmPathV2 
+action_result.data.\*.additionalData.Activity start time (UTC) | string |  |   2024/05/16 12:08:57.1962468 
+action_result.data.\*.additionalData.OriginalAlertProviderName | string |  |   Test Platform for Cloud 
+action_result.data.\*.additionalData.Was RDP session initiated | string |  |   No 
+action_result.data.\*.additionalData.Attacker source computer name | string |  |   Unknown 
+action_result.data.\*.additionalData.Number of failed authentication attempts to host | string |  |   532 
+action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string |  |   Zaphod! (1), Gearhostadmin (1), Ssadmin (1), 3 (1), Wheeler (1), Receptionist (1), Jerome (1), Bernie (1), Will (1), 1admin3 (1) 
+action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string |  |   1 
+action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string |  |   531 
+action_result.data.\*.Intent_odata_type | string |  |   #Int64 
