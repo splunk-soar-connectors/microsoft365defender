@@ -26,14 +26,17 @@ DEFENDER_CONFIG_TENANT_ID = "tenant_id"
 DEFENDER_CONFIG_CLIENT_ID = "client_id"
 DEFENDER_CONFIG_CLIENT_SECRET = "client_secret"  # pragma: allowlist secret
 DEFENDER_CONFIG_TIMEOUT = "timeout"
-DEFENDER_CONFIG_CERTIFICATE_THUMBPRINT = 'certificate_thumbprint'
-DEFENDER_CONFIG_CERTIFICATE_PRIVATE_KEY= 'certificate_private_key'
+DEFENDER_CONFIG_CERTIFICATE_THUMBPRINT = "certificate_thumbprint"
+DEFENDER_CONFIG_CERTIFICATE_PRIVATE_KEY = "certificate_private_key"  # pragma: allowlist secret
 
-DEFENDER_CBA_FIELDS_ERROR = 'Client Secret was not specified, in which case Certificate Thumbprint and Certificate Private Key are required'
-DEFENDER_FIELD_CONFLICT_ERROR = 'Client Secret was specified as well as Certificate Thumbprint or Certificate Private Key. ' \
-                                'If Client Secret has a value, Certificate Thumbprint and Certificate Private Key values must be removed' \
-                                'Alternatively, if Certificate Thumbprint and Certificate Private Key have values, Client Secret value must be removed'
-DEFENDER_CBA_INTERACTIVE_ERROR = 'Certificate Based Authorization requires Non-Interactive Auth to be checked'
+DEFENDER_CBA_FIELDS_ERROR = "Client Secret was not specified, in which case Certificate Thumbprint and Certificate Private Key are required"
+DEFENDER_FIELD_CONFLICT_ERROR = (
+    "Client Secret was specified as well as Certificate Thumbprint or Certificate Private Key. "
+    "If Client Secret has a value, Certificate Thumbprint and Certificate Private Key values must be removed"
+    "Alternatively, if Certificate Thumbprint and Certificate Private Key have values"
+    ", Client Secret value must be removed"
+)
+DEFENDER_CBA_INTERACTIVE_ERROR = "Certificate Based Authorization requires Non-Interactive Auth to be checked"
 DEFENDER_CBA_KEY_ERROR = "Error occurred while parsing the private key, is it in .PEM format?"
 DEFENDER_TOKEN_STRING = "token"
 DEFENDER_ACCESS_TOKEN_STRING = "access_token"
