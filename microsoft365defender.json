@@ -42,35 +42,47 @@
         "client_secret": {
             "description": "Client Secret",
             "data_type": "password",
-            "required": true,
+            "required": false,
             "order": 3
+        },
+        "certificate_thumbprint": {
+            "description": "Certificate Thumbprint (required for CBA)",
+            "data_type": "password",
+            "order": 4,
+            "required": false
+        },
+        "certificate_private_key": {
+            "description": "Certificate Private Key (.PEM)",
+            "data_type": "password",
+            "required": false,
+            "order": 5
         },
         "timeout": {
             "description": "HTTP API timeout in seconds",
             "data_type": "numeric",
-            "order": 4
+            "order": 6
         },
         "non_interactive": {
             "description": "Non-Interactive Auth",
             "data_type": "boolean",
             "default": false,
-            "order": 5
+            "order": 7
         },
         "max_incidents_per_poll": {
             "description": "Maximum Incidents for scheduled/interval polling for each cycle",
             "data_type": "numeric",
             "default": 1000,
-            "order": 6
+            "order": 8
         },
         "start_time": {
             "description": "Start time for schedule/interval/manual poll (Use this format: 1970-01-01T00:00:00Z)",
             "data_type": "string",
-            "order": 7
+            "order": 9
         },
         "filter": {
             "description": "Filter incidents based on property (example: status ne 'active')",
             "data_type": "string",
-            "order": 8
+            "order": 10
         }
     },
     "actions": [
@@ -4219,6 +4231,11 @@
         "wheel": []
     },
     "pip39_dependencies": {
-        "wheel": []
+        "wheel": [
+            {
+                "module": "msal",
+                "input_file": "wheels/py3/msal-1.31.0-py3-none-any.whl"
+            }
+        ]
     }
 }
