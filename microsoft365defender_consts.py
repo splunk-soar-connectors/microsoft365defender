@@ -1,6 +1,6 @@
 # File: microsoft365defender_consts.py
 #
-# Copyright (c) 2022-2024 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ DEFENDER_CODE_STRING = "code"
 DEFENDER_REFRESH_TOKEN_STRING = "refresh_token"
 DEFENDER_ID_TOKEN_STRING = "id_token"
 DEFENDER_CLIENT_CREDENTIALS_STRING = "client_credentials"
-DEFENDER_BASE_URL_NOT_FOUND_MSG = "Splunk SOAR Base URL not found in System Settings. " "Please specify this value in System Settings"
+DEFENDER_BASE_URL_NOT_FOUND_MSG = "Splunk SOAR Base URL not found in System Settings. Please specify this value in System Settings"
 DEFENDER_AUTHORIZE_URL = (
     "/{tenant_id}/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}"
     "&response_type={response_type}&state={state}&resource={resource}"
@@ -112,7 +112,7 @@ DEFENDER_JSON_CLASSIFICATION = "classification"
 DEFENDER_JSON_DETERMINATION = "determination"
 
 DEFENDER_RUN_CONNECTIVITY_MSG = (
-    "Please run test connectivity first to complete authorization flow and " "generate a token that the app can use to make calls to the server "
+    "Please run test connectivity first to complete authorization flow and generate a token that the app can use to make calls to the server "
 )
 DEFENDER_LIMIT_KEY = "'limit' action parameter"
 DEFENDER_OFFSET_KEY = "'offset' action parameter"

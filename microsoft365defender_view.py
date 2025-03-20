@@ -1,6 +1,6 @@
 # File: microsoft365defender_view.py
 #
-# Copyright (c) 2022-2024 Splunk Inc.
+# Copyright (c) 2022-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 
 def get_ctx_result(result):
-
     ctx_result = {}
     param = result.get_param()
     summary = result.get_summary()
@@ -34,7 +33,6 @@ def get_ctx_result(result):
 
 
 def display_incidents(provides, all_app_runs, context):
-
     context["results"] = results = []
 
     for summary, action_results in all_app_runs:
@@ -48,7 +46,6 @@ def display_incidents(provides, all_app_runs, context):
 
 
 def display_alerts(provides, all_app_runs, context):
-
     context["results"] = results = []
 
     for summary, action_results in all_app_runs:
@@ -62,7 +59,6 @@ def display_alerts(provides, all_app_runs, context):
 
 
 def update_alert(provides, all_app_runs, context):
-
     context["results"] = results = []
 
     for summary, action_results in all_app_runs:
@@ -76,7 +72,6 @@ def update_alert(provides, all_app_runs, context):
 
 
 def update_incident(provides, all_app_runs, context):
-
     context["results"] = results = []
 
     for summary, action_results in all_app_runs:
