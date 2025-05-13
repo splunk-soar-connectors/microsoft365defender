@@ -1451,7 +1451,7 @@
                     "data_path": "action_result.data.*.additionalData.Top accounts with failed sign in attempts (count)",
                     "data_type": "string",
                     "example_values": [
-                        "AdministratÃ¶r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), JÃ¤rjestelmÃ¤nvalvoja (3), Administrator (3), audit1 (3), audit0 (3)"
+                        "Administrat\u00c3\u00b6r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), J\u00c3\u00a4rjestelm\u00c3\u00a4nvalvoja (3), Administrator (3), audit1 (3), audit0 (3)"
                     ]
                 },
                 {
@@ -4237,5 +4237,8 @@
                 "input_file": "wheels/py3/msal-1.31.0-py3-none-any.whl"
             }
         ]
+    },
+    "pip313_dependencies": {
+        "wheel": []
     }
 }

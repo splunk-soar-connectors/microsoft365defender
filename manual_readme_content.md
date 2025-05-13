@@ -98,16 +98,17 @@ are the default ports used by Splunk SOAR.
     will need it to configure the asset and will not be able to retrieve it later.
 
 #### Using Certificate Based Authentication
+
 21. Select the 'Certificates & secrets' menu from the left-side panel.
-22. Select the 'Certificates' tab.
-23. Click 'Upload Certificate' and choose a '*.crt' file that contains the server certificate.
-24. Select the 'Thumbprint' for the newly uploaded certificate and copy it somewhere to be
+01. Select the 'Certificates' tab.
+01. Click 'Upload Certificate' and choose a '\*.crt' file that contains the server certificate.
+01. Select the 'Thumbprint' for the newly uploaded certificate and copy it somewhere to be
     used when configuring the SOAR app.
 
 #### Copy your application id and tenant id
 
 25. Select the 'Overview' menu from the left-side panel.
-26. Copy the **Application (client) ID** and **Directory (tenant) ID** . You will need these to
+01. Copy the **Application (client) ID** and **Directory (tenant) ID** . You will need these to
     configure the SOAR asset.
 
 ## Configure the Microsoft 365 Defender SOAR app's asset
@@ -120,13 +121,15 @@ When creating an asset for the app,
 - Provide the client ID of the app created during the previous step of app creation in the 'Client
   ID' field.
 
--   Provide the client secret of the app created during the previous step of app creation in the
-    'Client Secret' field. -or- If using Certificate Based Authenticaion, do not not enter anything
-    in this field, instead, complete the next three steps.
+- Provide the client secret of the app created during the previous step of app creation in the
+  'Client Secret' field. -or- If using Certificate Based Authenticaion, do not not enter anything
+  in this field, instead, complete the next three steps.
 
--   For Certificate Based Authentication only: Provide the 'Certificate Thumbprint' recorded above from Microsoft Entra.
--   For Certificate Based Authentication only: Provide the 'Certificate Private Key' (cut and paste the .pem file contents).
--   For Certificate Based Authentication only: Ensure the 'Non-Interactive Auth' checkbox is checked.
+- For Certificate Based Authentication only: Provide the 'Certificate Thumbprint' recorded above from Microsoft Entra.
+
+- For Certificate Based Authentication only: Provide the 'Certificate Private Key' (cut and paste the .pem file contents).
+
+- For Certificate Based Authentication only: Ensure the 'Non-Interactive Auth' checkbox is checked.
 
 - Provide the tenant ID of the app created during the previous step of Azure app creation in the
   'Tenant ID' field. For getting the value of tenant ID, navigate to the Microsoft Entra ID; The value displayed in the 'Tenant ID'.
