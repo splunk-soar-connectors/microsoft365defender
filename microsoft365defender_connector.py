@@ -1458,7 +1458,6 @@ class Microsoft365Defender_Connector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_CBA_KEY_ERROR), None
 
     def _generate_new_cba_access_token(self, action_result):
-
         self.save_progress("Generating token using Certificate Based Authentication...")
 
         authority = f"{DEFENDER_LOGIN_BASE_URL}/{self._tenant}"
@@ -1486,7 +1485,7 @@ class Microsoft365Defender_Connector(BaseConnector):
             try:
                 encrypted_access_token = self.encrypt_state(self._access_token)
             except Exception as e:
-                self.debug_print("{}: {}".format(DEFENDER_ENCRYPTION_ERROR, self._get_error_message_from_exception(e)))
+                self.debug_print(f"{DEFENDER_ENCRYPTION_ERROR}: {self._get_error_message_from_exception(e)}")
                 return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
             self._state[DEFENDER_ACCESS_TOKEN_STRING] = encrypted_access_token
             self._state[DEFENDER_STATE_IS_ENCRYPTED] = True
