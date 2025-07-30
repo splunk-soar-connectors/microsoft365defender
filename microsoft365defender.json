@@ -7,12 +7,15 @@
     "logo": "logo_microsoft365defender.svg",
     "logo_dark": "logo_microsoft365defender_dark.svg",
     "product_name": "Microsoft 365 Defender",
-    "python_version": ["3.9", "3.13"],
+    "python_version": [
+        "3.9",
+        "3.13"
+    ],
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2025 Splunk Inc.",
-    "app_version": "1.4.1",
-    "utctime_updated": "2023-11-02T19:23:33.000000Z",
+    "app_version": "1.4.2",
+    "utctime_updated": "2025-07-30T17:49:03.122546Z",
     "package_name": "phantom_microsoft365defender",
     "main_module": "microsoft365defender_connector.py",
     "min_phantom_version": "6.3.0",
@@ -1439,7 +1442,7 @@
                     "data_path": "action_result.data.*.additionalData.Top accounts with failed sign in attempts (count)",
                     "data_type": "string",
                     "example_values": [
-                        "AdministratÃ¶r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), JÃ¤rjestelmÃ¤nvalvoja (3), Administrator (3), audit1 (3), audit0 (3)"
+                        "Administrat\u00c3\u00b6r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), J\u00c3\u00a4rjestelm\u00c3\u00a4nvalvoja (3), Administrator (3), audit1 (3), audit0 (3)"
                     ]
                 },
                 {

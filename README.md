@@ -1,7 +1,7 @@
 # Microsoft 365 Defender
 
 Publisher: Splunk \
-Connector Version: 1.4.1 \
+Connector Version: 1.4.2 \
 Product Vendor: Microsoft \
 Product Name: Microsoft 365 Defender \
 Minimum Product Version: 6.3.0
