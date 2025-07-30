@@ -7,7 +7,7 @@
     "logo": "logo_microsoft365defender.svg",
     "logo_dark": "logo_microsoft365defender_dark.svg",
     "product_name": "Microsoft 365 Defender",
-    "python_version": "3",
+    "python_version": ["3.9", "3.13"],
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2022-2025 Splunk Inc.",
