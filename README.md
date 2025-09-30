@@ -1,9 +1,9 @@
 # Microsoft 365 Defender
 
-Publisher: Splunk \
-Connector Version: 1.4.3 \
-Product Vendor: Microsoft \
-Product Name: Microsoft 365 Defender \
+Publisher: Splunk <br>
+Connector Version: 1.4.3 <br>
+Product Vendor: Microsoft <br>
+Product Name: Microsoft 365 Defender <br>
 Minimum Product Version: 6.3.0
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
@@ -294,21 +294,21 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality \
-[run query](#action-run-query) - An advanced search query \
-[list incidents](#action-list-incidents) - List all the incidents \
-[list alerts](#action-list-alerts) - List all the alerts \
-[get incident](#action-get-incident) - Retrieve specific incident by its ID \
-[update incident](#action-update-incident) - Update the properties of an incident object \
-[get alert](#action-get-alert) - Retrieve specific alert by its ID \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality <br>
+[run query](#action-run-query) - An advanced search query <br>
+[list incidents](#action-list-incidents) - List all the incidents <br>
+[list alerts](#action-list-alerts) - List all the alerts <br>
+[get incident](#action-get-incident) - Retrieve specific incident by its ID <br>
+[update incident](#action-update-incident) - Update the properties of an incident object <br>
+[get alert](#action-get-alert) - Retrieve specific alert by its ID <br>
 [update alert](#action-update-alert) - Update properties of existing alert
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -323,7 +323,7 @@ No Output
 
 Callback action for the on_poll ingest functionality
 
-Type: **ingest** \
+Type: **ingest** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -344,7 +344,7 @@ No Output
 
 An advanced search query
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -376,7 +376,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all the incidents
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -425,7 +425,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all the alerts
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -599,7 +599,7 @@ action_result.data.\*.Intent_odata_type | string | | #Int64 |
 
 Retrieve specific incident by its ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -645,7 +645,7 @@ action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$m
 
 Update the properties of an incident object
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 In this `SecurityIncident.ReadWrite.All` delegated or application permission is required. One of the parameters `status`, `assign_to`, `classification` or `determination` must be specified; otherwise, the action fails.
@@ -697,7 +697,7 @@ action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$m
 
 Retrieve specific alert by its ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -854,7 +854,7 @@ action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string | | |
 
 Update properties of existing alert
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters

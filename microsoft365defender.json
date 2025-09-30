@@ -4233,12 +4233,53 @@
     "pip39_dependencies": {
         "wheel": [
             {
+                "module": "PyJWT",
+                "input_file": "wheels/py3/PyJWT-2.10.1-py3-none-any.whl"
+            },
+            {
+                "module": "cffi",
+                "input_file": "wheels/py39/cffi-2.0.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+            },
+            {
+                "module": "cryptography",
+                "input_file": "wheels/py3/cryptography-46.0.1-cp38-abi3-manylinux_2_28_x86_64.whl"
+            },
+            {
                 "module": "msal",
-                "input_file": "wheels/py3/msal-1.31.0-py3-none-any.whl"
+                "input_file": "wheels/py3/msal-1.34.0-py3-none-any.whl"
+            },
+            {
+                "module": "pycparser",
+                "input_file": "wheels/py3/pycparser-2.23-py3-none-any.whl"
+            },
+            {
+                "module": "typing_extensions",
+                "input_file": "wheels/py3/typing_extensions-4.15.0-py3-none-any.whl"
             }
         ]
     },
     "pip313_dependencies": {
-        "wheel": []
+        "wheel": [
+            {
+                "module": "PyJWT",
+                "input_file": "wheels/py3/PyJWT-2.10.1-py3-none-any.whl"
+            },
+            {
+                "module": "cffi",
+                "input_file": "wheels/py313/cffi-2.0.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl"
+            },
+            {
+                "module": "cryptography",
+                "input_file": "wheels/py3/cryptography-46.0.1-cp311-abi3-manylinux_2_28_x86_64.whl"
+            },
+            {
+                "module": "msal",
+                "input_file": "wheels/py3/msal-1.34.0-py3-none-any.whl"
+            },
+            {
+                "module": "pycparser",
+                "input_file": "wheels/py3/pycparser-2.23-py3-none-any.whl"
+            }
+        ]
     }
 }
