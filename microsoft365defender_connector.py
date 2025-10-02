@@ -29,10 +29,12 @@ import grp
 import json
 import os
 import pwd
+import re
 import time
 from datetime import datetime, timedelta
 
 import encryption_helper
+import msal
 import requests
 from bs4 import BeautifulSoup
 from django.http import HttpResponse
@@ -666,6 +668,10 @@ class Microsoft365Defender_Connector(BaseConnector):
         :param data: Data to send in REST call
         :return: status phantom.APP_ERROR/phantom.APP_SUCCESS
         """
+
+        if self._cba_auth is True:
+            retval = self._generate_new_cba_access_token(action_result=action_result)
+            return retval
 
         self.debug_print("Generating new token")
         req_url = f"{DEFENDER_LOGIN_BASE_URL}{DEFENDER_SERVER_TOKEN_URL.format(tenant_id=quote(self._tenant))}"
@@ -1436,6 +1442,64 @@ class Microsoft365Defender_Connector(BaseConnector):
 
         return ret_val
 
+    def _get_private_key(self, action_result):
+        # When the private key is copied/pasted to an asset parameter
+        # SOAR converts \n to spaces. This code fixes that and rebuilds
+        # the private key as it should be
+
+        if self._certificate_private_key is not None:
+            p = re.compile("(-----.*?-----) (.*) (-----.*?-----)")
+            m = p.match(self._certificate_private_key)
+
+            if m:
+                private_key = "\n".join([m.group(1), m.group(2).replace(" ", "\n"), m.group(3)])
+                return phantom.APP_SUCCESS, private_key
+            else:
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_CBA_KEY_ERROR), None
+
+    def _generate_new_cba_access_token(self, action_result):
+        self.save_progress("Generating token using Certificate Based Authentication...")
+
+        authority = f"{DEFENDER_LOGIN_BASE_URL}/{self._tenant}"
+        scope = [f"{DEFENDER_RESOURCE_URL}/.default"]
+
+        ret_val, self._private_key = self._get_private_key(action_result)
+
+        if phantom.is_fail(ret_val):
+            return action_result.set_status(phantom.APP_ERROR, DEFENDER_CBA_KEY_ERROR)
+
+        app = msal.ConfidentialClientApplication(
+            self._client_id,
+            authority=authority,
+            client_credential={"thumbprint": self._thumbprint, "private_key": self._private_key},
+        )
+
+        result = None
+
+        if self._access_token is None:
+            self.debug_print("Requesting new token from AAD.")
+            result = app.acquire_token_for_client(scopes=scope)
+
+            self._state = self.load_state()
+            self._access_token = result["access_token"]
+            try:
+                encrypted_access_token = self.encrypt_state(self._access_token)
+            except Exception as e:
+                self.debug_print(f"{DEFENDER_ENCRYPTION_ERROR}: {self._get_error_message_from_exception(e)}")
+                return action_result.set_status(phantom.APP_ERROR, DEFENDER_ENCRYPTION_ERROR)
+            self._state[DEFENDER_ACCESS_TOKEN_STRING] = encrypted_access_token
+            self._state[DEFENDER_STATE_IS_ENCRYPTED] = True
+            try:
+                self.save_state(self._state)
+            except Exception:
+                return action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Error occurred while parsing the state file. Please delete the state file and run the test connectivity again.",
+                )
+
+            self._state = self.load_state()
+        return phantom.APP_SUCCESS
+
     def initialize(self):
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
@@ -1450,8 +1514,27 @@ class Microsoft365Defender_Connector(BaseConnector):
         self._non_interactive = config.get("non_interactive", False)
         self._tenant = config[DEFENDER_CONFIG_TENANT_ID]
         self._client_id = config[DEFENDER_CONFIG_CLIENT_ID]
-        self._client_secret = config[DEFENDER_CONFIG_CLIENT_SECRET]
+        self._client_secret = config.get(DEFENDER_CONFIG_CLIENT_SECRET)
         self._timeout = config.get(DEFENDER_CONFIG_TIMEOUT, DEFAULT_TIMEOUT)
+        self._thumbprint = config.get(DEFENDER_CONFIG_CERTIFICATE_THUMBPRINT)
+        self._certificate_private_key = config.get(DEFENDER_CONFIG_CERTIFICATE_PRIVATE_KEY)
+
+        # Must either supply client_secret, or both thumbprint and private key
+        if self._client_secret is None:
+            if self._thumbprint is None or self._certificate_private_key is None:
+                return self.set_status(phantom.APP_ERROR, DEFENDER_CBA_FIELDS_ERROR)
+
+        if self._client_secret is not None:
+            if self._thumbprint is not None or self._certificate_private_key is not None:
+                return self.set_status(phantom.APP_ERROR, DEFENDER_FIELD_CONFLICT_ERROR)
+
+        if self._client_secret is not None:
+            self._cba_auth = False
+        else:
+            self._cba_auth = True
+            # Check non-interactive is enabled for CBA auth
+            if self._non_interactive is False:
+                return self.set_status(phantom.APP_ERROR, DEFENDER_CBA_INTERACTIVE_ERROR)
 
         ret_val, self._timeout = self._validate_integer(action_result, self._timeout, DEFENDER_TIMEOUT_KEY)
         if phantom.is_fail(ret_val):
