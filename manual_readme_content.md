@@ -45,7 +45,7 @@ are the default ports used by Splunk SOAR.
 
 1. Under the **APIs my organization uses** section, search for and select **Microsoft Graph**.
 
-1. Add the following **Application** or **Delegated** permissions:
+1. Select and add the appropriate permissions from the list below, choosing between **Application** or **Delegated** permissions as per your [Authentication Type](#asset-configuration):
 
    - **Application Permissions**
 
