@@ -4242,7 +4242,7 @@
             },
             {
                 "module": "cryptography",
-                "input_file": "wheels/py3/cryptography-46.0.1-cp38-abi3-manylinux_2_28_x86_64.whl"
+                "input_file": "wheels/py3/cryptography-46.0.3-cp38-abi3-manylinux_2_28_x86_64.whl"
             },
             {
                 "module": "msal",
@@ -4270,7 +4270,7 @@
             },
             {
                 "module": "cryptography",
-                "input_file": "wheels/py3/cryptography-46.0.1-cp311-abi3-manylinux_2_28_x86_64.whl"
+                "input_file": "wheels/py3/cryptography-46.0.3-cp311-abi3-manylinux_2_28_x86_64.whl"
             },
             {
                 "module": "msal",

@@ -10,21 +10,17 @@ are the default ports used by Splunk SOAR.
 
 ## Explanation of Asset Configuration Parameters
 
-- Tenant ID - It is the Directory ID of the Microsoft Entra ID on the Microsoft
-  Azure portal.
-- Client ID - It is the Application ID of an application configured in the Microsoft Entra ID.
-- Client Secret - It is the secret string used by the application to prove its identity when
-  requesting a token. It can be generated for the configured application on the Microsoft Entra ID.
-- Non-Interactive Auth - It is used to determine the authentication method. If it is checked then
-  non-Interactive auth will be used otherwise interactive auth will be used. Whenever this
-  checkbox is toggled then the test connectivity action must be run again.
-- Timeout - It is used to make configurable timeout for all actions.
+- **Tenant ID**: The **Directory (tenant) ID** of your Microsoft Entra ID instance from the Azure portal.
+- **Client ID**: The **Application (client) ID** of your registered application in Microsoft Entra ID.
+- **Client Secret**: The secret string used by the application to prove its identity when requesting a token. This is required for **Client Secret Authentication**.
+- **Non-Interactive Auth**: Check this box to use non-interactive (app-only) authentication. Uncheck it for interactive (user-based) authentication. You must re-run **Test Connectivity** after changing this setting.
+- **Timeout**: The timeout in seconds for API requests.
 
 ## Explanation of Asset Configuration Parameters for On Poll
 
-- Max Incidents For Polling - In each polling cycle, incidents are fetched for schedule and interval polling based on the provided value (Default 1000). Containers are created per incident.
-- Start Time - It is used to filter the incidents based on start time, if nothing is provided, then it will take last week as start time. <br> **NOTE: Start time is used to filter based on lastUpdateDateTime property of incident**
-- Filter - It is used to add extra filters on incident properties.
+- **Max Incidents For Polling**: The maximum number of incidents to fetch in each polling cycle (Default: 1000).
+- **Start Time**: The start time for polling incidents (e.g., `2023-01-01T00:00:00Z`). If not provided, the connector will poll for incidents from the last week. This filter is based on the `lastUpdateDateTime` of the incident.
+- **Filter**: Additional OData filters for polling incidents (e.g., `status ne 'Active'`).
 
 ## Explanation of On Poll Behavior
 
@@ -35,149 +31,138 @@ are the default ports used by Splunk SOAR.
 
 ## Configure and set up permissions of the app created on the Microsoft Azure portal
 
-<div style="margin-left: 2em">
+1. Navigate to \<https://portal.azure.com and log in with a user that has permissions to create an app in Microsoft Entra ID.
 
-#### Create the app
+1. Select **Microsoft Entra ID**.
 
-1. Navigate to <https://portal.azure.com> .
-1. Log in with a user that has permission to create an app in the Microsoft Entra ID.
-1. Select the 'Microsoft Entra ID'.
-1. Select the 'App registrations' menu from the left-side panel.
-1. Select the 'New Registration' option at the top of the page.
-1. In the registration form, choose a name for your application and then click 'Register'.
+1. Select **App registrations** from the left-side panel, then click **New Registration**.
 
-#### Add permissions
+1. In the registration form, choose a name for your application and click **Register**.
 
-7. Select the 'API Permissions' menu from the left-side panel.
+1. Select **API Permissions** from the left-side panel.
 
-1. Click on 'Add a permission'.
+1. Click on **Add a permission**.
 
-1. Under the 'Select an API' section, select 'APIs my organization uses'.
+1. Under the **APIs my organization uses** section, search for and select **Microsoft Graph**.
 
-1. Search for 'Microsoft Graph' keyword in the search box and click on the displayed option for it.
-
-1. Provide the following Delegated and Application permissions to the app.
+1. Select and add the appropriate permissions from the list below, choosing between **Application** or **Delegated** permissions as per your [Authentication Type](#asset-configuration):
 
    - **Application Permissions**
 
-     - SecurityAlert.Read.All
-     - SecurityAlert.ReadWrite.All
-     - ThreatHunting.Read.All
-     - SecurityIncident.Read.All
-     - SecurityIncident.ReadWrite.All
+     - `SecurityAlert.Read.All`
+     - `SecurityAlert.ReadWrite.All`
+     - `SecurityIncident.Read.All`
+     - `SecurityIncident.ReadWrite.All`
+     - `ThreatHunting.Read.All`
 
    - **Delegated Permissions**
 
-     - SecurityAlert.Read.All
-     - SecurityAlert.ReadWrite.All
-     - ThreatHunting.Read.All
-     - SecurityIncident.Read.All
-     - SecurityIncident.ReadWrite.All
+     - `SecurityAlert.Read.All`
+     - `SecurityAlert.ReadWrite.All`
+     - `SecurityIncident.Read.All`
+     - `SecurityIncident.ReadWrite.All`
+     - `ThreatHunting.Read.All`
 
-1. 'Grant Admin Consent' for it.
+1. Click **Add a permission** again.
 
-1. Again click on 'Add a permission'.
+1. Under the **Microsoft APIs** section, click on **Microsoft Graph**.
 
-1. Under the 'Select an API' section, select 'Microsoft APIs'.
+1. Add the following **Delegated** permission:
 
-1. Click on the 'Microsoft Graph' option.
+   - `offline_access`
 
-1. Provide the following Delegated permission to the app.
+1. Click **Grant admin consent** for the permissions.
 
-   - **Delegated Permission**
+### Permissions Required for Each Action
 
-     - offline_access
+This table lists the API permissions required for each action. For most use cases, **Application** permissions are recommended.
 
-#### Create a client secret or jump to next section to use Certificate Based Authentication
+| Action | Application Permissions | Delegated Permissions |
+| ------------------- | ------------------------------ | ------------------------------ |
+| `test connectivity` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
+| `on poll` | `SecurityIncident.Read.All` | `SecurityIncident.Read.All` |
+| `run query` | `ThreatHunting.Read.All` | `ThreatHunting.Read.All` |
+| `list incidents` | `SecurityIncident.Read.All` | `SecurityIncident.Read.All` |
+| `list alerts` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
+| `get incident` | `SecurityIncident.Read.All` | `SecurityIncident.Read.All` |
+| `update incident` | `SecurityIncident.ReadWrite.All` | `SecurityIncident.ReadWrite.All` |
+| `get alert` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
+| `update alert` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
 
-17. Select the 'Certificates & secrets' menu from the left-side panel.
-01. Select 'New client secret' button to open a pop-up window.
-01. Provide the description, select an appropriate option for deciding the client secret expiration
-    time, and click on the 'Add' button.
-01. Click 'Copy to clipboard' to copy the generated secret value and paste it in a safe place. You
-    will need it to configure the asset and will not be able to retrieve it later.
+### Authentication Method
 
-#### Using Certificate Based Authentication
+You can choose one of the following authentication methods:
 
-21. Select the 'Certificates & secrets' menu from the left-side panel.
-01. Select the 'Certificates' tab.
-01. Click 'Upload Certificate' and choose a '\*.crt' file that contains the server certificate.
-01. Select the 'Thumbprint' for the newly uploaded certificate and copy it somewhere to be
-    used when configuring the SOAR app.
+#### Client Secret Authentication
 
-#### Copy your application id and tenant id
+1. Select the **Certificates & secrets** menu from the left-side panel.
+1. Click **New client secret**.
+1. Provide a description, select an expiration time, and click **Add**.
+1. Copy the generated secret **Value**. You will need it to configure the asset and will not be able to retrieve it later.
 
-25. Select the 'Overview' menu from the left-side panel.
-01. Copy the **Application (client) ID** and **Directory (tenant) ID** . You will need these to
-    configure the SOAR asset.
+#### Certificate Based Authentication
+
+1. Select the **Certificates & secrets** menu from the left-side panel.
+1. Select the **Certificates** tab.
+1. Click **Upload Certificate** and choose a `.crt` file that contains the public key of your certificate.
+1. Copy the **Thumbprint** for the newly uploaded certificate. You will need this when configuring the asset.
+
+### Copy Application and Tenant ID
+
+1. Select the **Overview** menu from the left-side panel.
+1. Copy the **Application (client) ID** and **Directory (tenant) ID**. You will need these to configure the asset.
 
 ## Configure the Microsoft 365 Defender SOAR app's asset
 
-When creating an asset for the app,
+### Asset Configuration
 
-- Check the checkbox **Non-Interactive Auth** if you want to use Non-Interactive authentication
-  mechanism otherwise Interactive auth mechanism will be used.
+1. **Tenant ID**: Enter the **Directory (tenant) ID** you copied from your Azure application.
 
-- Provide the client ID of the app created during the previous step of app creation in the 'Client
-  ID' field.
+1. **Client ID**: Enter the **Application (client) ID** you copied from your Azure application.
 
-- Provide the client secret of the app created during the previous step of app creation in the
-  'Client Secret' field. -or- If using Certificate Based Authenticaion, do not not enter anything
-  in this field, instead, complete the next three steps.
+1. **Authentication Type**: Choose your authentication method:
 
-- For Certificate Based Authentication only: Provide the 'Certificate Thumbprint' recorded above from Microsoft Entra.
+   - **For Client Secret Authentication**:
 
-- For Certificate Based Authentication only: Provide the 'Certificate Private Key' (cut and paste the .pem file contents).
+     - Enter the **Client Secret** you created.
+     - Leave the **Certificate Thumbprint** and **Certificate Private Key** fields blank.
 
-- For Certificate Based Authentication only: Ensure the 'Non-Interactive Auth' checkbox is checked.
+   - **For Certificate-Based Authentication**:
 
-- Provide the tenant ID of the app created during the previous step of Azure app creation in the
-  'Tenant ID' field. For getting the value of tenant ID, navigate to the Microsoft Entra ID; The value displayed in the 'Tenant ID'.
+     - Enter the **Certificate Thumbprint** you copied.
+     - Paste the contents of your certificate's private key (`.pem` file) into the **Certificate Private Key** field.
+     - Ensure the **Non-Interactive Auth** checkbox is checked.
 
-- Save the asset with the above values.
+1. **Authentication Flow**:
 
-- After saving the asset, a new uneditable field will appear in the 'Asset Settings' tab of the
-  configured asset for the Microsoft 365 Defender app on SOAR. Copy the URL mentioned in the 'POST
-  incoming for Microsoft 365 Defender to this location' field. Add a suffix '/result' to the URL
-  copied in the previous step. The resulting URL looks like the one mentioned below.
+   - **Interactive (Delegated Permissions)**:
 
-  https://\<soar_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
+     - Uncheck the **Non-Interactive Auth** checkbox.
+     - After saving the asset, a new uneditable field will appear in the 'Asset Settings' tab. Copy the URL from the **POST incoming for Microsoft 365 Defender to this location** field and add a `/result` suffix to it. The resulting URL will look like this:
+       `https://<soar_host/rest/handler/microsoft365defender_<appid/<asset_name/result`
+     - In your Azure application, go to **Authentication** **Add a platform** **Web**.
+     - Paste the resulting URL into the **Redirect URIs** field, select the **ID tokens** checkbox, and click **Save**.
 
-- Add the URL created in the earlier step into the 'Redirect URIs' section of the 'Authentication'
-  menu for the registered app that was created in the previous steps on the Microsoft Azure
-  portal. For the 'Redirect URIs' section, follow the below steps.
+   - **Non-Interactive (Application Permissions)**:
 
-  1. Below steps are required only in case of Interactive auth (i.e. If checkbox is unchecked)
-  1. Navigate to the 'Microsoft Entra ID' on the Microsoft Azure portal.
-  1. Click on the 'App registrations' menu from the left-side panel.
-  1. Click on the earlier created app. You can search for the app by name or client ID.
-  1. Navigate to the 'Authentication' menu of the app on the left-side panel.
-  1. Click on the 'Add a platform' button and select 'Web' from the displayed options.
-  1. Enter the URL created in the earlier section in the 'Redirect URIs' text-box.
-  1. Select the 'ID tokens' checkbox and click 'Save'.
-  1. This will display the 'Redirect URIs' under the 'Web' section displayed on the page.
+     - Check the **Non-Interactive Auth** checkbox.
 
-## Interactive Method to run Test Connectivity
+1. **Save** the asset.
 
-- Here make sure that the 'Non-Interactive Auth' checkbox is unchecked in asset configuration.
-- After setting up the asset and user, click the 'TEST CONNECTIVITY' button. A pop-up window will
-  be displayed with appropriate test connectivity logs. It will also display a specific URL on
-  that pop-up window.
-- Open this URL in a separate browser tab. This new tab will redirect to the Microsoft login page
-  to complete the login process to grant the permissions to the app.
-- Log in using the same Microsoft account that was used to configure the Microsoft 365 Defender
-  workflow and the application on the Microsoft Azure Portal. After logging in, review the
-  requested permissions listed and click on the 'Accept' button.
-- This will display a successful message of 'Code received. Please close this window, the action
-  will continue to get new token.' on the browser tab.
-- Finally, close the browser tab and come back to the 'Test Connectivity' browser tab. The pop-up
-  window should display a 'Test Connectivity Passed' message.
+## Test Connectivity
 
-## Non-Interactive Method to run Test Connectivity
+### Interactive Method
 
-- Here make sure that the 'Non-Interactive Auth' checkbox is checked in asset configuration.
-- Click on the 'TEST CONNECTIVITY' button, it should run the test connectivity action without any
-  user interaction.
+1. Ensure the **Non-Interactive Auth** checkbox is **unchecked** in the asset configuration.
+1. Click the **TEST CONNECTIVITY** button. A pop-up window will appear with a URL.
+1. Open the URL in a new browser tab and complete the Microsoft login process to grant the required permissions.
+1. After successful authentication, you will see a message confirming that the code was received. You can close the browser tab.
+1. The 'Test Connectivity' pop-up window should now display a 'Test Connectivity Passed' message.
+
+### Non-Interactive Method
+
+1. Ensure the **Non-Interactive Auth** checkbox is **checked** in the asset configuration.
+1. Click the **TEST CONNECTIVITY** button. The test will run without any user interaction.
 
 ## Explanation of Test Connectivity Workflow for Interactive auth and Non-Interactive auth
 
@@ -246,7 +231,7 @@ Please check the permissions for the state file as mentioned below.
 
 #### State file path
 
-- state file path on instance: /opt/phantom/local_data/app_states/\<appid>/\<asset_id>\_state.json
+- state file path on instance: /opt/phantom/local_data/app_states/\<appid/\<asset_id_state.json
 
 #### State file permissions
 
@@ -256,11 +241,11 @@ Please check the permissions for the state file as mentioned below.
 
 ## Notes
 
-- \<appid> - The app ID will be available in the Redirect URI which gets populated in the field
+- \<appid - The app ID will be available in the Redirect URI which gets populated in the field
   'POST incoming for Microsoft 365 Defender to this location' when the Microsoft 365 Defender app
   asset is configured e.g.
-  https://\<splunk_soar_host>/rest/handler/microsoft365defender\_\<appid>/\<asset_name>/result
-- \<asset_id> - The asset ID will be available on the created asset's Splunk SOAR web URL e.g.
-  https://\<splunk_soar_host>/apps/\<app_number>/asset/\<asset_id>/
+  https://\<splunk_soar_host/rest/handler/microsoft365defender\_\<appid/\<asset_name/result
+- \<asset_id - The asset ID will be available on the created asset's Splunk SOAR web URL e.g.
+  https://\<splunk_soar_host/apps/\<app_number/asset/\<asset_id/
 
 #### The app is configured and ready to be used now.
