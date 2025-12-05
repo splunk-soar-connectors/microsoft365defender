@@ -1,2 +1,1 @@
 **Unreleased**
-* Updated documentation for application and delegated permissions, along with asset configuration.
