@@ -98,6 +98,7 @@ This table lists the API permissions required for each action. For most use case
 | `update incident` | `SecurityIncident.ReadWrite.All` | `SecurityIncident.ReadWrite.All` |
 | `get alert` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
 | `update alert` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
+| `create comment` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
 
 ### Authentication Method
 
@@ -287,7 +288,8 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [get incident](#action-get-incident) - Retrieve specific incident by its ID <br>
 [update incident](#action-update-incident) - Update the properties of an incident object <br>
 [get alert](#action-get-alert) - Retrieve specific alert by its ID <br>
-[update alert](#action-update-alert) - Update properties of existing alert
+[update alert](#action-update-alert) - Update properties of existing alert <br>
+[create comment](#action-create-comment) - Create a comment for an alert
 
 ## action: 'test connectivity'
 
@@ -834,6 +836,31 @@ action_result.data.\*.evidence.\*.vmMetadata.vmId | string | | e3d18363-806f-4d1
 action_result.data.\*.evidence.\*.vmMetadata.resourceId | string | | /subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID |
 action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string | | azure |
 action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string | | |
+
+## action: 'create comment'
+
+Create a comment for an alert
+
+Type: **generic** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**alert_id** | required | ID of the alert | string | `defender alert id` |
+**comment** | required | The comment to be added to the alert | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.alert_id | string | `defender alert id` | xx637812122456454120\_-11082172xx |
+action_result.parameter.comment | string | | Test comment |
+action_result.message | string | | Comment added successfully |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ## action: 'update alert'
 

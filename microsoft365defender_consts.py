@@ -215,6 +215,11 @@ DEFENDER_INCIDENT_KEYS_MAPPING = {"assign_to": "assignedTo"}
 
 DEFENDER_INVALID_INCIDENT_INPUT = "Please provide a valid value in the '{0}' parameter"
 
+# For create_comment:
+DEFENDER_ODATA_TYPE_COMMENT = "#microsoft.graph.security.alertComment"
+DEFENDER_COMMENT_ALERT_ID_ENDPOINT = "/security/alerts_v2/{input}/comments"
+DEFENDER_COMMENT_ADDED_SUCCESSFULLY = "Successfully added the comment to the alert"
+
 # For on_poll action:
 DEFENDER_APP_DT_STR_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 DEFENDER_CONFIG_START_TIME_SCHEDULED_POLL = "start_time"
