@@ -253,6 +253,75 @@
             "versions": "EQ(*)"
         },
         {
+            "action": "create comment",
+            "identifier": "create_comment",
+            "description": "Create a comment for an alert",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "alert_id":{
+                    "description": "The ID of the alert",
+                    "data_type" : "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "order": 0,
+                    "default": null,
+                    "name": "alert_id"
+                },
+                "comment": {
+                    "description": "The comment to be added to the alert",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "order": 1,
+                    "default": null,
+                    "name": "comment"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.alert_id",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "alert_id",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.comment",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "comment",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
             "action": "list incidents",
             "description": "List all the incidents",
             "type": "investigate",

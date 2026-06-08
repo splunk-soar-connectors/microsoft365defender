@@ -1412,6 +1412,30 @@ class Microsoft365Defender_Connector(BaseConnector):
             "data": incident,
             "cef": incident,
         }
+    
+    def _handle_create_comment(self, param):
+
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
+        action_result = self.add_action_result(ActionResult(dict(param)))
+        alert_id = param[DEFENDER_ALERT_ID]
+
+        request_body = {}
+        request_body["@odata_type"] = DEFENDER_ODATA_TYPE_COMMENT
+        request_body["comment"] = param.get('comment', '')
+
+        endpoint = f"{DEFENDER_MSGRAPH_API_BASE_URL}{DEFENDER_COMMENT_ALERT_ID_ENDPOINT.format(input=alert_id)}"
+    
+        # make rest call
+        ret_val, response = self._update_request(endpoint=endpoint, action_result=action_result, method="post", data=json.dumps(request_body))
+
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
+
+        odata_fixed_response = self._fix_up_odata_fields(response)
+
+        action_result.add_data(odata_fixed_response)
+
+        return action_result.set_status(phantom.APP_SUCCESS, DEFENDER_COMMENT_ADDED_SUCCESSFULLY)
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS
@@ -1439,6 +1463,8 @@ class Microsoft365Defender_Connector(BaseConnector):
             ret_val = self._handle_update_incident(param)
         elif action_id == "on_poll":
             ret_val = self._handle_on_poll(param)
+        elif action_id == "create_comment":
+            ret_val = self._handle_create_comment(param)
 
         return ret_val
 
