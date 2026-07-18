@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 import re
 from typing import TYPE_CHECKING, Any
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 import requests
 from soar_sdk.auth import (
@@ -50,6 +50,11 @@ if TYPE_CHECKING:
     from .app import Asset
 
 logger = getLogger()
+
+
+def encode_graph_path_segment(value: str) -> str:
+    """Encode an untrusted value before inserting it into a Graph API path."""
+    return quote(str(value), safe="")
 
 
 def validate_graph_pagination_url(url: str) -> None:

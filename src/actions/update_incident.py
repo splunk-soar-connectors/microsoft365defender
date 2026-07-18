@@ -29,7 +29,7 @@ from ..consts import (
     DEFENDER_UPDATE_INCIDENT_DETERMINATION_DICT,
     DEFENDER_UPDATE_INCIDENT_STATUS_DICT,
 )
-from ..helper import fix_up_odata_fields
+from ..helper import encode_graph_path_segment, fix_up_odata_fields
 
 
 class UpdateIncidentParams(Params):
@@ -122,7 +122,9 @@ def update_incident(
         key = DEFENDER_INCIDENT_KEYS_MAPPING.get(param_name, param_name)
         request_body[key] = mapped_value
 
-    endpoint = DEFENDER_INCIDENT_ID_ENDPOINT.format(input=params.incident_id)
+    endpoint = DEFENDER_INCIDENT_ID_ENDPOINT.format(
+        input=encode_graph_path_segment(params.incident_id)
+    )
     response = client.make_rest_call(
         endpoint, data=json.dumps(request_body), method="patch"
     )

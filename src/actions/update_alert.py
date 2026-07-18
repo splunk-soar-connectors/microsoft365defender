@@ -34,7 +34,7 @@ from ..consts import (
     DEFENDER_UPDATE_ALERT_DETERMINATION_DICT,
     DEFENDER_UPDATE_ALERT_STATUS_DICT,
 )
-from ..helper import fix_up_odata_fields
+from ..helper import encode_graph_path_segment, fix_up_odata_fields
 
 
 class UpdateAlertParams(Params):
@@ -108,7 +108,9 @@ def update_alert(
     ):
         raise ActionFailure(DEFENDER_NO_PARAMETER_PROVIDED)
 
-    endpoint = DEFENDER_ALERTS_ID_ENDPOINT.format(input=params.alert_id)
+    endpoint = DEFENDER_ALERTS_ID_ENDPOINT.format(
+        input=encode_graph_path_segment(params.alert_id)
+    )
     current = client.make_rest_call(endpoint)
 
     request_body = {}
