@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import re
 from typing import TYPE_CHECKING, Any
+from urllib.parse import urlparse
 
 import requests
 from soar_sdk.auth import (
@@ -49,6 +50,27 @@ if TYPE_CHECKING:
     from .app import Asset
 
 logger = getLogger()
+
+
+def validate_graph_pagination_url(url: str) -> None:
+    """Require pagination links to remain on the configured Graph API origin."""
+    expected_origin = urlparse(DEFENDER_MSGRAPH_API_BASE_URL)
+    pagination_origin = urlparse(url)
+    try:
+        origin_matches = (
+            pagination_origin.scheme,
+            pagination_origin.hostname,
+            pagination_origin.port,
+        ) == (
+            expected_origin.scheme,
+            expected_origin.hostname,
+            expected_origin.port,
+        )
+    except ValueError:
+        origin_matches = False
+
+    if not origin_matches:
+        raise ValueError("Rejected pagination URL outside Microsoft Graph")
 
 
 class Microsoft365DefenderClient:
@@ -284,6 +306,7 @@ class Microsoft365DefenderClient:
             if not next_page_token and offset:
                 params["$skip"] = offset
             if next_page_token:
+                validate_graph_pagination_url(next_page_token)
                 endpoint = next_page_token
 
             response = self.make_rest_call(
