@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Migrated to SDK, dropped BaseConnector [PAPP-37950]
