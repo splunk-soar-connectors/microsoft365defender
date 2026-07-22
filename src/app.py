@@ -292,6 +292,7 @@ from .actions import (  # noqa: F401
     get_incident,
     list_alerts,
     list_incidents,
+    make_request,
     run_query,
     update_alert,
     update_incident,
