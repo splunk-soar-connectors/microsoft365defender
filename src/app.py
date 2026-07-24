@@ -12,6 +12,7 @@
 # and limitations under the License.
 
 from collections.abc import Iterator
+from copy import deepcopy
 from datetime import datetime, timedelta, UTC
 
 from soar_sdk.abstract import SOARClient
@@ -42,7 +43,12 @@ from .consts import (
     STATE_FIRST_RUN,
     STATE_LAST_TIME,
 )
-from .helper import Microsoft365DefenderClient, fix_up_odata_fields, validate_integer
+from .helper import (
+    Microsoft365DefenderClient,
+    fix_up_odata_fields,
+    migrate_legacy_ingest_state,
+    validate_integer,
+)
 
 logger = getLogger()
 
@@ -52,7 +58,7 @@ class Asset(BaseAsset):
         description="Tenant ID", category=FieldCategory.CONNECTIVITY
     )
     client_id: str = AssetField(
-        description="Client ID", sensitive=True, category=FieldCategory.CONNECTIVITY
+        description="Client ID", category=FieldCategory.CONNECTIVITY
     )
     client_secret: str | None = AssetField(
         description="Client Secret", sensitive=True, category=FieldCategory.CONNECTIVITY
@@ -124,7 +130,6 @@ app = App(
     appid="69a23453-0649-4f5b-8abd-c2b64b53ab5b",
     fips_compliant=True,
     asset_cls=Asset,
-    min_phantom_version="6.2.1",
 ).enable_webhooks(default_requires_auth=False)
 
 
@@ -245,6 +250,7 @@ def on_poll(
             or DEFENDER_INCIDENT_DEFAULT_LIMIT_FOR_SCHEDULE_POLLING,
             "max_incidents",
         )
+        migrate_legacy_ingest_state(asset)
         if asset.ingest_state.get(STATE_FIRST_RUN, True):
             asset.ingest_state[STATE_FIRST_RUN] = False
         elif last_time := asset.ingest_state.get(STATE_LAST_TIME):
@@ -271,13 +277,15 @@ def on_poll(
                 label="alert",
                 name=alert.get("title"),
                 source_data_identifier=alert.get("id"),
-                cef=fix_up_odata_fields(alert),
+                data=alert,
+                cef=fix_up_odata_fields(deepcopy(alert)),
             )
         yield Artifact(
             label="incident",
             name="incident Artifact",
             source_data_identifier=incident.get("id"),
-            cef=fix_up_odata_fields(incident),
+            data=incident,
+            cef=fix_up_odata_fields(deepcopy(incident)),
         )
 
     if not is_poll_now and incident_list:

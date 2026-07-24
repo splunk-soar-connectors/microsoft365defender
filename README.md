@@ -4,7 +4,7 @@ Publisher: Splunk <br>
 Connector Version: 1.5.1 <br>
 Product Vendor: Microsoft <br>
 Product Name: Microsoft 365 Defender <br>
-Minimum Product Version: 6.2.1
+Minimum Product Version: 7.0.0
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
@@ -267,7 +267,7 @@ This table lists the configuration variables required to operate Microsoft 365 D
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **tenant_id** | required | string | Tenant ID |
-**client_id** | required | password | Client ID |
+**client_id** | required | string | Client ID |
 **client_secret** | optional | password | Client Secret |
 **certificate_thumbprint** | optional | password | Certificate Thumbprint (required for CBA) |
 **certificate_private_key** | optional | password | Certificate Private Key (.PEM) |

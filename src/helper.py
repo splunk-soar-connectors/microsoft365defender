@@ -41,6 +41,8 @@ from .consts import (
     DEFENDER_TOKEN_NOT_AVAILABLE_MSG,
     DEFENDER_UNEXPECTED_RESPONSE_ERROR,
     DEFENDER_VALID_INTEGER_MSG,
+    STATE_FIRST_RUN,
+    STATE_LAST_TIME,
 )
 
 if TYPE_CHECKING:
@@ -298,6 +300,24 @@ def validate_integer(value: Any, key: str, allow_zero: bool = True) -> int | Non
     if not allow_zero and value == 0:
         raise ValueError(DEFENDER_NON_NEG_NON_ZERO_INT_MSG.format(key))
     return value
+
+
+def migrate_legacy_ingest_state(asset: Asset) -> None:
+    """Seed SDK ingest state from the pre-SDK connector's flat checkpoint keys.
+
+    The legacy BaseConnector app stored `first_run` and `last_time` as top-level keys in the
+    asset state file. The SDK keeps ingestion checkpoints in a separate encrypted partition, so
+    upgrading in place would otherwise reset the checkpoint and re-ingest incidents from the
+    fallback window. This only migrates until the SDK partition has its own checkpoint.
+    """
+    if STATE_LAST_TIME in asset.ingest_state:
+        return
+
+    legacy_state = asset.ingest_state.backend.load_state() or {}
+
+    if (legacy_last_time := legacy_state.get(STATE_LAST_TIME)) is not None:
+        asset.ingest_state[STATE_LAST_TIME] = legacy_last_time
+        asset.ingest_state[STATE_FIRST_RUN] = False
 
 
 def fix_up_odata_fields(response: dict) -> dict:
