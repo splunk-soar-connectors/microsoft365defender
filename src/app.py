@@ -36,6 +36,7 @@ from .consts import (
     DEFENDER_LIST_INCIDENTS_ENDPOINT,
     DEFENDER_LOGIN_BASE_URL,
     DEFENDER_MAX_TIE_IDS,
+    DEFENDER_MISSING_LAST_MODIFIED_ERROR,
     DEFENDER_RESOURCE_URL,
     DEFENDER_TEST_CONNECTIVITY_PASSED_MSG,
     LOG_CONFIG_TIME_POLL_NOW,
@@ -309,19 +310,21 @@ def on_poll(
 
     if not is_poll_now and incident_list:
         last = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
-        if last:
-            new_tied_ids = [
-                incident.get("id")
-                for incident in incident_list
-                if incident.get(DEFENDER_JSON_LAST_MODIFIED) == last
-            ]
-            # Still inside the same tie group as last poll: accumulate, don't forget
-            # ids seen in an earlier poll at this exact boundary.
-            tied_ids = (
-                last_ids + new_tied_ids if last == last_modified_time else new_tied_ids
-            )
-            asset.ingest_state[STATE_LAST_TIME] = last
-            asset.ingest_state[STATE_LAST_IDS] = tied_ids[-DEFENDER_MAX_TIE_IDS:]
+        if not last:
+            raise ValueError(DEFENDER_MISSING_LAST_MODIFIED_ERROR)
+
+        new_tied_ids = [
+            incident.get("id")
+            for incident in incident_list
+            if incident.get(DEFENDER_JSON_LAST_MODIFIED) == last
+        ]
+        # Still inside the same tie group as last poll: accumulate, don't forget
+        # ids seen in an earlier poll at this exact boundary.
+        tied_ids = (
+            last_ids + new_tied_ids if last == last_modified_time else new_tied_ids
+        )
+        asset.ingest_state[STATE_LAST_TIME] = last
+        asset.ingest_state[STATE_LAST_IDS] = tied_ids[-DEFENDER_MAX_TIE_IDS:]
 
 
 # Actions self-register via @app.action() on import.

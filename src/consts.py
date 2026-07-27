@@ -180,6 +180,9 @@ STATE_LAST_TIME = "last_time"
 STATE_LAST_IDS = "last_ids"
 DEFENDER_MAX_TIE_IDS = 500
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
+DEFENDER_MISSING_LAST_MODIFIED_ERROR = (
+    "Last fetched incident is missing lastUpdateDateTime, cannot save poll checkpoint"
+)
 LOG_UTC_SINCE_TIME_ERROR = (
     "Please provide time in the span of UTC time since Unix epoch 1970-01-01T00:00:00Z."
 )
