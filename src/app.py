@@ -35,12 +35,14 @@ from .consts import (
     DEFENDER_JSON_LAST_MODIFIED,
     DEFENDER_LIST_INCIDENTS_ENDPOINT,
     DEFENDER_LOGIN_BASE_URL,
+    DEFENDER_MAX_TIE_IDS,
     DEFENDER_RESOURCE_URL,
     DEFENDER_TEST_CONNECTIVITY_PASSED_MSG,
     LOG_CONFIG_TIME_POLL_NOW,
     LOG_GREATER_EQUAL_TIME_ERROR,
     LOG_UTC_SINCE_TIME_ERROR,
     STATE_FIRST_RUN,
+    STATE_LAST_IDS,
     STATE_LAST_TIME,
 )
 from .helper import (
@@ -237,6 +239,7 @@ def on_poll(
     last_modified_time = (datetime.now(UTC) - timedelta(days=7)).strftime(
         DEFENDER_APP_DT_STR_FORMAT
     )
+    last_ids: list[str] = []
 
     if asset.start_time:
         _check_date_format(asset.start_time)
@@ -255,12 +258,28 @@ def on_poll(
             asset.ingest_state[STATE_FIRST_RUN] = False
         elif last_time := asset.ingest_state.get(STATE_LAST_TIME):
             last_modified_time = last_time
+            last_ids = asset.ingest_state.get(STATE_LAST_IDS, [])
 
     start_time_filter = f"lastUpdateDateTime ge {last_modified_time}"
     poll_filter += start_time_filter if not poll_filter else f" and {start_time_filter}"
 
+    # lastUpdateDateTime ge is inclusive, so incidents already ingested at the previous
+    # checkpoint are fetched again. Over-fetch by the size of that tie group and drop
+    # the already-seen ids, so a run of same-second updates can't stall the checkpoint.
     endpoint = f"{DEFENDER_LIST_INCIDENTS_ENDPOINT}?$expand=alerts"
-    incident_list = client.paginator(endpoint, max_incidents, 0, poll_filter, orderby)
+    incident_list = client.paginator(
+        endpoint, max_incidents + len(last_ids), 0, poll_filter, orderby
+    )
+    if last_ids:
+        incident_list = [
+            incident
+            for incident in incident_list
+            if not (
+                incident.get("id") in last_ids
+                and incident.get(DEFENDER_JSON_LAST_MODIFIED) == last_modified_time
+            )
+        ]
+    incident_list = incident_list[:max_incidents]
     logger.progress(f"Successfully fetched {len(incident_list)} incidents.")
 
     for incident in incident_list:
@@ -291,7 +310,18 @@ def on_poll(
     if not is_poll_now and incident_list:
         last = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
         if last:
+            new_tied_ids = [
+                incident.get("id")
+                for incident in incident_list
+                if incident.get(DEFENDER_JSON_LAST_MODIFIED) == last
+            ]
+            # Still inside the same tie group as last poll: accumulate, don't forget
+            # ids seen in an earlier poll at this exact boundary.
+            tied_ids = (
+                last_ids + new_tied_ids if last == last_modified_time else new_tied_ids
+            )
             asset.ingest_state[STATE_LAST_TIME] = last
+            asset.ingest_state[STATE_LAST_IDS] = tied_ids[-DEFENDER_MAX_TIE_IDS:]
 
 
 # Actions self-register via @app.action() on import.
