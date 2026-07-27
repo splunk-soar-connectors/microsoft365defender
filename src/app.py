@@ -11,6 +11,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import hmac
 from collections.abc import Iterator
 from copy import deepcopy
 from datetime import datetime, timedelta, UTC
@@ -35,7 +36,6 @@ from .consts import (
     DEFENDER_JSON_LAST_MODIFIED,
     DEFENDER_LIST_INCIDENTS_ENDPOINT,
     DEFENDER_LOGIN_BASE_URL,
-    DEFENDER_MAX_TIE_IDS,
     DEFENDER_MISSING_LAST_MODIFIED_ERROR,
     DEFENDER_RESOURCE_URL,
     DEFENDER_TEST_CONNECTIVITY_PASSED_MSG,
@@ -193,9 +193,10 @@ def oauth_callback(request: WebhookRequest[Asset]) -> WebhookResponse:
         )
 
     asset = request.asset
+    state = query_params.get("state", "")
     flow = AuthorizationCodeFlow(
         asset.auth_state,
-        query_params.get("state", ""),
+        state,
         client_id=asset.client_id,
         client_secret=asset.client_secret,
         authorization_endpoint=f"{DEFENDER_LOGIN_BASE_URL}{DEFENDER_AUTHORIZE_URL.format(tenant_id=asset.tenant_id)}",
@@ -203,6 +204,17 @@ def oauth_callback(request: WebhookRequest[Asset]) -> WebhookResponse:
         redirect_uri=app.get_webhook_url("oauth_callback"),
         use_pkce=False,
     )
+
+    pending = flow.client.get_pending_session()
+    if (
+        pending is None
+        or not pending.state
+        or not hmac.compare_digest(pending.state, state)
+    ):
+        return WebhookResponse.text_response(
+            content="Invalid or expired authorization state", status_code=400
+        )
+
     flow.set_authorization_code(code)
 
     return WebhookResponse.text_response(
@@ -283,6 +295,27 @@ def on_poll(
     incident_list = incident_list[:max_incidents]
     logger.progress(f"Successfully fetched {len(incident_list)} incidents.")
 
+    # Validate and precompute the checkpoint before yielding anything: the SDK
+    # persists containers/artifacts as the generator is consumed, so failing after
+    # the first yield would leave a partial, uncheckpointed page ingested.
+    new_checkpoint: tuple[str, list[str]] | None = None
+    if not is_poll_now and incident_list:
+        last = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
+        if not last:
+            raise ValueError(DEFENDER_MISSING_LAST_MODIFIED_ERROR)
+
+        new_tied_ids = [
+            incident.get("id")
+            for incident in incident_list
+            if incident.get(DEFENDER_JSON_LAST_MODIFIED) == last
+        ]
+        # Still inside the same tie group as last poll: accumulate, don't forget
+        # ids seen in an earlier poll at this exact boundary.
+        tied_ids = (
+            last_ids + new_tied_ids if last == last_modified_time else new_tied_ids
+        )
+        new_checkpoint = (last, tied_ids)
+
     for incident in incident_list:
         alerts = incident.pop("alerts", [])
         container_id = incident["id"]
@@ -308,23 +341,10 @@ def on_poll(
             cef=fix_up_odata_fields(deepcopy(incident)),
         )
 
-    if not is_poll_now and incident_list:
-        last = incident_list[-1].get(DEFENDER_JSON_LAST_MODIFIED)
-        if not last:
-            raise ValueError(DEFENDER_MISSING_LAST_MODIFIED_ERROR)
-
-        new_tied_ids = [
-            incident.get("id")
-            for incident in incident_list
-            if incident.get(DEFENDER_JSON_LAST_MODIFIED) == last
-        ]
-        # Still inside the same tie group as last poll: accumulate, don't forget
-        # ids seen in an earlier poll at this exact boundary.
-        tied_ids = (
-            last_ids + new_tied_ids if last == last_modified_time else new_tied_ids
-        )
+    if new_checkpoint is not None:
+        last, tied_ids = new_checkpoint
         asset.ingest_state[STATE_LAST_TIME] = last
-        asset.ingest_state[STATE_LAST_IDS] = tied_ids[-DEFENDER_MAX_TIE_IDS:]
+        asset.ingest_state[STATE_LAST_IDS] = tied_ids
 
 
 # Actions self-register via @app.action() on import.

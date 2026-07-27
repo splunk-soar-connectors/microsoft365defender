@@ -138,10 +138,19 @@ class Microsoft365DefenderClient:
         else:
             self._client_credentials_flow().authenticate()
 
-    def access_token(self) -> str:
-        """Return a valid access token, acquiring or refreshing as needed."""
+    def access_token(self, *, force_renew: bool = False) -> str:
+        """Return a valid access token, acquiring or refreshing as needed.
+
+        ``force_renew`` bypasses the locally cached token even if it isn't
+        expired yet, for the case where the server has already rejected it
+        (e.g. a 401 retry) and reusing the same token would just repeat.
+        """
         if self._cba_auth:
             client = self._certificate_client()
+            if force_renew:
+                return client.fetch_token_with_certificate(
+                    extra_params={"resource": DEFENDER_RESOURCE_URL}
+                ).access_token
             try:
                 return client.get_valid_token(auto_refresh=False).access_token
             except (AuthorizationRequiredError, TokenExpiredError):
@@ -151,11 +160,19 @@ class Microsoft365DefenderClient:
                 return token.access_token
 
         if self._non_interactive:
-            return self._client_credentials_flow().get_token().access_token
+            flow = self._client_credentials_flow()
+            if force_renew:
+                return flow.authenticate().access_token
+            return flow.get_token().access_token
 
         # Interactive authorization-code mode: token must already exist from
         # test connectivity; refresh transparently when expired.
         client = self._authorization_client()
+        if force_renew:
+            stored = client.get_stored_token()
+            if stored is None or not stored.refresh_token:
+                raise ValueError(DEFENDER_TOKEN_NOT_AVAILABLE_MSG)
+            return client.refresh_token(stored.refresh_token).access_token
         try:
             return client.get_valid_token(auto_refresh=True).access_token
         except (AuthorizationRequiredError, TokenExpiredError) as e:
@@ -181,7 +198,7 @@ class Microsoft365DefenderClient:
 
         response = self._request(url, headers, params, data, method)
         if response.status_code == 401:
-            headers["Authorization"] = f"Bearer {self.access_token()}"
+            headers["Authorization"] = f"Bearer {self.access_token(force_renew=True)}"
             response = self._request(url, headers, params, data, method)
         return self._process_response(response)
 

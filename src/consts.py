@@ -178,7 +178,6 @@ DEFENDER_CONFIG_FIRST_RUN_MAX_INCIDENTS = "max_incidents_per_poll"
 STATE_FIRST_RUN = "first_run"
 STATE_LAST_TIME = "last_time"
 STATE_LAST_IDS = "last_ids"
-DEFENDER_MAX_TIE_IDS = 500
 DEFENDER_JSON_LAST_MODIFIED = "lastUpdateDateTime"
 DEFENDER_MISSING_LAST_MODIFIED_ERROR = (
     "Last fetched incident is missing lastUpdateDateTime, cannot save poll checkpoint"
