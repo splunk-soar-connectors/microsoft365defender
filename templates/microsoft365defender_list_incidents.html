@@ -116,7 +116,7 @@
                         {% if incident.id %}
                           <td class="microsoftdefendernowrap">
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ incident.id }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['defender incident id'], 'value': '{{ incident.id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ incident.id }}
                               &nbsp;
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
@@ -133,7 +133,7 @@
                         {% if incident.assignedTo %}
                           <td class="microsoftdefendernowrap">
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ incident.assignedTo }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['email'], 'value': '{{ incident.assignedTo|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ incident.assignedTo }}
                               &nbsp;
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>

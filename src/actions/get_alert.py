@@ -20,7 +20,7 @@ from ..consts import (
     DEFENDER_ALERTS_ID_ENDPOINT,
     DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT,
 )
-from ..helper import fix_up_odata_fields
+from ..helper import encode_graph_path_segment, fix_up_odata_fields
 from .list_alerts import render_display_alerts
 
 
@@ -64,7 +64,9 @@ def get_alert(
 ) -> list[GetAlertOutput]:
     client = get_client(asset)
 
-    endpoint = DEFENDER_ALERTS_ID_ENDPOINT.format(input=params.alert_id)
+    endpoint = DEFENDER_ALERTS_ID_ENDPOINT.format(
+        input=encode_graph_path_segment(params.alert_id)
+    )
     response = client.make_rest_call(endpoint)
 
     soar.set_message(DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT)
