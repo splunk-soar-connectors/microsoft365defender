@@ -137,9 +137,10 @@ You can choose one of the following authentication methods:
 
    - **Interactive (Delegated Permissions)**:
 
-     - Uncheck the **Non-Interactive Auth** checkbox.
-     - After saving the asset, a new uneditable field will appear in the 'Asset Settings' tab. Copy the URL from the **POST incoming for Microsoft 365 Defender to this location** field and add a `/result` suffix to it. The resulting URL will look like this:
-       `https://<soar_host/rest/handler/microsoft365defender_<appid/<asset_name/result`
+     - Uncheck the **Non-Interactive Auth** checkbox and save the asset first, so that Splunk SOAR assigns it an asset ID.
+     - The redirect URI to register in Azure is a webhook URL of the form:
+       `https://<soar_host>:<webhook_port>/webhook/microsoft365defender_<appid>/<asset_id>/oauth_callback`
+       `<webhook_port>` defaults to `3500` unless your Splunk SOAR instance has configured a different port for the webhooks feature, and `<asset_id>` is the numeric ID assigned to the asset you just saved.
      - In your Azure application, go to **Authentication** **Add a platform** **Web**.
      - Paste the resulting URL into the **Redirect URIs** field, select the **ID tokens** checkbox, and click **Save**.
 
@@ -241,10 +242,9 @@ Please check the permissions for the state file as mentioned below.
 
 ## Notes
 
-- \<appid - The app ID will be available in the Redirect URI which gets populated in the field
-  'POST incoming for Microsoft 365 Defender to this location' when the Microsoft 365 Defender app
-  asset is configured e.g.
-  https://\<splunk_soar_host/rest/handler/microsoft365defender\_\<appid/\<asset_name/result
+- \<appid - The app ID is a fixed value for this app (`69a23453-0649-4f5b-8abd-c2b64b53ab5b`). It
+  is also embedded in the webhook redirect URI used for interactive authentication, e.g.
+  `https://<splunk_soar_host>:<webhook_port>/webhook/microsoft365defender_<appid>/<asset_id>/oauth_callback`
 - \<asset_id - The asset ID will be available on the created asset's Splunk SOAR web URL e.g.
   https://\<splunk_soar_host/apps/\<app_number/asset/\<asset_id/
 

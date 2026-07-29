@@ -4,7 +4,7 @@ Publisher: Splunk <br>
 Connector Version: 1.5.1 <br>
 Product Vendor: Microsoft <br>
 Product Name: Microsoft 365 Defender <br>
-Minimum Product Version: 6.3.0
+Minimum Product Version: 7.0.0
 
 This app integrates with Microsoft 365 Defender to execute various generic and investigative actions
 
@@ -147,9 +147,10 @@ You can choose one of the following authentication methods:
 
    - **Interactive (Delegated Permissions)**:
 
-     - Uncheck the **Non-Interactive Auth** checkbox.
-     - After saving the asset, a new uneditable field will appear in the 'Asset Settings' tab. Copy the URL from the **POST incoming for Microsoft 365 Defender to this location** field and add a `/result` suffix to it. The resulting URL will look like this:
-       `https://<soar_host/rest/handler/microsoft365defender_<appid/<asset_name/result`
+     - Uncheck the **Non-Interactive Auth** checkbox and save the asset first, so that Splunk SOAR assigns it an asset ID.
+     - The redirect URI to register in Azure is a webhook URL of the form:
+       `https://<soar_host>:<webhook_port>/webhook/microsoft365defender_<appid>/<asset_id>/oauth_callback`
+       `<webhook_port>` defaults to `3500` unless your Splunk SOAR instance has configured a different port for the webhooks feature, and `<asset_id>` is the numeric ID assigned to the asset you just saved.
      - In your Azure application, go to **Authentication** **Add a platform** **Web**.
      - Paste the resulting URL into the **Redirect URIs** field, select the **ID tokens** checkbox, and click **Save**.
 
@@ -251,10 +252,9 @@ Please check the permissions for the state file as mentioned below.
 
 ## Notes
 
-- \<appid - The app ID will be available in the Redirect URI which gets populated in the field
-  'POST incoming for Microsoft 365 Defender to this location' when the Microsoft 365 Defender app
-  asset is configured e.g.
-  https://\<splunk_soar_host/rest/handler/microsoft365defender\_\<appid/\<asset_name/result
+- \<appid - The app ID is a fixed value for this app (`69a23453-0649-4f5b-8abd-c2b64b53ab5b`). It
+  is also embedded in the webhook redirect URI used for interactive authentication, e.g.
+  `https://<splunk_soar_host>:<webhook_port>/webhook/microsoft365defender_<appid>/<asset_id>/oauth_callback`
 - \<asset_id - The asset ID will be available on the created asset's Splunk SOAR web URL e.g.
   https://\<splunk_soar_host/apps/\<app_number/asset/\<asset_id/
 
@@ -279,22 +279,25 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
-[on poll](#action-on-poll) - Callback action for the on_poll ingest functionality <br>
+[test connectivity](#action-test-connectivity) - test connectivity <br>
+[on poll](#action-on-poll) - on poll <br>
+[list alerts](#action-list-alerts) - Get the list of recent alerts <br>
+[get alert](#action-get-alert) - Retrieve the properties and relationships of an alert object <br>
+[list incidents](#action-list-incidents) - Get the list of recent incidents <br>
+[get incident](#action-get-incident) - Retrieve the properties and relationships of an incident object <br>
+[make request](#action-make-request) - make request <br>
 [run query](#action-run-query) - An advanced search query <br>
-[list incidents](#action-list-incidents) - List all the incidents <br>
-[list alerts](#action-list-alerts) - List all the alerts <br>
-[get incident](#action-get-incident) - Retrieve specific incident by its ID <br>
-[update incident](#action-update-incident) - Update the properties of an incident object <br>
-[get alert](#action-get-alert) - Retrieve specific alert by its ID <br>
-[update alert](#action-update-alert) - Update properties of existing alert
+[update alert](#action-update-alert) - Update the properties of an alert object <br>
+[update incident](#action-update-incident) - Update the properties of an incident object
 
 ## action: 'test connectivity'
 
-Validate the asset configuration for connectivity using supplied configuration
+test connectivity
 
 Type: **test** <br>
 Read only: **True**
+
+Basic test for app.
 
 #### Action Parameters
 
@@ -302,28 +305,256 @@ No parameters are required for this action
 
 #### Action Output
 
-No Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ## action: 'on poll'
 
-Callback action for the on_poll ingest functionality
+on poll
 
 Type: **ingest** <br>
+Read only: **True**
+
+Callback action for the on_poll ingest functionality
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**start_time** | optional | Start of time range, in epoch time (milliseconds). | numeric | |
+**end_time** | optional | End of time range, in epoch time (milliseconds). | numeric | |
+**container_count** | optional | Maximum number of container records to query for. | numeric | |
+**artifact_count** | optional | Maximum number of artifact records to query for. | numeric | |
+**container_id** | optional | Comma-separated list of container IDs to limit the ingestion to. | string | |
+
+#### Action Output
+
+No Output
+
+## action: 'list alerts'
+
+Get the list of recent alerts
+
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**start_time** | optional | Parameter ignored in this app | numeric | |
-**end_time** | optional | Parameter ignored in this app | numeric | |
-**container_count** | optional | Parameter ignored for schedule/interval polling only | numeric | |
-**artifact_count** | optional | Parameter ignored in this app | numeric | |
-**container_id** | optional | Parameter ignored in this app | numeric | |
+**limit** | optional | Maximum number of alerts to return | numeric | |
+**offset** | optional | Number of alerts to skip | numeric | |
+**filter** | optional | Filter alerts based on property | string | |
+**orderby** | optional | Sort the alerts based on property | string | |
 
 #### Action Output
 
-No Output
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.limit | numeric | | |
+action_result.parameter.offset | numeric | | |
+action_result.parameter.filter | string | | |
+action_result.parameter.orderby | string | | |
+action_result.data.\*.alertWebUrl | string | `url` | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.category | string | | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.createdDateTime | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.detectionSource | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.id | string | `defender alert id` | |
+action_result.data.\*.incidentId | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.providerAlertId | string | `defender alert id` | |
+action_result.data.\*.serviceSource | string | | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tenantId | string | | |
+action_result.data.\*.title | string | | |
+action_result.summary.total_alerts | numeric | | 10 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'get alert'
+
+Retrieve the properties and relationships of an alert object
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**alert_id** | required | ID of the alert | string | `defender alert id` |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.alert_id | string | `defender alert id` | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.category | string | | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.createdDateTime | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.detectionSource | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.id | string | `defender alert id` | |
+action_result.data.\*.incidentId | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.providerAlertId | string | `defender alert id` | |
+action_result.data.\*.serviceSource | string | | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tenantId | string | | |
+action_result.data.\*.title | string | | |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'list incidents'
+
+Get the list of recent incidents
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**limit** | optional | Maximum number of incidents to return | numeric | |
+**offset** | optional | Number of incidents to skip | numeric | |
+**filter** | optional | Filter incidents based on property | string | |
+**orderby** | optional | Order results based on property | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.limit | numeric | | |
+action_result.parameter.offset | numeric | | |
+action_result.parameter.filter | string | | |
+action_result.parameter.orderby | string | | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.comments.\*.comment | string | | |
+action_result.data.\*.comments.\*.createdByDisplayName | string | | |
+action_result.data.\*.comments.\*.createdDateTime | string | | |
+action_result.data.\*.createdDateTime | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.displayName | string | | |
+action_result.data.\*.id | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.redirectIncidentId | string | `defender incident id` | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tenantId | string | | |
+action_result.data.\*.summary | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.lastModifiedBy | string | | |
+action_result.data.\*.resolvingComment | string | | |
+action_result.summary.total_incidents | numeric | | 10 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'get incident'
+
+Retrieve the properties and relationships of an incident object
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**incident_id** | required | ID of the incident to retrieve | string | `defender incident id` |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.incident_id | string | `defender incident id` | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.comments.\*.comment | string | | |
+action_result.data.\*.comments.\*.createdByDisplayName | string | | |
+action_result.data.\*.comments.\*.createdDateTime | string | | |
+action_result.data.\*.createdDateTime | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.displayName | string | | |
+action_result.data.\*.id | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.redirectIncidentId | string | `defender incident id` | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tags.\* | string | | |
+action_result.data.\*.tenantId | string | `microsoft tenantid` | |
+action_result.data.\*.summary | string | | |
+action_result.data.\*.description | string | | |
+action_result.data.\*.odata_context | string | | |
+action_result.data.\*.lastModifiedBy | string | | |
+action_result.data.\*.resolvingComment | string | | |
+action_result.data.\*.@odata.context | string | | |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'make request'
+
+make request
+
+Type: **generic** <br>
+Read only: **False**
+
+'make request' action for the app. Used to handle arbitrary HTTP requests with the app's asset
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**http_method** | required | The HTTP method to use for the request. | string | |
+**endpoint** | required | Microsoft Graph API endpoint to call, appended to the base URL (https://graph.microsoft.com/v1.0). Example: '/security/alerts_v2' | string | |
+**headers** | optional | The headers to send with the request (JSON object). An example is {'Content-Type': 'application/json'} | string | |
+**query_parameters** | optional | Parameters to append to the URL (JSON object or query string). An example is ?key=value&key2=value2 | string | |
+**body** | optional | The body to send with the request (JSON object). An example is {'key': 'value', 'key2': 'value2'} | string | |
+**timeout** | optional | The timeout for the request in seconds. | numeric | |
+**verify_ssl** | optional | Whether to verify the SSL certificate. | boolean | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.http_method | string | | |
+action_result.parameter.endpoint | string | | |
+action_result.parameter.headers | string | | |
+action_result.parameter.query_parameters | string | | |
+action_result.parameter.body | string | | |
+action_result.parameter.timeout | numeric | | |
+action_result.parameter.verify_ssl | boolean | | |
+action_result.data.\*.status_code | numeric | | 200 |
+action_result.data.\*.response_body | string | | {"value": []} |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ## action: 'run query'
 
@@ -342,8 +573,9 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.query | string | | DeviceProcessEvents | limit 5 |
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.query | string | | |
 action_result.data.\*.DeviceId | string | | xxxxx9d48ec4859bd94a25039dcba09f4fd9ac78 |
 action_result.data.\*.FileName | string | | test.exe |
 action_result.data.\*.InitiatingProcessFileName | string | | powershell.exe |
@@ -353,278 +585,56 @@ action_result.data.\*.additionalData.Intent_odata_type | string | | #Int64 |
 action_result.data.\*.evidence.\*.odata_type | string | | #test.graph.security.deviceEvidence |
 action_result.data.\*.Intent_odata_type | string | | #Int64 |
 action_result.summary.total_results | numeric | | 1 |
-action_result.message | string | | Total results: 1 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
-## action: 'list incidents'
+## action: 'update alert'
 
-List all the incidents
+Update the properties of an alert object
 
-Type: **investigate** <br>
-Read only: **True**
+Type: **generic** <br>
+Read only: **False**
 
 #### Action Parameters
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**limit** | optional | Maximum number of incidents to return (Defaults to 50) | numeric | |
-**offset** | optional | Number of incidents to skip (Defaults to 0) | numeric | |
-**filter** | optional | Filter incidents based on property | string | |
-**orderby** | optional | Sort the incidents based on property | string | |
+**alert_id** | required | ID of the alert | string | `defender alert id` |
+**status** | optional | Specify the current status of the alert | string | |
+**assign_to** | optional | Owner of the alert | string | `email` |
+**classification** | optional | Specification of the alert | string | |
+**determination** | optional | Specifies the determination of the alert | string | |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.limit | numeric | | 50 |
-action_result.parameter.offset | numeric | | 0 |
-action_result.parameter.filter | string | | status eq 'active' |
-action_result.parameter.orderby | string | | lastUpdateDateTime desc |
-action_result.data.\*.assignedTo | string | `email` | testuser@abc.com |
-action_result.data.\*.classification | string | | unknown |
-action_result.data.\*.comments.\*.comment | string | | Testing comment |
-action_result.data.\*.comments.\*.createdByDisplayName | string | | testuser@abc.com |
-action_result.data.\*.comments.\*.createdDateTime | string | | 2022-06-08T08:34:40.68416Z |
-action_result.data.\*.createdDateTime | string | | 2022-06-13T10:36:05.7Z |
-action_result.data.\*.determination | string | | unknown |
-action_result.data.\*.displayName | string | | Malware incident on one endpoint |
-action_result.data.\*.id | string | `defender incident id` | 145 |
-action_result.data.\*.incidentWebUrl | string | `url` | https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6 |
-action_result.data.\*.lastUpdateDateTime | string | | 2022-06-13T12:57:22.3633333Z |
-action_result.data.\*.redirectIncidentId | string | `defender incident id` | 48 |
-action_result.data.\*.severity | string | `defender severity` | high |
-action_result.data.\*.status | string | | active |
-action_result.data.\*.tenantId | string | | xxxxx670-d7ef-580d-a225-d48057e74df6 |
-action_result.data.\*.summary | string | | |
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.alert_id | string | `defender alert id` | |
+action_result.parameter.status | string | | |
+action_result.parameter.assign_to | string | `email` | |
+action_result.parameter.classification | string | | |
+action_result.parameter.determination | string | | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.category | string | | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.createdDateTime | string | | |
 action_result.data.\*.description | string | | |
-action_result.data.\*.lastModifiedBy | string | | API-App:test@test.test.com |
-action_result.data.\*.resolvingComment | string | | |
-action_result.summary.total_incidents | numeric | | 50 |
-action_result.message | string | | Total incidents: 50 |
+action_result.data.\*.detectionSource | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.id | string | `defender alert id` | |
+action_result.data.\*.incidentId | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.providerAlertId | string | `defender alert id` | |
+action_result.data.\*.serviceSource | string | | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tenantId | string | | |
+action_result.data.\*.title | string | | |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-
-## action: 'list alerts'
-
-List all the alerts
-
-Type: **investigate** <br>
-Read only: **True**
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**limit** | optional | Maximum number of alerts to return (Defaults to 2000) | numeric | |
-**offset** | optional | Number of alerts to skip (Defaults to 0) | numeric | |
-**filter** | optional | Filter alerts based on property | string | |
-**orderby** | optional | Sort the alerts based on property | string | |
-
-#### Action Output
-
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.limit | numeric | | 2000 |
-action_result.parameter.filter | string | | status eq 'inProgress' |
-action_result.parameter.orderby | string | | lastUpdateDateTime desc |
-action_result.parameter.offset | numeric | | 0 |
-action_result.data.\*.actorDisplayName | string | | test@abc.com |
-action_result.data.\*.alertWebUrl | string | `url` | https://test.com/alerts/xxxxx812122456454120\_-1108217295?tid=test578-c7ee-480d-a225-d4805xxxxxxx |
-action_result.data.\*.assignedTo | string | `email` | test@abc.com |
-action_result.data.\*.category | string | | SuspiciousActivity |
-action_result.data.\*.classification | string | | Test |
-action_result.data.\*.comments.\*.comment | string | | initialaccess_type_of_alert_last_option from the dropdown |
-action_result.data.\*.comments.\*.createdByDisplayName | string | | Automation |
-action_result.data.\*.comments.\*.createdDateTime | string | | 2022-04-08T18:03:49.3223829Z |
-action_result.data.\*.createdDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.description | string | | Test alert |
-action_result.data.\*.detectionSource | string | | customTi |
-action_result.data.\*.detectorId | string | | testdb3b-18a9-471b-9ad0-ad80a4cbtest |
-action_result.data.\*.determination | string | | Test |
-action_result.data.\*.evidence.\*.odata_type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.evidence.\*.azureAdDeviceId | string | | |
-action_result.data.\*.evidence.\*.createdDateTime | string | | 2022-02-23T11:24:05.9366667Z |
-action_result.data.\*.evidence.\*.defenderAvStatus | string | | unknown |
-action_result.data.\*.evidence.\*.detectionStatus | string | | Test |
-action_result.data.\*.evidence.\*.deviceDnsName | string | | testmachine |
-action_result.data.\*.evidence.\*.fileDetails.fileName | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.fileDetails.filePath | string | | C:\\Program Files\\Test\\Test\\Application |
-action_result.data.\*.evidence.\*.fileDetails.filePublisher | string | | Test |
-action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric | | 77312 |
-action_result.data.\*.evidence.\*.fileDetails.issuer | string | | file issuer |
-action_result.data.\*.evidence.\*.fileDetails.sha1 | string | `sha1` | xxx8825f6b54238a452e3050d49e8aa50569a6c9 |
-action_result.data.\*.evidence.\*.fileDetails.sha256 | string | `sha256` | xxxx4eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13fxxxx |
-action_result.data.\*.evidence.\*.fileDetails.signer | string | | signer |
-action_result.data.\*.evidence.\*.firstSeenDateTime | string | | 2021-08-30T16:25:37.180194Z |
-action_result.data.\*.evidence.\*.healthStatus | string | | inactive |
-action_result.data.\*.evidence.\*.imageFile.fileName | string | | powershell.exe |
-action_result.data.\*.evidence.\*.imageFile.filePath | string | | c:\\windows\\system32\\windowspowershell\\v1.0 |
-action_result.data.\*.evidence.\*.imageFile.filePublisher | string | | test publisher |
-action_result.data.\*.evidence.\*.imageFile.fileSize | numeric | | 99912 |
-action_result.data.\*.evidence.\*.imageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.imageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.imageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.imageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.ipAddress | string | `ip` | 8.8.8.8 |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string | | test |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string | | TESTMACHINE |
-action_result.data.\*.evidence.\*.mdeDeviceId | string | | xxxx84aa7ef0294f733b7b6e9499439e433axxxx |
-action_result.data.\*.evidence.\*.onboardingStatus | string | | onboarded |
-action_result.data.\*.evidence.\*.osBuild | numeric | | 19044 |
-action_result.data.\*.evidence.\*.osPlatform | string | | Windows10 |
-action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string | | 2022-03-09T19:52:51Z |
-action_result.data.\*.evidence.\*.parentProcessId | numeric | | 7968 |
-action_result.data.\*.evidence.\*.parentProcessImageFile | string | | TestFile |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string | | Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string | | Test publisher |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric | | 36557800 |
-action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.processCommandLine | string | | powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive |
-action_result.data.\*.evidence.\*.processCreationDateTime | string | | 2022-03-09T19:53:01Z |
-action_result.data.\*.evidence.\*.processId | numeric | | 6240 |
-action_result.data.\*.evidence.\*.rbacGroupId | numeric | | 73 |
-action_result.data.\*.evidence.\*.rbacGroupName | string | | UnassignedGroup |
-action_result.data.\*.evidence.\*.registryHive | string | | HKEY_LOCAL_MACHINE |
-action_result.data.\*.evidence.\*.registryKey | string | | SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr |
-action_result.data.\*.evidence.\*.registryValue | string | | 43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 |
-action_result.data.\*.evidence.\*.registryValueName | string | | Debugger |
-action_result.data.\*.evidence.\*.registryValueType | string | | Unknown |
-action_result.data.\*.evidence.\*.remediationStatus | string | | prevented |
-action_result.data.\*.evidence.\*.remediationStatusDetails | string | | status details |
-action_result.data.\*.evidence.\*.riskScore | string | | high |
-action_result.data.\*.evidence.\*.url | string | `url` | test.com |
-action_result.data.\*.evidence.\*.userAccount | string | | |
-action_result.data.\*.evidence.\*.userAccount.accountName | string | | local service |
-action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string | | xxxxxxx |
-action_result.data.\*.evidence.\*.userAccount.domainName | string | | nt authority |
-action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string | | test |
-action_result.data.\*.evidence.\*.userAccount.userSid | string | | S-1-5-19 |
-action_result.data.\*.evidence.\*.verdict | string | | unknown |
-action_result.data.\*.evidence.\*.version | string | | X1HX |
-action_result.data.\*.firstActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.id | string | `defender alert id` | xx637812122456454120\_-11082172xx |
-action_result.data.\*.incidentId | string | `defender incident id` | 42 |
-action_result.data.\*.incidentWebUrl | string | `url` | https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx |
-action_result.data.\*.lastActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.lastUpdateDateTime | string | | 2022-02-24T03:52:41.7933333Z |
-action_result.data.\*.providerAlertId | string | `defender alert id` | xxxx7812122456454120\_-1108217xxx |
-action_result.data.\*.recommendedActions | string | | A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. |
-action_result.data.\*.resolvedDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.serviceSource | string | | TestEndpoint |
-action_result.data.\*.severity | string | `defender severity` | medium |
-action_result.data.\*.status | string | | new |
-action_result.data.\*.tenantId | string | | xxxxc578-c7ee-480d-a225-d48057e74df5 |
-action_result.data.\*.threatDisplayName | string | | threat |
-action_result.data.\*.threatFamilyName | string | | threat |
-action_result.data.\*.title | string | | Test alert |
-action_result.data.\*.evidence.\*.vmMetadata.vmId | string | | test363-806f-4d19-9b75-9ec2f59test |
-action_result.data.\*.evidence.\*.vmMetadata.resourceId | string | | /subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID |
-action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string | | azure |
-action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string | | |
-action_result.data.\*.evidence.\*.lastIpAddress | string | | 10.0.2.15 |
-action_result.data.\*.evidence.\*.lastExternalIpAddress | string | | |
-action_result.data.\*.evidence.\*.resourceId | string | | /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-identity |
-action_result.data.\*.evidence.\*.resourceName | string | | test-resource |
-action_result.data.\*.evidence.\*.resourceType | string | | Virtual Machine |
-action_result.data.\*.productName | string | | Test Platform for Cloud |
-action_result.data.\*.alertPolicyId | string | | |
-action_result.data.\*.additionalData.Intent | numeric | | 8193 |
-action_result.data.\*.additionalData.AlertUri | string | | https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus |
-action_result.data.\*.additionalData.TimeGenerated | string | | 2024-02-08T05:11:57.256Z |
-action_result.data.\*.additionalData.Intent_odata_type | string | | #Int64 |
-action_result.data.\*.additionalData.ProcessingEndTime | string | | 2024-02-08T05:11:57.6847793Z |
-action_result.data.\*.additionalData.Attacker source IP | string | | IP Address: 45.141.85.1 |
-action_result.data.\*.additionalData.ProductComponentName | string | | Servers |
-action_result.data.\*.additionalData.WorkspaceResourceGroup | string | | defaultresourcegroup-eus |
-action_result.data.\*.additionalData.Activity end time (UTC) | string | | 2024/02/08 04:59:22.9525229 |
-action_result.data.\*.additionalData.EffectiveSubscriptionId | string | | test7906-2c22-4d91-98aa-180d9a85test |
-action_result.data.\*.additionalData.WorkspaceSubscriptionId | string | | test7906-2c22-4d91-98aa-180d9a85test |
-action_result.data.\*.additionalData.EffectiveAzureResourceId | string | | /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id |
-action_result.data.\*.additionalData.OriginalAlertProductName | string | | Detection-WarmPathV2 |
-action_result.data.\*.additionalData.Activity start time (UTC) | string | | 2024/02/08 04:01:15.2808538 |
-action_result.data.\*.additionalData.OriginalAlertProviderName | string | | Test Platform for Cloud |
-action_result.data.\*.additionalData.Was RDP session initiated | string | | No |
-action_result.data.\*.additionalData.Attacker source computer name | string | | Unknown |
-action_result.data.\*.additionalData.Number of failed authentication attempts to host | string | | 59 |
-action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string | | AdministratÃ¶r (5), user0 (4), Administrateur (4), Rendszergazda (4), audit (4), tester (3), JÃ¤rjestelmÃ¤nvalvoja (3), Administrator (3), audit1 (3), audit0 (3) |
-action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string | | 1 |
-action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string | | 20 |
-action_result.data.\*.evidence.\*.vmMetadata | string | | |
-action_result.data.\*.evidence.\*.stream | string | | |
-action_result.data.\*.evidence.\*.userAccount.displayName | string | | Herman Edwards |
-action_result.data.\*.evidence.\*.location.city | string | | Denver |
-action_result.data.\*.evidence.\*.location.state | string | | Colorado |
-action_result.data.\*.evidence.\*.location.latitude | numeric | | 39.75263 |
-action_result.data.\*.evidence.\*.location.longitude | numeric | | -104.99809 |
-action_result.data.\*.evidence.\*.location.countryName | string | | |
-action_result.data.\*.evidence.\*.countryLetterCode | string | | US |
-action_result.data.\*.additionalData | string | | |
-action_result.data.\*.evidence.\*.displayName | string | | Herman Edwards |
-action_result.data.\*.evidence.\*.primaryAddress | string | | test@test.com |
-action_result.data.\*.evidence.\*.location | string | | |
-action_result.summary.total_alerts | numeric | | 2 |
-action_result.message | string | | Total alerts: 2 |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
-action_result.data.\*.evidence.\*.hostName | string | | |
-action_result.data.\*.evidence.\*.ntDomain | string | | |
-action_result.data.\*.evidence.\*.dnsDomain | string | | |
-action_result.data.\*.evidence.\*.@odata.type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.additionalData.Intent@odata.type | string | | #Int64 |
-action_result.data.\*.Intent_odata_type | string | | #Int64 |
-
-## action: 'get incident'
-
-Retrieve specific incident by its ID
-
-Type: **investigate** <br>
-Read only: **True**
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**incident_id** | required | ID of the incident | string | `defender incident id` |
-
-#### Action Output
-
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.incident_id | string | `defender incident id` | 48 |
-action_result.data.\*.assignedTo | string | `email` | testuser@abc.com |
-action_result.data.\*.classification | string | | unknown |
-action_result.data.\*.comments.\*.comment | string | | |
-action_result.data.\*.comments.\*.createdByDisplayName | string | | testuser@abc.com |
-action_result.data.\*.comments.\*.createdDateTime | string | | 2022-06-08T08:34:40.68416Z |
-action_result.data.\*.createdDateTime | string | | 2022-06-13T10:36:05.7Z |
-action_result.data.\*.determination | string | | unknown |
-action_result.data.\*.displayName | string | | Test alert on one endpoint |
-action_result.data.\*.id | string | `defender incident id` | 145 |
-action_result.data.\*.incidentWebUrl | string | `url` | https://test.com/incidents/45?tid=xxxxx670-d7ef-580d-a225-d48057e74df6 |
-action_result.data.\*.lastUpdateDateTime | string | | 2022-06-13T12:57:22.3633333Z |
-action_result.data.\*.redirectIncidentId | string | `defender incident id` | 48 |
-action_result.data.\*.severity | string | `defender severity` | high |
-action_result.data.\*.status | string | | active |
-action_result.data.\*.tags.\* | string | | |
-action_result.data.\*.tenantId | string | `microsoft tenantid` | xxxxx670-d7ef-580d-a225-d48057e74df6 |
-action_result.data.\*.summary | string | | |
-action_result.data.\*.description | string | | |
-action_result.data.\*.odata_context | string | | https://test.com/v1.0/$metadata/incidents/$entity |
-action_result.data.\*.lastModifiedBy | string | | API-App:test@test.com |
-action_result.data.\*.resolvingComment | string | | |
-action_result.summary | string | | |
-action_result.message | string | | Successfully retrieved the incident |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
-action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$metadata#security/incidents/$entity |
 
 ## action: 'update incident'
 
@@ -633,379 +643,47 @@ Update the properties of an incident object
 Type: **generic** <br>
 Read only: **False**
 
-In this `SecurityIncident.ReadWrite.All` delegated or application permission is required. One of the parameters `status`, `assign_to`, `classification` or `determination` must be specified; otherwise, the action fails.
-
 #### Action Parameters
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**incident_id** | required | ID of the incident | string | `defender incident id` |
-**status** | optional | The status of the incident | string | |
-**assign_to** | optional | Owner of the incident, or null if no owner is assigned. Free editable text | string | |
-**classification** | optional | The specification for the incident | string | |
+**incident_id** | required | ID of the incident to update | string | `defender incident id` |
+**status** | optional | Specify the current status of the incident | string | |
+**assign_to** | optional | Owner of the incident | string | |
+**classification** | optional | Specification of the incident | string | |
 **determination** | optional | Specifies the determination of the incident | string | |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
-action_result.parameter.incident_id | string | `defender incident id` | 48 |
-action_result.parameter.determination | string | | Malware |
-action_result.parameter.classification | string | | True Positive |
-action_result.parameter.assign_to | string | | testuser |
-action_result.parameter.status | string | | Active |
-action_result.data.\*.summary | string | | |
-action_result.data.\*.severity | string | | medium |
-action_result.data.\*.tenantId | string | | testc578-c7ee-480d-atest-d48057etest |
-action_result.data.\*.assignedTo | string | | |
-action_result.data.\*.description | string | | |
-action_result.data.\*.displayName | string | | Suspicious authentication activity on one endpoint |
-action_result.data.\*.determination | string | | unknown |
-action_result.data.\*.odata_context | string | | https://test.com/v1.0/$metadata#/incidents/$entity |
-action_result.data.\*.classification | string | | unknownFutureValue |
-action_result.data.\*.incidentWebUrl | string | | https://test.com/incidents/308?tid=testc578-c7ee-480d-atest-d48057etest |
-action_result.data.\*.lastModifiedBy | string | | Automation |
-action_result.data.\*.createdDateTime | string | | 2024-01-07T05:12:17.0266667Z |
-action_result.data.\*.resolvingComment | string | | |
-action_result.data.\*.lastUpdateDateTime | string | | 2024-07-04T09:44:46.7112452Z |
-action_result.data.\*.redirectIncidentId | string | | |
-action_result.data.\*.id | string | `defender incident id` | 145 |
-action_result.data.\*.status | string | | active |
-action_result.status | string | | success failed |
-action_result.summary | string | | |
+action_result.status | string | | success failure |
 action_result.message | string | | |
-summary.total_objects | numeric | | |
-summary.total_objects_successful | numeric | | |
-action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$metadata#security/incidents/$entity |
-
-## action: 'get alert'
-
-Retrieve specific alert by its ID
-
-Type: **investigate** <br>
-Read only: **True**
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**alert_id** | required | ID of the alert | string | `defender alert id` |
-
-#### Action Output
-
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.alert_id | string | `defender alert id` | xxxxx812122456454120\_-11082xxxxx |
-action_result.data.\*.actorDisplayName | string | | test@abc.com |
-action_result.data.\*.alertWebUrl | string | | https://test.com/alerts/xxxxx812122456454120\_-1108217295?tid=testc578-c7ee-480d-a225-d4805xxxxxxx |
-action_result.data.\*.assignedTo | string | `email` | test@abc.com |
-action_result.data.\*.category | string | | SuspiciousActivity |
-action_result.data.\*.classification | string | | Test |
-action_result.data.\*.comments.\*.comment | string | | initialaccess_type_of_alert_last_option from the dropdown |
-action_result.data.\*.comments.\*.createdByDisplayName | string | | Automation |
-action_result.data.\*.comments.\*.createdDateTime | string | | 2022-04-08T18:03:49.3223829Z |
-action_result.data.\*.createdDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.description | string | | Test alert |
-action_result.data.\*.detectionSource | string | | customTi |
-action_result.data.\*.detectorId | string | | 360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 |
-action_result.data.\*.determination | string | | Test |
-action_result.data.\*.evidence.\*.odata_type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.evidence.\*.azureAdDeviceId | string | | |
-action_result.data.\*.evidence.\*.createdDateTime | string | | 2022-02-23T11:24:05.9366667Z |
-action_result.data.\*.evidence.\*.defenderAvStatus | string | | unknown |
-action_result.data.\*.evidence.\*.detectionStatus | string | | Test |
-action_result.data.\*.evidence.\*.deviceDnsName | string | | testmachine |
-action_result.data.\*.evidence.\*.fileDetails.fileName | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.fileDetails.filePath | string | | C:\\Program Files\\Test\\Test\\Application |
-action_result.data.\*.evidence.\*.fileDetails.filePublisher | string | | Test |
-action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric | | 77312 |
-action_result.data.\*.evidence.\*.fileDetails.issuer | string | | file issuer |
-action_result.data.\*.evidence.\*.fileDetails.sha1 | string | `sha1` | xxx8825f6b54238a452e3050d49e8aa50569a6c9 |
-action_result.data.\*.evidence.\*.fileDetails.sha256 | string | `sha256` | 7db34eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13f5bc6 |
-action_result.data.\*.evidence.\*.fileDetails.signer | string | | signer |
-action_result.data.\*.evidence.\*.firstSeenDateTime | string | | 2021-08-30T16:25:37.180194Z |
-action_result.data.\*.evidence.\*.healthStatus | string | | inactive |
-action_result.data.\*.evidence.\*.imageFile.fileName | string | | powershell.exe |
-action_result.data.\*.evidence.\*.imageFile.filePath | string | | c:\\windows\\system32\\windowspowershell\\v1.0 |
-action_result.data.\*.evidence.\*.imageFile.filePublisher | string | | test publisher |
-action_result.data.\*.evidence.\*.imageFile.fileSize | numeric | | 99912 |
-action_result.data.\*.evidence.\*.imageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.imageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.imageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.imageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.ipAddress | string | `ip` | 8.8.8.8 |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string | | test |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string | | TESTMACHINE |
-action_result.data.\*.evidence.\*.mdeDeviceId | string | | xxxx84aa7ef0294f733b7b6e9499439e433axxxx |
-action_result.data.\*.evidence.\*.onboardingStatus | string | | onboarded |
-action_result.data.\*.evidence.\*.osBuild | numeric | | 19044 |
-action_result.data.\*.evidence.\*.osPlatform | string | | Windows10 |
-action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string | | 2022-03-09T19:52:51Z |
-action_result.data.\*.evidence.\*.parentProcessId | numeric | | 7968 |
-action_result.data.\*.evidence.\*.parentProcessImageFile | string | | TestFile |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string | | Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string | | Test publisher |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric | | 36557800 |
-action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.processCommandLine | string | | powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive |
-action_result.data.\*.evidence.\*.processCreationDateTime | string | | 2022-03-09T19:53:01Z |
-action_result.data.\*.evidence.\*.processId | numeric | | 6240 |
-action_result.data.\*.evidence.\*.rbacGroupId | numeric | | 73 |
-action_result.data.\*.evidence.\*.rbacGroupName | string | | UnassignedGroup |
-action_result.data.\*.evidence.\*.registryHive | string | | HKEY_LOCAL_MACHINE |
-action_result.data.\*.evidence.\*.registryKey | string | | SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr |
-action_result.data.\*.evidence.\*.registryValue | string | | 43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 |
-action_result.data.\*.evidence.\*.registryValueName | string | | Debugger |
-action_result.data.\*.evidence.\*.registryValueType | string | | Unknown |
-action_result.data.\*.evidence.\*.remediationStatus | string | | prevented |
-action_result.data.\*.evidence.\*.remediationStatusDetails | string | | status details |
-action_result.data.\*.evidence.\*.riskScore | string | | high |
-action_result.data.\*.evidence.\*.url | string | `url` | test.com |
-action_result.data.\*.evidence.\*.userAccount | string | | |
-action_result.data.\*.evidence.\*.userAccount.accountName | string | | local service |
-action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string | | xxxxxxx |
-action_result.data.\*.evidence.\*.userAccount.domainName | string | | nt authority |
-action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string | | test |
-action_result.data.\*.evidence.\*.userAccount.userSid | string | | S-1-5-19 |
-action_result.data.\*.evidence.\*.verdict | string | | unknown |
-action_result.data.\*.evidence.\*.version | string | | X1HX |
-action_result.data.\*.firstActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.id | string | `defender alert id` | xx637812122456454120\_-11082172xx |
-action_result.data.\*.incidentId | string | `defender incident id` | 42 |
-action_result.data.\*.incidentWebUrl | string | `url` | https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx |
-action_result.data.\*.lastActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.lastUpdateDateTime | string | | 2022-02-24T03:52:41.7933333Z |
-action_result.data.\*.providerAlertId | string | `defender alert id` | xxxx7812122456454120\_-1108217xxx |
-action_result.data.\*.recommendedActions | string | | A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. |
-action_result.data.\*.resolvedDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.serviceSource | string | | TestEndpoint |
-action_result.data.\*.severity | string | `defender severity` | medium |
-action_result.data.\*.status | string | | new |
-action_result.data.\*.tenantId | string | | xxxxc578-c7ee-480d-a225-d48057e74df5 |
-action_result.data.\*.threatDisplayName | string | | threat |
-action_result.data.\*.threatFamilyName | string | | threat |
-action_result.data.\*.title | string | | Test alert |
-action_result.summary | string | | |
-action_result.message | string | | Successfully retrieved the alert |
+action_result.parameter.incident_id | string | `defender incident id` | |
+action_result.parameter.status | string | | |
+action_result.parameter.assign_to | string | | |
+action_result.parameter.classification | string | | |
+action_result.parameter.determination | string | | |
+action_result.data.\*.assignedTo | string | `email` | |
+action_result.data.\*.classification | string | | |
+action_result.data.\*.createdDateTime | string | | |
+action_result.data.\*.determination | string | | |
+action_result.data.\*.displayName | string | | |
+action_result.data.\*.id | string | `defender incident id` | |
+action_result.data.\*.incidentWebUrl | string | `url` | |
+action_result.data.\*.lastUpdateDateTime | string | | |
+action_result.data.\*.redirectIncidentId | string | `defender incident id` | |
+action_result.data.\*.severity | string | `defender severity` | |
+action_result.data.\*.status | string | | |
+action_result.data.\*.tenantId | string | | |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.data.\*.evidence.\*.hostName | string | | |
-action_result.data.\*.evidence.\*.ntDomain | string | | |
-action_result.data.\*.evidence.\*.dnsDomain | string | | |
-action_result.data.\*.evidence.\*.vmMetadata | string | | |
-action_result.data.\*.evidence.\*.@odata.type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.evidence.\*.lastIpAddress | string | | |
-action_result.data.\*.evidence.\*.lastExternalIpAddress | string | | |
-action_result.data.\*.evidence.\*.resourceId | string | | /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/PluginFrameworkWinTargetVM |
-action_result.data.\*.evidence.\*.resourceName | string | | PluginFrameworkWinTargetVM |
-action_result.data.\*.evidence.\*.resourceType | string | | Virtual Machine |
-action_result.data.\*.productName | string | | Test Platform for Cloud |
-action_result.data.\*.alertPolicyId | string | | |
-action_result.data.\*.odata_context | string | | https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity |
-action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity |
-action_result.data.\*.additionalData.Intent | numeric | | 8193 |
-action_result.data.\*.additionalData.AlertUri | string | | https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus |
-action_result.data.\*.additionalData.TimeGenerated | string | | 2024-05-16T00:12:00.174Z |
-action_result.data.\*.additionalData.Intent@odata.type | string | | #Int64 |
-action_result.data.\*.additionalData.ProcessingEndTime | string | | 2024-05-16T00:12:02.7000014Z |
-action_result.data.\*.additionalData.Attacker source IP | string | | IP Address: 177.12.214.64 |
-action_result.data.\*.additionalData.ProductComponentName | string | | Servers |
-action_result.data.\*.additionalData.WorkspaceResourceGroup | string | | defaultresourcegroup-eus |
-action_result.data.\*.additionalData.Activity end time (UTC) | string | | 2024/05/15 23:59:49.1923578 |
-action_result.data.\*.additionalData.EffectiveSubscriptionId | string | | 4c357906-2c22-4d91-98aa-180d9a85a370 |
-action_result.data.\*.additionalData.WorkspaceSubscriptionId | string | | 4c357906-2c22-4d91-98aa-180d9a85a370 |
-action_result.data.\*.additionalData.EffectiveAzureResourceId | string | | /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id |
-action_result.data.\*.additionalData.OriginalAlertProductName | string | | Detection-WarmPathV2 |
-action_result.data.\*.additionalData.Activity start time (UTC) | string | | 2024/05/15 23:00:07.9736272 |
-action_result.data.\*.additionalData.OriginalAlertProviderName | string | | Test Platform for Cloud |
-action_result.data.\*.additionalData.Was RDP session initiated | string | | No |
-action_result.data.\*.additionalData.Attacker source computer name | string | | Unknown |
-action_result.data.\*.additionalData.Number of failed authentication attempts to host | string | | 23 |
-action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string | | admin (2), ARAXI (1), user1 (1), daveb231 (1), Sp3 (1), DefaultAccount (1), 29zj (1), Adminisrator (1), aselsan (1), backup (1) |
-action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string | | 1 |
-action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string | | 21 |
-action_result.data.\*.Intent_odata_type | string | | #Int64 |
-action_result.data.\*.evidence.\*.vmMetadata.vmId | string | | e3d18363-806f-4d19-9b75-9ec2f5953cd4 |
-action_result.data.\*.evidence.\*.vmMetadata.resourceId | string | | /subscriptions/test906-0000-test-test-test9test70/resourceGroups/PLUGINFRAMEWORK/providers/test.Compute/virtualMachines/TEST-ID |
-action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string | | azure |
-action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string | | |
-
-## action: 'update alert'
-
-Update properties of existing alert
-
-Type: **generic** <br>
-Read only: **False**
-
-#### Action Parameters
-
-PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
---------- | -------- | ----------- | ---- | --------
-**alert_id** | required | ID of the alert | string | `defender alert id` |
-**status** | optional | Specifies the status of the alert | string | |
-**assign_to** | optional | Owner of the alert | string | `email` |
-**classification** | optional | Specifies the specification of the alert | string | |
-**determination** | optional | Specifies the determination of the alert | string | |
-
-#### Action Output
-
-DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
---------- | ---- | -------- | --------------
-action_result.status | string | | success failed |
-action_result.parameter.alert_id | string | `defender alert id` | xx637812122456454120\_-11082172xx |
-action_result.parameter.assign_to | string | `email` | test@abc.com |
-action_result.parameter.classification | string | | Unknown |
-action_result.parameter.determination | string | | Other |
-action_result.parameter.status | string | | New |
-action_result.data.\*.odata_context | string | `url` | https://test.com/beta/$metadata#security/alerts_v2/$entity |
-action_result.data.\*.mitreTechniques.\* | string | | T1546.008 |
-action_result.data.\*.evidence.\*.tags.\* | string | | testtag |
-action_result.data.\*.evidence.\*.vmMetadata.vmId | string | | |
-action_result.data.\*.evidence.\*.vmMetadata.resourceId | string | | |
-action_result.data.\*.evidence.\*.vmMetadata.cloudProvider | string | | |
-action_result.data.\*.evidence.\*.vmMetadata.subscriptionId | string | | |
-action_result.data.\*.actorDisplayName | string | | test@abc.com |
-action_result.data.\*.alertWebUrl | string | `url` | https://test.com/alerts/xxxxx812122456454120\_-1108217295?tid=a417c578-c7ee-480d-a225-d4805xxxxxxx |
-action_result.data.\*.assignedTo | string | `email` | test@abc.com |
-action_result.data.\*.category | string | | SuspiciousActivity |
-action_result.data.\*.classification | string | | Test |
-action_result.data.\*.comments.\*.comment | string | | initialaccess_type_of_alert_last_option from the dropdown |
-action_result.data.\*.comments.\*.createdByDisplayName | string | | Automation |
-action_result.data.\*.comments.\*.createdDateTime | string | | 2022-04-08T18:03:49.3223829Z |
-action_result.data.\*.createdDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.description | string | | Test alert |
-action_result.data.\*.detectionSource | string | | customTi |
-action_result.data.\*.detectorId | string | | 360fdb3b-18a9-471b-9ad0-ad80a4cbcb02 |
-action_result.data.\*.determination | string | | Test |
-action_result.data.\*.evidence.\*.odata_type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.evidence.\*.azureAdDeviceId | string | | |
-action_result.data.\*.evidence.\*.createdDateTime | string | | 2022-02-23T11:24:05.9366667Z |
-action_result.data.\*.evidence.\*.defenderAvStatus | string | | unknown |
-action_result.data.\*.evidence.\*.detectionStatus | string | | Test |
-action_result.data.\*.evidence.\*.deviceDnsName | string | | testmachine |
-action_result.data.\*.evidence.\*.fileDetails.fileName | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.fileDetails.filePath | string | | C:\\Program Files\\Test\\Test\\Application |
-action_result.data.\*.evidence.\*.fileDetails.filePublisher | string | | Test |
-action_result.data.\*.evidence.\*.fileDetails.fileSize | numeric | | 77312 |
-action_result.data.\*.evidence.\*.fileDetails.issuer | string | | file issuer |
-action_result.data.\*.evidence.\*.fileDetails.sha1 | string | `sha1` | xxx8825f6b54238a452e3050d49e8aa50569a6c9 |
-action_result.data.\*.evidence.\*.fileDetails.sha256 | string | `sha256` | 7db34eecd1b9d02a7d6b6d8c9e9c82cc5ce16bfa7c2932944d0bf0fbb13f5bc6 |
-action_result.data.\*.evidence.\*.fileDetails.signer | string | | signer |
-action_result.data.\*.evidence.\*.firstSeenDateTime | string | | 2021-08-30T16:25:37.180194Z |
-action_result.data.\*.evidence.\*.healthStatus | string | | inactive |
-action_result.data.\*.evidence.\*.imageFile.fileName | string | | powershell.exe |
-action_result.data.\*.evidence.\*.imageFile.filePath | string | | c:\\windows\\system32\\windowspowershell\\v1.0 |
-action_result.data.\*.evidence.\*.imageFile.filePublisher | string | | test publisher |
-action_result.data.\*.evidence.\*.imageFile.fileSize | numeric | | 99912 |
-action_result.data.\*.evidence.\*.imageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.imageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.imageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.imageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.ipAddress | string | `ip` | 8.8.8.8 |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.accountName | string | | test |
-action_result.data.\*.evidence.\*.loggedOnUsers.\*.domainName | string | | TESTMACHINE |
-action_result.data.\*.evidence.\*.mdeDeviceId | string | | xxxx84aa7ef0294f733b7b6e9499439e433axxxx |
-action_result.data.\*.evidence.\*.onboardingStatus | string | | onboarded |
-action_result.data.\*.evidence.\*.osBuild | numeric | | 19044 |
-action_result.data.\*.evidence.\*.osPlatform | string | | Windows10 |
-action_result.data.\*.evidence.\*.parentProcessCreationDateTime | string | | 2022-03-09T19:52:51Z |
-action_result.data.\*.evidence.\*.parentProcessId | numeric | | 7968 |
-action_result.data.\*.evidence.\*.parentProcessImageFile | string | | TestFile |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileName | string | | Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePath | string | | C:\\Program Files\\Test\\Test\\Application\\Test.exe |
-action_result.data.\*.evidence.\*.parentProcessImageFile.filePublisher | string | | Test publisher |
-action_result.data.\*.evidence.\*.parentProcessImageFile.fileSize | numeric | | 36557800 |
-action_result.data.\*.evidence.\*.parentProcessImageFile.issuer | string | | test issuer |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha1 | string | `sha1` | xxxx9bb316e30ae1a3494ac5b0624f6bea1bxxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.sha256 | string | `sha256` | xxx14d42706fe215501044acd85a32d58aaef1419d404fddfa5d3b48f66ccxxx |
-action_result.data.\*.evidence.\*.parentProcessImageFile.signer | string | | test signer |
-action_result.data.\*.evidence.\*.processCommandLine | string | | powershell.exe -ExecutionPolicy AllSigned -NoProfile -NonInteractive |
-action_result.data.\*.evidence.\*.processCreationDateTime | string | | 2022-03-09T19:53:01Z |
-action_result.data.\*.evidence.\*.processId | numeric | | 6240 |
-action_result.data.\*.evidence.\*.rbacGroupId | numeric | | 73 |
-action_result.data.\*.evidence.\*.rbacGroupName | string | | UnassignedGroup |
-action_result.data.\*.evidence.\*.registryHive | string | | HKEY_LOCAL_MACHINE |
-action_result.data.\*.evidence.\*.registryKey | string | | SOFTWARE\\test\\Windows NT\\CurrentVersion\\Image File Execution Options\\Login.scr |
-action_result.data.\*.evidence.\*.registryValue | string | | 43-00-3A-00-5C-00-57-00-69-01-6E-10-64-00-6F-00-77-00-73-00-5C-00-53-00-79-00-73-00-74-00-65-00-6D-00-33-00-32-00-5C-00-63-00-61-00-6C-00-63-00-2E-00-65-00-78-00-65-00-00-00 |
-action_result.data.\*.evidence.\*.registryValueName | string | | Debugger |
-action_result.data.\*.evidence.\*.registryValueType | string | | Unknown |
-action_result.data.\*.evidence.\*.remediationStatus | string | | prevented |
-action_result.data.\*.evidence.\*.remediationStatusDetails | string | | status details |
-action_result.data.\*.evidence.\*.riskScore | string | | high |
-action_result.data.\*.evidence.\*.url | string | `url` | test.com |
-action_result.data.\*.evidence.\*.userAccount | string | | |
-action_result.data.\*.evidence.\*.userAccount.accountName | string | | local service |
-action_result.data.\*.evidence.\*.userAccount.azureAdUserId | string | | xxxxxxx |
-action_result.data.\*.evidence.\*.userAccount.domainName | string | | nt authority |
-action_result.data.\*.evidence.\*.userAccount.userPrincipalName | string | | test |
-action_result.data.\*.evidence.\*.userAccount.userSid | string | | S-1-5-19 |
-action_result.data.\*.evidence.\*.verdict | string | | unknown |
-action_result.data.\*.evidence.\*.version | string | | X1HX |
-action_result.data.\*.firstActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.id | string | `defender alert id` | xx637812122456454120\_-11082172xx |
-action_result.data.\*.incidentId | string | `defender incident id` | 42 |
-action_result.data.\*.incidentWebUrl | string | `url` | https://test.com/incidents/42?tid=xxxxc578-c7ee-480d-a225-d48057e7xxxx |
-action_result.data.\*.lastActivityDateTime | string | | 2022-02-23T11:22:20.1835364Z |
-action_result.data.\*.lastUpdateDateTime | string | | 2022-02-24T03:52:41.7933333Z |
-action_result.data.\*.providerAlertId | string | `defender alert id` | xxxx7812122456454120\_-1108217xxx |
-action_result.data.\*.recommendedActions | string | | A. Validate the alert and scope the suspected breach.<br>1. Find related machines, network addresses, and files in the incident graph.<br>2. Check for other suspicious activities in the machine timeline.<br>3. Locate unfamiliar processes in the process tree. Check files for prevalence, their locations, and digital signatures.<br>4. Submit relevant files for deep analysis and review file behaviors. <br>5. Identify unusual system activity with system owners. <br><br>B. If you have validated the alert, contain and mitigate the breach.<br>1. Record relevant artifacts, including those you need in mitigation rules.<br>2. Stop suspicious processes. Block prevalent malware files across the network.<br>3. Isolate affected machines.<br>4. Identify potentially compromised accounts. If necessary, reset passwords and decommission accounts.<br>5. Block relevant emails, websites, and IP addresses. Remove attack emails from mailboxes.<br>6. Update antimalware signatures and run full scans. <br>7. Deploy the latest security updates for Windows, web browsers, and other applications.<br><br>C. Contact your incident response team, or contact test support for forensic analysis and remediation services.<br><br>Disclaimer: These guidelines are for reference only. They do not guarantee successful threat removal. |
-action_result.data.\*.resolvedDateTime | string | | 2022-02-23T11:24:05.6454411Z |
-action_result.data.\*.serviceSource | string | | TestEndpoint |
-action_result.data.\*.severity | string | `defender severity` | medium |
-action_result.data.\*.status | string | | new |
-action_result.data.\*.tenantId | string | | xxxxc578-c7ee-480d-a225-d48057e74df5 |
-action_result.data.\*.threatDisplayName | string | | threat |
-action_result.data.\*.threatFamilyName | string | | threat |
-action_result.data.\*.title | string | | Test alert |
-action_result.summary | string | | |
-action_result.message | string | | Successfully updated the alert |
-summary.total_objects | numeric | | 1 |
-summary.total_objects_successful | numeric | | 1 |
-action_result.data.\*.evidence.\*.hostName | string | | test-id |
-action_result.data.\*.evidence.\*.ntDomain | string | | |
-action_result.data.\*.evidence.\*.dnsDomain | string | | identity.test |
-action_result.data.\*.evidence.\*.@odata.type | string | | #test.graph.security.deviceEvidence |
-action_result.data.\*.evidence.\*.lastIpAddress | string | | 10.0.2.15 |
-action_result.data.\*.evidence.\*.lastExternalIpAddress | string | | 20.119.52.149 |
-action_result.data.\*.evidence.\*.resourceId | string | | /subscriptions/test7906-0000-test-test-1testa8test0/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id |
-action_result.data.\*.evidence.\*.resourceName | string | | test-resource |
-action_result.data.\*.evidence.\*.resourceType | string | | Virtual Machine |
-action_result.data.\*.productName | string | | Test Platform for Cloud |
-action_result.data.\*.alertPolicyId | string | | |
-action_result.data.\*.@odata.context | string | | https://graph.test.com/v1.0/$metadata#security/alerts_v2/$entity |
-action_result.data.\*.additionalData.Intent | numeric | | 8193 |
-action_result.data.\*.additionalData.AlertUri | string | | https://test.com/#blade/testa/AlertBlade/alertId/test35test123461_test1230-7777-test-test-testd4test7/subscriptionId/test906-test-dddd-test-test9a8test/resourceGroup/pluginframework/referencedFrom/alertDeepLink/location/centralus |
-action_result.data.\*.additionalData.TimeGenerated | string | | 2024-05-16T13:12:23.408Z |
-action_result.data.\*.additionalData.Intent@odata.type | string | | #Int64 |
-action_result.data.\*.additionalData.ProcessingEndTime | string | | 2024-05-16T13:12:24.022927Z |
-action_result.data.\*.additionalData.Attacker source IP | string | | IP Address: 80.94.95.121 |
-action_result.data.\*.additionalData.ProductComponentName | string | | Servers |
-action_result.data.\*.additionalData.WorkspaceResourceGroup | string | | defaultresourcegroup-eus |
-action_result.data.\*.additionalData.Activity end time (UTC) | string | | 2024/05/16 12:45:11.3814938 |
-action_result.data.\*.additionalData.EffectiveSubscriptionId | string | | 4c357906-2c22-4d91-98aa-180d9a85a370 |
-action_result.data.\*.additionalData.WorkspaceSubscriptionId | string | | 4c357906-2c22-4d91-98aa-180d9a85a370 |
-action_result.data.\*.additionalData.EffectiveAzureResourceId | string | | /subscriptions/test7906-2c22-4d91-98aa-180d9a85test/resourceGroups/pluginframework/providers/test.Compute/virtualMachines/test-id |
-action_result.data.\*.additionalData.OriginalAlertProductName | string | | Detection-WarmPathV2 |
-action_result.data.\*.additionalData.Activity start time (UTC) | string | | 2024/05/16 12:08:57.1962468 |
-action_result.data.\*.additionalData.OriginalAlertProviderName | string | | Test Platform for Cloud |
-action_result.data.\*.additionalData.Was RDP session initiated | string | | No |
-action_result.data.\*.additionalData.Attacker source computer name | string | | Unknown |
-action_result.data.\*.additionalData.Number of failed authentication attempts to host | string | | 532 |
-action_result.data.\*.additionalData.Top accounts with failed sign in attempts (count) | string | | Zaphod! (1), Gearhostadmin (1), Ssadmin (1), 3 (1), Wheeler (1), Receptionist (1), Jerome (1), Bernie (1), Will (1), 1admin3 (1) |
-action_result.data.\*.additionalData.Number of existing accounts used by source to sign in | string | | 1 |
-action_result.data.\*.additionalData.Number of nonexistent accounts used by source to sign in | string | | 531 |
-action_result.data.\*.Intent_odata_type | string | | #Int64 |
 
 ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
