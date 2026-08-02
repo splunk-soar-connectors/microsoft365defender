@@ -28,6 +28,12 @@ def test_encode_graph_path_segment(value, encoded):
     assert encode_graph_path_segment(value) == encoded
 
 
+@pytest.mark.parametrize("value", [".", ".."])
+def test_encode_graph_path_segment_rejects_dot_segments(value):
+    with pytest.raises(ValueError, match="cannot be dot path segments"):
+        encode_graph_path_segment(value)
+
+
 @pytest.mark.parametrize(
     "url",
     [

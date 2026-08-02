@@ -54,7 +54,10 @@ logger = getLogger()
 
 def encode_graph_path_segment(value: str) -> str:
     """Encode an untrusted value before inserting it into a Graph API path."""
-    return quote(str(value), safe="")
+    value = str(value)
+    if value in {".", ".."}:
+        raise ValueError("Microsoft Graph identifiers cannot be dot path segments")
+    return quote(value, safe="")
 
 
 def validate_graph_pagination_url(url: str) -> None:
