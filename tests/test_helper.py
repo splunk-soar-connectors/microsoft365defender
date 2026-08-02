@@ -13,7 +13,11 @@
 # limitations under the License.
 import pytest
 
-from src.helper import encode_graph_path_segment, validate_graph_pagination_url
+from src.helper import (
+    Microsoft365DefenderClient,
+    encode_graph_path_segment,
+    validate_graph_pagination_url,
+)
 
 
 @pytest.mark.parametrize(
@@ -57,3 +61,47 @@ def test_validate_graph_pagination_url_accepts_graph_origin(url):
 def test_validate_graph_pagination_url_rejects_other_origins(url):
     with pytest.raises(ValueError, match="outside Microsoft Graph"):
         validate_graph_pagination_url(url)
+
+
+def test_paginator_rejects_empty_continuation_page(mocker):
+    client = object.__new__(Microsoft365DefenderClient)
+    client.make_rest_call = mocker.Mock(
+        return_value={
+            "value": [],
+            "@odata.nextLink": "https://graph.microsoft.com/v1.0/next",
+        }
+    )
+
+    with pytest.raises(ValueError, match="made no progress"):
+        client.paginator("/v1.0/security/incidents", 10)
+
+
+def test_paginator_rejects_repeated_continuation_url(mocker):
+    page_url = "https://graph.microsoft.com/v1.0/next"
+    client = object.__new__(Microsoft365DefenderClient)
+    client.make_rest_call = mocker.Mock(
+        side_effect=[
+            {"value": [{"id": "one"}], "@odata.nextLink": page_url},
+            {"value": [{"id": "two"}], "@odata.nextLink": page_url},
+        ]
+    )
+
+    with pytest.raises(ValueError, match="repeated a page URL"):
+        client.paginator("/v1.0/security/incidents", 10)
+
+
+def test_paginator_enforces_page_limit(mocker, monkeypatch):
+    client = object.__new__(Microsoft365DefenderClient)
+    client.make_rest_call = mocker.Mock(
+        side_effect=[
+            {
+                "value": [{"id": str(page)}],
+                "@odata.nextLink": f"https://graph.microsoft.com/v1.0/next/{page}",
+            }
+            for page in range(3)
+        ]
+    )
+    monkeypatch.setattr("src.helper.MAX_GRAPH_PAGES", 2)
+
+    with pytest.raises(ValueError, match="exceeded the page limit"):
+        client.paginator("/v1.0/security/incidents", 10)
