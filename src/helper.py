@@ -51,10 +51,15 @@ if TYPE_CHECKING:
 
 logger = getLogger()
 
+MAX_GRAPH_PAGES = 1000
+
 
 def encode_graph_path_segment(value: str) -> str:
     """Encode an untrusted value before inserting it into a Graph API path."""
-    return quote(str(value), safe="")
+    value = str(value)
+    if value in {".", ".."}:
+        raise ValueError("Microsoft Graph identifiers cannot be dot path segments")
+    return quote(value, safe="")
 
 
 def validate_graph_pagination_url(url: str) -> None:
@@ -301,8 +306,14 @@ class Microsoft365DefenderClient:
     ) -> list:
         resource_list: list = []
         next_page_token = ""
+        seen_page_tokens: set[str] = set()
+        pages_fetched = 0
 
         while True:
+            pages_fetched += 1
+            if pages_fetched > MAX_GRAPH_PAGES:
+                raise ValueError("Microsoft Graph pagination exceeded the page limit")
+
             params: dict = {}
             if not next_page_token and odata_filter:
                 params["$filter"] = odata_filter
@@ -321,11 +332,17 @@ class Microsoft365DefenderClient:
             if not response:
                 raise ValueError(DEFENDER_UNEXPECTED_RESPONSE_ERROR)
 
-            resource_list.extend(response.get("value", []))
+            page_resources = response.get("value", [])
+            resource_list.extend(page_resources)
 
             next_page_token = response.get(DEFENDER_NEXT_PAGE_TOKEN)
             if not next_page_token or len(resource_list) >= limit:
                 break
+            if next_page_token in seen_page_tokens:
+                raise ValueError("Microsoft Graph pagination repeated a page URL")
+            if not page_resources:
+                raise ValueError("Microsoft Graph pagination made no progress")
+            seen_page_tokens.add(next_page_token)
 
         return resource_list[:limit]
 

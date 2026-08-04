@@ -3390,7 +3390,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 @@@@============================================================================
 
-Library: rich - 15.0.0
+Library: rich - 14.3.4
 Homepage: https://github.com/Textualize/rich
 License: MIT License
 License Text:
@@ -3440,7 +3440,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 @@@@============================================================================
 
-Library: splunk-soar-sdk - 3.26.0
+Library: splunk-soar-sdk - 3.26.4
 Homepage: https://github.com/phantomcyber/splunk-soar-sdk
 License: Apache-2.0
 License Text:
