@@ -1,6 +1,6 @@
 [project]
 name = "microsoft365defender"
-version = "2.0.1"
+version = "2.0.2"
 description = "This app integrates with Microsoft 365 Defender to execute various generic and investigative actions"
 license = "Copyright (c) 2022-2025 Splunk Inc."
 requires-python = ">=3.13, <3.15"

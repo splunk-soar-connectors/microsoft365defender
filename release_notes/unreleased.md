@@ -1,5 +1,1 @@
 **Unreleased**
-
-* Rejected dot path segments used as Microsoft Graph incident or alert identifiers.
-* Stopped pagination when Microsoft Graph repeats a page, makes no progress, or exceeds the page limit.
-* Updated the Splunk SOAR SDK dependency to version 3.26.4.
