@@ -24,6 +24,7 @@ DEFENDER_RUN_QUERY_ENDPOINT = "/security/runHuntingQuery"
 DEFENDER_LIST_INCIDENTS_ENDPOINT = "/security/incidents"
 DEFENDER_INCIDENT_ID_ENDPOINT = "/security/incidents/{input}"
 DEFENDER_ALERTS_ID_ENDPOINT = "/security/alerts_v2/{input}"
+DEFENDER_COMMENT_ALERT_ID_ENDPOINT = "/security/alerts_v2/{input}/comments"
 
 DEFAULT_TIMEOUT = 30
 DEFENDER_INCIDENT_DEFAULT_LIMIT = 50
@@ -90,6 +91,7 @@ DEFENDER_INVALID_STATUS = "Please provide a valid value in the 'status' paramete
 DEFENDER_SUCCESSFULLY_RETRIEVED_INCIDENT = "Successfully retrieved the incident"
 DEFENDER_SUCCESSFULLY_RETRIEVED_ALERT = "Successfully retrieved the alert"
 DEFENDER_ALERT_UPDATED_SUCCESSFULLY = "Successfully updated the alert"
+DEFENDER_COMMENT_ADDED_SUCCESSFULLY = "Successfully added the comment to the alert"
 DEFENDER_INCIDENT_UPDATED_SUCCESSFULLY = "Successfully updated the incident"
 DEFENDER_INCIDENT_NO_PARAMETER_PROVIDED = (
     "Please provide at least one of the properties to update the incident"

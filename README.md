@@ -98,6 +98,7 @@ This table lists the API permissions required for each action. For most use case
 | `update incident` | `SecurityIncident.ReadWrite.All` | `SecurityIncident.ReadWrite.All` |
 | `get alert` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
 | `update alert` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
+| `create comment` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
 
 ### Authentication Method
 
@@ -281,6 +282,7 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 [test connectivity](#action-test-connectivity) - test connectivity <br>
 [on poll](#action-on-poll) - on poll <br>
+[create comment](#action-create-comment) - Create a comment for an alert <br>
 [list alerts](#action-list-alerts) - Get the list of recent alerts <br>
 [get alert](#action-get-alert) - Retrieve the properties and relationships of an alert object <br>
 [list incidents](#action-list-incidents) - Get the list of recent incidents <br>
@@ -334,6 +336,37 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 #### Action Output
 
 No Output
+
+## action: 'create comment'
+
+Create a comment for an alert
+
+Type: **generic** <br>
+Read only: **False**
+
+The response contains all comments on the alert, including the new comment.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**alert_id** | required | ID of the alert | string | `defender alert id` |
+**comment** | required | The comment to be added to the alert | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failure |
+action_result.message | string | | |
+action_result.parameter.alert_id | string | `defender alert id` | |
+action_result.parameter.comment | string | | |
+action_result.data.\*.value.\*.comment | string | | |
+action_result.data.\*.value.\*.createdByDisplayName | string | | |
+action_result.data.\*.value.\*.createdDateTime | string | | |
+action_result.data.\*.odata_context | string | | |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ## action: 'list alerts'
 
