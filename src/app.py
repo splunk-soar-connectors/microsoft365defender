@@ -349,6 +349,7 @@ def on_poll(
 
 # Actions self-register via @app.action() on import.
 from .actions import (  # noqa: F401
+    create_comment,
     get_alert,
     get_incident,
     list_alerts,

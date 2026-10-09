@@ -88,6 +88,7 @@ This table lists the API permissions required for each action. For most use case
 | `update incident` | `SecurityIncident.ReadWrite.All` | `SecurityIncident.ReadWrite.All` |
 | `get alert` | `SecurityAlert.Read.All` | `SecurityAlert.Read.All` |
 | `update alert` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
+| `create comment` | `SecurityAlert.ReadWrite.All` | `SecurityAlert.ReadWrite.All` |
 
 ### Authentication Method
 
