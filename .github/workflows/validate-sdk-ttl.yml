@@ -16,4 +16,3 @@ jobs:
     with:
       connector_repository: ${{ github.event.pull_request.head.repo.full_name }}
       connector_ref: ${{ github.event.pull_request.head.sha }}
-    secrets: inherit
