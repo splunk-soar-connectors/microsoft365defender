@@ -1,0 +1,19 @@
+name: Validate SDK TTL branch
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  sdk-ttl-validation:
+    uses: splunk-soar-connectors/.github/.github/workflows/defender-sdk-ttl-validation.yml@codex/defender-ttl-ci
+    with:
+      connector_repository: ${{ github.event.pull_request.head.repo.full_name }}
+      connector_ref: ${{ github.event.pull_request.head.sha }}
+    secrets: inherit
